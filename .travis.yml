@@ -26,11 +26,15 @@ install: true
 notifications:
   email: false
 
+services:
+  - postgresql
+
 # Anything in before_script that returns a nonzero exit code will flunk the
 # build and immediately stop. It's sorta like having set -e enabled in bash.
 # Make sure golangci-lint is vendored.
 before_script:
-  - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "postgres://postgres@127.0.0.1:5432/testing_db" up
+  - psql -c 'create database twitwatch;' -U postgres
+  - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "postgres://postgres@127.0.0.1:5432/twitwatch" up
 
 # script always runs to completion (set +e). If we have linter issues AND a
 # failing test, we want to see both. Configure golangci-lint with a
