@@ -1,0 +1,5 @@
+CREATE TABLE stream (
+    stream_id BIGSERIAL PRIMARY KEY
+    , track TEXT
+    , created_at   TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
