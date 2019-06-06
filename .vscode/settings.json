@@ -2,5 +2,6 @@
     "cSpell.words": [
         "proto",
         "protoc"
-    ]
+    ],
+    "go.formatTool": "goimports"
 }
