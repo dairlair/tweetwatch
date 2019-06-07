@@ -1,0 +1,2 @@
+postgres:
+  dsn: "postgres://twitwatch:twitwatch@postgres:5432/twitwatch?sslmode=disable"

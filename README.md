@@ -8,4 +8,9 @@ To regenerate gRPC service from updated proto files (located in /api/proto) run 
 ./third_party/protoc-gen.sh
 ```
 
+Run daemon locally
+```shell
+go run cmd/server/server.go
+```
+
 For more information see https://github.com/golang/protobuf#installation
