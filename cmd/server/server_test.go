@@ -11,10 +11,7 @@ import (
 
 func TestEnvConfigurationReading(t *testing.T) {
 	postgresDsn := faker.URL()
-
 	os.Setenv("POSTGRES_DSN", postgresDsn)
-
 	config := readConfig()
-
 	assert.Equal(t, postgresDsn, config.Postgres.DSN)
 }

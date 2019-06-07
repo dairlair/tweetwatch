@@ -1,16 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"github.com/dairlair/twitwatch/pkg/cmd/server"
-	"github.com/spf13/viper"
 	"strings"
+
+	"github.com/dairlair/twitwatch/pkg/cmd/server"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	config := readConfig()
-	fmt.Printf("Postgres DSN: %s\n", config.Postgres.DSN)
+	log.Infof("Config: %v\n", config)
+	// Here we will run server... Coming soon
 }
 
 func readConfig() server.Config {

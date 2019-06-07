@@ -14,7 +14,3 @@ go run cmd/server/server.go
 ```
 
 For more information see https://github.com/golang/protobuf#installation
-
-## Operation guide
-
-TBD
