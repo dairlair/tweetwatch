@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"github.com/dairlair/twitwatch/pkg/storage"
 
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
@@ -22,6 +23,7 @@ type Config struct {
 type Instance struct {
 	config   *Config
 	connPool *pgx.ConnPool
+	storage  *storage.Storage
 }
 
 // NewInstance creates new server instance and copy config into that.
@@ -30,6 +32,14 @@ func NewInstance(config *Config) *Instance {
 		config: config,
 	}
 	return s
+}
+
+func (s *Instance) Start() {
+	// Startup all dependencies
+	s.connPool = createPostgresConnection(s.config.Postgres)
+	defer s.connPool.Close()
+
+	s.storage = storage.NewStorage(s.connPool)
 }
 
 func createPostgresConnection(config PostgresConfig) *pgx.ConnPool {
