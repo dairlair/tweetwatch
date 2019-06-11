@@ -1,9 +1,13 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
+	serviceV1 "github.com/dairlair/twitwatch/pkg/service/v1"
 	"github.com/dairlair/twitwatch/pkg/storage"
+	"google.golang.org/grpc"
 
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
@@ -17,6 +21,7 @@ type PostgresConfig struct {
 // Config is configuration for the Server
 type Config struct {
 	Postgres PostgresConfig
+	GRPC     grpcServer.Config
 }
 
 // Instance stores the server state
@@ -24,6 +29,7 @@ type Instance struct {
 	config   *Config
 	connPool *pgx.ConnPool
 	storage  *storage.Storage
+	grpc     *grpc.Server
 }
 
 // NewInstance creates new server instance and copy config into that.
@@ -34,12 +40,26 @@ func NewInstance(config *Config) *Instance {
 	return s
 }
 
-func (s *Instance) Start() {
+func (s *Instance) Start() error {
 	// Startup all dependencies
+
 	s.connPool = createPostgresConnection(s.config.Postgres)
 	defer s.connPool.Close()
 
 	s.storage = storage.NewStorage(s.connPool)
+
+	// Run gRPC server
+	//v1API := serviceV1.NewTwitwatchServiceServer(s.storage)
+	//server, err := grpcServer.RunServer(v1API, s.config.GRPC)
+	//if err != nil {
+	//	log.Fatalf("gRPC server error: %s\n", err)
+	//}
+	//s.grpc = server
+	// Run gRPC server
+	ctx := context.Background()
+	v1API := serviceV1.NewTwitwatchServiceServer(s.storage)
+	log.Info("gRPC server starting")
+	return grpcServer.RunServer(ctx, v1API, s.config.GRPC)
 }
 
 func createPostgresConnection(config PostgresConfig) *pgx.ConnPool {

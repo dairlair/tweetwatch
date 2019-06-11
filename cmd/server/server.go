@@ -6,12 +6,15 @@ import (
 	"github.com/dairlair/twitwatch/pkg/cmd/server"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
 )
 
 func main() {
 	config := readConfig()
 	log.Infof("Config: %v\n", config)
 	// Here we will run server... Coming soon
+	srv := server.NewInstance(&config)
+	srv.Start()
 }
 
 func readConfig() server.Config {
@@ -25,6 +28,9 @@ func readConfig() server.Config {
 	return server.Config{
 		Postgres: server.PostgresConfig{
 			DSN: viper.GetString("postgres.dsn"),
+		},
+		GRPC: grpcServer.Config{
+			ListenAddress: viper.GetString("grpc.listen"),
 		},
 	}
 }

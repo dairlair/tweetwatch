@@ -294,7 +294,7 @@ func NewTwitwatchServiceClient(cc *grpc.ClientConn) TwitwatchServiceClient {
 
 func (c *twitwatchServiceClient) CreateStream(ctx context.Context, in *CreateStreamRequest, opts ...grpc.CallOption) (*CreateStreamResponse, error) {
 	out := new(CreateStreamResponse)
-	err := c.cc.Invoke(ctx, "/v1.TwitwatchService/AddStream", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.TwitwatchService/CreateStream", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -312,7 +312,7 @@ type UnimplementedTwitwatchServiceServer struct {
 }
 
 func (*UnimplementedTwitwatchServiceServer) CreateStream(ctx context.Context, req *CreateStreamRequest) (*CreateStreamResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddStream not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStream not implemented")
 }
 
 func RegisterTwitwatchServiceServer(s *grpc.Server, srv TwitwatchServiceServer) {
@@ -329,7 +329,7 @@ func _TwitwatchService_CreateStream_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.TwitwatchService/AddStream",
+		FullMethod: "/v1.TwitwatchService/CreateStream",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TwitwatchServiceServer).CreateStream(ctx, req.(*CreateStreamRequest))
@@ -342,7 +342,7 @@ var _TwitwatchService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*TwitwatchServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddStream",
+			MethodName: "CreateStream",
 			Handler:    _TwitwatchService_CreateStream_Handler,
 		},
 	},

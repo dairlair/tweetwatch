@@ -14,3 +14,12 @@ Run daemon locally
 ```shell
 go run cmd/server/server.go
 ```
+
+Dial server though grpcurl
+```shell
+grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list
+```
+
+```shell
+grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list v1.TwitwatchService
+```
