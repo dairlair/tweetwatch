@@ -4,17 +4,20 @@ import (
 	"strings"
 
 	"github.com/dairlair/twitwatch/pkg/cmd/server"
+	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
 )
 
 func main() {
 	config := readConfig()
 	log.Infof("Config: %v\n", config)
-	// Here we will run server... Coming soon
+
 	srv := server.NewInstance(&config)
-	srv.Start()
+	err := srv.Start()
+	if err != nil {
+		log.Errorf("twitwatch start failed: %s", err)
+	}
 }
 
 func readConfig() server.Config {
