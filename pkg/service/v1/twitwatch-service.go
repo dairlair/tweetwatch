@@ -45,7 +45,7 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *apiV1.Cr
 	}
 
 	// insert ToDo entity data
-	id, err := s.storage.AddStream(req)
+	id, err := s.storage.AddStream(req.Stream)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
