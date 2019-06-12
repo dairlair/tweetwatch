@@ -17,11 +17,11 @@ const (
 
 // twitwatchServiceServer is implementation of v1.ToDoServiceServer proto interface
 type twitwatchServiceServer struct {
-	storage *storage.Storage
+	storage storage.Interface
 }
 
 // NewTwitwatchServiceServer creates TwitWatch service
-func NewTwitwatchServiceServer(s *storage.Storage) apiV1.TwitwatchServiceServer {
+func NewTwitwatchServiceServer(s storage.Interface) apiV1.TwitwatchServiceServer {
 	return &twitwatchServiceServer{storage: s}
 }
 
@@ -45,7 +45,7 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *apiV1.Cr
 	}
 
 	// insert ToDo entity data
-	id, err := s.storage.AddStream(req)
+	id, err := s.storage.AddStream(req.GetStream())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
