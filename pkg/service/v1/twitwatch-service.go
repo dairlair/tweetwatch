@@ -39,12 +39,12 @@ func (s *twitwatchServiceServer) checkAPI(api string) error {
 
 // Create new stream
 func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *apiV1.CreateStreamRequest) (*apiV1.CreateStreamResponse, error) {
-	// check if the API version requested by client is supported by server
-	if err := s.checkAPI(req.Api); err != nil {
+	// Check if the API version requested by client is supported by server
+	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
 	}
 
-	// insert ToDo entity data
+	// Insert stream entity data
 	id, err := s.storage.AddStream(req.GetStream())
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
