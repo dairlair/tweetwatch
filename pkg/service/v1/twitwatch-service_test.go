@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,10 +18,8 @@ func TestCreateStreamRequestCreation(t *testing.T) {
 
 }
 
-func TestCreateStreamRequest(t *testing.T) {
-
-	track := "something"
-	stream := pb.Stream{Track: track}
+func TestCreateStreamSuccessful(t *testing.T) {
+	stream := pb.Stream{Track: "something"}
 
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
@@ -31,4 +30,31 @@ func TestCreateStreamRequest(t *testing.T) {
 	resp, err := s.CreateStream(context.Background(), &req)
 	assert.Nil(t, err, "Error must be equal nil")
 	assert.Equal(t, id, resp.Id, "Returned id mus be equal ID returned from storage")
+}
+
+func TestCreateStreamFailedOnStorage(t *testing.T) {
+	stream := pb.Stream{Track: "something"}
+
+	storageMock := storageMocks.Interface{}
+	storageMock.On("AddStream", &stream).Return(int64(0), errors.New("Integrity violation"))
+	s := NewTwitwatchServiceServer(&storageMock)
+
+	req := pb.CreateStreamRequest{Stream: &stream}
+	resp, err := s.CreateStream(context.Background(), &req)
+
+	assert.Nil(t, resp, "Response must be nil where storage returns error")
+	assert.NotNil(t, err, "Service must returns error")
+}
+
+func TestCreateStreamWrongApiVersion(t *testing.T) {
+	stream := pb.Stream{Track: "something"}
+	storageMock := storageMocks.Interface{}
+	storageMock.On("AddStream", &stream).Return(int64(1), nil)
+	s := NewTwitwatchServiceServer(&storageMock)
+
+	req := pb.CreateStreamRequest{Stream: &stream, Api: "v0"} // Our
+	resp, err := s.CreateStream(context.Background(), &req)
+
+	assert.Nil(t, resp, "Response must be nil where storage returns error")
+	assert.NotNil(t, err, "Service must returns error")
 }
