@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	apiV1 "github.com/dairlair/twitwatch/pkg/api/v1"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"google.golang.org/grpc"
 )
 
 // Config contains options for gRPC server
@@ -13,7 +14,7 @@ type Config struct {
 }
 
 // RunServer runs gRPC service to publish ToDo service
-func RunServer(v1API apiV1.TwitwatchServiceServer, gRPCConfig Config) (*grpc.Server, error) {
+func RunServer(service pb.TwitwatchServiceServer, gRPCConfig Config) (*grpc.Server, error) {
 	listen, err := net.Listen("tcp", gRPCConfig.ListenAddress)
 	if err != nil {
 		return nil, err
@@ -21,7 +22,7 @@ func RunServer(v1API apiV1.TwitwatchServiceServer, gRPCConfig Config) (*grpc.Ser
 
 	// register service
 	server := grpc.NewServer()
-	apiV1.RegisterTwitwatchServiceServer(server, v1API)
+	pb.RegisterTwitwatchServiceServer(server, service)
 
 	// start gRPC server
 	log.Printf("starting gRPC server on address [%s]\n", gRPCConfig.ListenAddress)
