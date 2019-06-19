@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	apiV1 "github.com/dairlair/twitwatch/pkg/api/v1"
+	pb "github.com/dairlair/twitwatch/pkg/api/v1"
 	"github.com/dairlair/twitwatch/pkg/storage"
 )
 
@@ -21,7 +21,7 @@ type twitwatchServiceServer struct {
 }
 
 // NewTwitwatchServiceServer creates TwitWatch service
-func NewTwitwatchServiceServer(s storage.Interface) apiV1.TwitwatchServiceServer {
+func NewTwitwatchServiceServer(s storage.Interface) pb.TwitwatchServiceServer {
 	return &twitwatchServiceServer{storage: s}
 }
 
@@ -38,7 +38,7 @@ func (s *twitwatchServiceServer) checkAPI(api string) error {
 }
 
 // Create new stream
-func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *apiV1.CreateStreamRequest) (*apiV1.CreateStreamResponse, error) {
+func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *pb.CreateStreamRequest) (*pb.CreateStreamResponse, error) {
 	// Check if the API version requested by client is supported by server
 	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *apiV1.Cr
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
 
-	return &apiV1.CreateStreamResponse{
+	return &pb.CreateStreamResponse{
 		Api: apiVersion,
 		Id:  id,
 	}, nil
