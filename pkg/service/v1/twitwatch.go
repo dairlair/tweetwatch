@@ -55,3 +55,18 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *pb.Creat
 		Id:  id,
 	}, nil
 }
+
+// GetStreams Returns list of streams
+func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStreamsRequest) (*pb.GetStreamsResponse, error) {
+	// Check if the API version requested by client is supported by server
+	if err := s.checkAPI(req.GetApi()); err != nil {
+		return nil, err
+	}
+
+	var streams []*pb.Stream
+
+	return &pb.GetStreamsResponse{
+		Api:     apiVersion,
+		Streams: streams,
+	}, nil
+}

@@ -38,8 +38,21 @@ message CreateStreamResponse {
   int64 id = 2;
 }
 
+message GetStreamsRequest {
+  // API Major version
+  string api = 1;
+}
+
+message GetStreamsResponse {
+  // API Major version
+  string api = 1;
+  // 
+  repeated Stream streams = 2;
+}
+
 // Service to manage list of watched streams
 service TwitwatchService {
   // Create new stream to watch it
   rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+  rpc GetStreams(GetStreamsRequest) returns (GetStreamsResponse);
 }
