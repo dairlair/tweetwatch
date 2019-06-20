@@ -12,14 +12,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// PostgresConfig contains options for the Postgres connections pool
-type PostgresConfig struct {
-	DSN string
-}
+
 
 // Config is configuration for the Server
 type Config struct {
-	Postgres PostgresConfig
+	Postgres storage.PostgresConfig
 	GRPC     grpcServer.Config
 }
 

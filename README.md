@@ -3,6 +3,11 @@ A Twitter API based daemon for twits analyses purposes
 
 ## Developers guide
 
+Apply migrations
+```shell
+migrate -source file:schema/postgres -database "postgres://test:test@localhost:5432/twitwatch_test?sslmode=disable" up
+```
+
 To regenerate gRPC service from updated proto files (located in /api/proto) run this command:
 ```shell
 ./third_party/protoc-gen.sh

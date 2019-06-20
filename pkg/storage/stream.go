@@ -58,4 +58,5 @@ func (storage *Storage) GetStreams() (streams []*pb.Stream, err error) {
 		streams = append(streams, &stream)
 	}
 
+	return streams, nil
 }
