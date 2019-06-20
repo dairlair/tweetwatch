@@ -65,6 +65,8 @@ func TestGetStreams_Successfull(t *testing.T) {
 
 	req := pb.GetStreamsRequest{}
 	resp, err := s.GetStreams(context.Background(), &req)
+
 	assert.Nil(t, err, "Error must be equal nil")
 	assert.NotNil(t, resp, "Response must be not null")
+	assert.IsType(t, []*pb.Stream{}, resp.GetStreams())
 }
