@@ -61,6 +61,8 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 
 func TestGetStreams_Successfull(t *testing.T) {
 	storageMock := storageMocks.Interface{}
+	storageMock.On("GetStreams").Return([]*pb.Stream{}, nil)
+
 	s := NewTwitwatchServiceServer(&storageMock)
 
 	req := pb.GetStreamsRequest{}
