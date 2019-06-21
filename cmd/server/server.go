@@ -5,6 +5,7 @@ import (
 
 	"github.com/dairlair/twitwatch/pkg/cmd/server"
 	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
+	"github.com/dairlair/twitwatch/pkg/storage"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -29,7 +30,7 @@ func readConfig() server.Config {
 	}
 
 	return server.Config{
-		Postgres: server.PostgresConfig{
+		Postgres: storage.PostgresConfig{
 			DSN: viper.GetString("postgres.dsn"),
 		},
 		GRPC: grpcServer.Config{
