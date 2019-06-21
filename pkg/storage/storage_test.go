@@ -4,9 +4,29 @@ import (
 	"os"
 	"testing"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"github.com/jackc/pgx"
 	"github.com/stretchr/testify/suite"
 )
+
+type StorageSuite struct {
+	suite.Suite
+	cfg      PostgresConfig
+	connPool *pgx.ConnPool
+	storage  *Storage
+}
+
+func NewStorageSuite(cfg PostgresConfig) StorageSuite {
+	return StorageSuite{cfg: cfg}
+}
+
+func (suite *StorageSuite) SetupSuite() {
+	suite.connPool = CreatePostgresConnection(suite.cfg)
+	suite.storage = NewStorage(suite.connPool)
+}
+
+func (suite *StorageSuite) TearDownSuite() {
+	suite.connPool.Close()
+}
 
 type storageHandlerSuite struct {
 	StorageSuite
@@ -17,18 +37,8 @@ func TestStorageSuite(t *testing.T) {
 		t.Skip("Skip test for storage")
 	}
 	cfg := PostgresConfig{
-		DSN: os.Getenv("POSTGRES_DSN"),
+		DSN: os.Getenv("TWITWATCH_TEST_POSTGRES_DSN"),
 	}
-	storageHandlerSuiteTest := &storageHandlerSuite{
-		NewStorageSuite(cfg),
-	}
-	suite.Run(t, storageHandlerSuiteTest)
-}
-
-func (suite storageHandlerSuite) TestAddStream_Successful() {
-	storage := NewStorage(suite.StorageSuite.cfg)
-
-	id, err := storage.AddStream(&pb.Stream{Track: "something"})
-	suite.True(id > 0)
-	suite.Equal(err, nil)
+	storageSuite := NewStorageSuite(cfg)
+	suite.Run(t, &storageSuite)
 }

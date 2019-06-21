@@ -36,7 +36,8 @@ func NewInstance(config *Config) *Instance {
 func (s *Instance) Start() error {
 
 	// Create storage instance
-	s.storage = storage.NewStorage(s.config.Postgres)
+	connPool := storage.CreatePostgresConnection(s.config.Postgres)
+	s.storage = storage.NewStorage(connPool)
 
 	// Run gRPC server
 	v1API := serviceV1.NewTwitwatchServiceServer(s.storage)

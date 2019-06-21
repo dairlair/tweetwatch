@@ -18,8 +18,7 @@ type Interface interface {
 }
 
 // NewStorage creates new Storage instance
-func NewStorage(postgresConfig PostgresConfig) *Storage {
-	connPool := createPostgresConnection(postgresConfig)
+func NewStorage(connPool *pgx.ConnPool) *Storage {
 	return &Storage{
 		connPool: connPool,
 	}
@@ -43,7 +42,7 @@ func pgError(err error) error {
 	return err
 }
 
-func createPostgresConnection(config PostgresConfig) *pgx.ConnPool {
+func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 	pgConf, err := pgx.ParseURI(config.DSN)
 	if err != nil {
 		msg := fmt.Sprintf("Can not parse Postgres DSN: %s", err)
