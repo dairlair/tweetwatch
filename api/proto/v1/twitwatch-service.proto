@@ -2,34 +2,57 @@ syntax = "proto3";
 
 package v1;
 
-// https://medium.com/@amsokol.com/tutorial-how-to-develop-go-grpc-microservice-with-http-rest-endpoint-middleware-kubernetes-daebb36a97e9
-//
+////////////////////////////////////////////////////////////////////////////////
+// See https://developers.google.com/protocol-buffers/docs/style              //
+////////////////////////////////////////////////////////////////////////////////
+
 // Stream we have to watch (track)
 message Stream {
     // Unique integer identifier of the watched stream
     int64 id = 1;
-    // Keywords to track. For more information see https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html
+    // Keywords to track. For more information see: https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html
     string track = 2;
+}
+
+// Twit message contains significant info from original twit object.
+message Twit {
+  int64 id = 1;
+  int64 user_id = 2;
+  string full_text = 3;
+  string created_at = 4;
 }
 
 // Request data to create new stream
 message CreateStreamRequest {
-    // API Major version
-    string api = 1;
-    // Stream entity to add
-    Stream stream = 2;
+  // API Major version
+  string api = 1;
+  // Stream entity to add
+  Stream stream = 2;
 }
 
 // Response that contains data for created stream
 message CreateStreamResponse {
-    // API Major version
-    string api = 1;
-    // ID of created stream
-    int64 id = 2;
+  // API Major version
+  string api = 1;
+  // ID of created stream
+  int64 id = 2;
+}
+
+message GetStreamsRequest {
+  // API Major version
+  string api = 1;
+}
+
+message GetStreamsResponse {
+  // API Major version
+  string api = 1;
+  // 
+  repeated Stream streams = 2;
 }
 
 // Service to manage list of watched streams
 service TwitwatchService {
-    // Create new stream to watch it
-    rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+  // Create new stream to watch it
+  rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+  rpc GetStreams(GetStreamsRequest) returns (GetStreamsResponse);
 }

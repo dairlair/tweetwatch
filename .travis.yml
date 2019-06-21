@@ -15,6 +15,9 @@ env:
 go:
   - 1.12.x
 
+env:
+  TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
+
 # Only clone the most recent commit.
 git:
   depth: 1
@@ -35,7 +38,7 @@ services:
 # Make sure golangci-lint is vendored.
 before_script:
   - psql -c 'create database twitwatch;' -U postgres
-  - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "postgres://postgres@127.0.0.1:5432/twitwatch" up
+  - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWITWATCH_TEST_POSTGRES_DSN" up
 
 # script always runs to completion (set +e). If we have linter issues AND a
 # failing test, we want to see both. Configure golangci-lint with a

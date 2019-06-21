@@ -6,10 +6,9 @@ package v1
 import (
 	context "context"
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,13 +22,11 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-// https://medium.com/@amsokol.com/tutorial-how-to-develop-go-grpc-microservice-with-http-rest-endpoint-middleware-kubernetes-daebb36a97e9
-//
 // Stream we have to watch (track)
 type Stream struct {
 	// Unique integer identifier of the watched stream
 	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// Keywords to track. For more information see https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html
+	// Keywords to track. For more information see: https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html
 	Track                string   `protobuf:"bytes,2,opt,name=track,proto3" json:"track,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -75,6 +72,70 @@ func (m *Stream) GetTrack() string {
 	return ""
 }
 
+// Twit message contains significant info from original twit object.
+type Twit struct {
+	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId               int64    `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	FullText             string   `protobuf:"bytes,3,opt,name=full_text,json=fullText,proto3" json:"full_text,omitempty"`
+	CreatedAt            string   `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Twit) Reset()         { *m = Twit{} }
+func (m *Twit) String() string { return proto.CompactTextString(m) }
+func (*Twit) ProtoMessage()    {}
+func (*Twit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_205c390a0d5eed40, []int{1}
+}
+
+func (m *Twit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Twit.Unmarshal(m, b)
+}
+func (m *Twit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Twit.Marshal(b, m, deterministic)
+}
+func (m *Twit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Twit.Merge(m, src)
+}
+func (m *Twit) XXX_Size() int {
+	return xxx_messageInfo_Twit.Size(m)
+}
+func (m *Twit) XXX_DiscardUnknown() {
+	xxx_messageInfo_Twit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Twit proto.InternalMessageInfo
+
+func (m *Twit) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Twit) GetUserId() int64 {
+	if m != nil {
+		return m.UserId
+	}
+	return 0
+}
+
+func (m *Twit) GetFullText() string {
+	if m != nil {
+		return m.FullText
+	}
+	return ""
+}
+
+func (m *Twit) GetCreatedAt() string {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return ""
+}
+
 // Request data to create new stream
 type CreateStreamRequest struct {
 	// API Major version
@@ -90,7 +151,7 @@ func (m *CreateStreamRequest) Reset()         { *m = CreateStreamRequest{} }
 func (m *CreateStreamRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateStreamRequest) ProtoMessage()    {}
 func (*CreateStreamRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_205c390a0d5eed40, []int{1}
+	return fileDescriptor_205c390a0d5eed40, []int{2}
 }
 
 func (m *CreateStreamRequest) XXX_Unmarshal(b []byte) error {
@@ -140,7 +201,7 @@ func (m *CreateStreamResponse) Reset()         { *m = CreateStreamResponse{} }
 func (m *CreateStreamResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateStreamResponse) ProtoMessage()    {}
 func (*CreateStreamResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_205c390a0d5eed40, []int{2}
+	return fileDescriptor_205c390a0d5eed40, []int{3}
 }
 
 func (m *CreateStreamResponse) XXX_Unmarshal(b []byte) error {
@@ -175,29 +236,128 @@ func (m *CreateStreamResponse) GetId() int64 {
 	return 0
 }
 
+type GetStreamsRequest struct {
+	// API Major version
+	Api                  string   `protobuf:"bytes,1,opt,name=api,proto3" json:"api,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetStreamsRequest) Reset()         { *m = GetStreamsRequest{} }
+func (m *GetStreamsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetStreamsRequest) ProtoMessage()    {}
+func (*GetStreamsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_205c390a0d5eed40, []int{4}
+}
+
+func (m *GetStreamsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetStreamsRequest.Unmarshal(m, b)
+}
+func (m *GetStreamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetStreamsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetStreamsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStreamsRequest.Merge(m, src)
+}
+func (m *GetStreamsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetStreamsRequest.Size(m)
+}
+func (m *GetStreamsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStreamsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStreamsRequest proto.InternalMessageInfo
+
+func (m *GetStreamsRequest) GetApi() string {
+	if m != nil {
+		return m.Api
+	}
+	return ""
+}
+
+type GetStreamsResponse struct {
+	// API Major version
+	Api string `protobuf:"bytes,1,opt,name=api,proto3" json:"api,omitempty"`
+	//
+	Streams              []*Stream `protobuf:"bytes,2,rep,name=streams,proto3" json:"streams,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *GetStreamsResponse) Reset()         { *m = GetStreamsResponse{} }
+func (m *GetStreamsResponse) String() string { return proto.CompactTextString(m) }
+func (*GetStreamsResponse) ProtoMessage()    {}
+func (*GetStreamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_205c390a0d5eed40, []int{5}
+}
+
+func (m *GetStreamsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetStreamsResponse.Unmarshal(m, b)
+}
+func (m *GetStreamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetStreamsResponse.Marshal(b, m, deterministic)
+}
+func (m *GetStreamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStreamsResponse.Merge(m, src)
+}
+func (m *GetStreamsResponse) XXX_Size() int {
+	return xxx_messageInfo_GetStreamsResponse.Size(m)
+}
+func (m *GetStreamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStreamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStreamsResponse proto.InternalMessageInfo
+
+func (m *GetStreamsResponse) GetApi() string {
+	if m != nil {
+		return m.Api
+	}
+	return ""
+}
+
+func (m *GetStreamsResponse) GetStreams() []*Stream {
+	if m != nil {
+		return m.Streams
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Stream)(nil), "v1.Stream")
+	proto.RegisterType((*Twit)(nil), "v1.Twit")
 	proto.RegisterType((*CreateStreamRequest)(nil), "v1.CreateStreamRequest")
 	proto.RegisterType((*CreateStreamResponse)(nil), "v1.CreateStreamResponse")
+	proto.RegisterType((*GetStreamsRequest)(nil), "v1.GetStreamsRequest")
+	proto.RegisterType((*GetStreamsResponse)(nil), "v1.GetStreamsResponse")
 }
 
 func init() { proto.RegisterFile("twitwatch-service.proto", fileDescriptor_205c390a0d5eed40) }
 
 var fileDescriptor_205c390a0d5eed40 = []byte{
-	// 203 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2f, 0x29, 0xcf, 0x2c,
-	0x29, 0x4f, 0x2c, 0x49, 0xce, 0xd0, 0x2d, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x54, 0xd2, 0xe3, 0x62, 0x0b, 0x2e, 0x29, 0x4a, 0x4d,
-	0xcc, 0x15, 0xe2, 0xe3, 0x62, 0xca, 0x4c, 0x91, 0x60, 0x54, 0x60, 0xd4, 0x60, 0x0e, 0x62, 0xca,
-	0x4c, 0x11, 0x12, 0xe1, 0x62, 0x2d, 0x29, 0x4a, 0x4c, 0xce, 0x96, 0x60, 0x52, 0x60, 0xd4, 0xe0,
-	0x0c, 0x82, 0x70, 0x94, 0xbc, 0xb9, 0x84, 0x9d, 0x8b, 0x52, 0x13, 0x4b, 0x52, 0x21, 0xba, 0x82,
-	0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0x04, 0xb8, 0x98, 0x13, 0x0b, 0x32, 0xc1, 0xba, 0x39,
-	0x83, 0x40, 0x4c, 0x21, 0x25, 0x2e, 0xb6, 0x62, 0xb0, 0x12, 0xb0, 0x7e, 0x6e, 0x23, 0x2e, 0xbd,
-	0x32, 0x43, 0x3d, 0xa8, 0x26, 0xa8, 0x8c, 0x92, 0x05, 0x97, 0x08, 0xaa, 0x61, 0xc5, 0x05, 0xf9,
-	0x79, 0xc5, 0xa9, 0x58, 0x4c, 0x83, 0x38, 0x8e, 0x09, 0xe6, 0x38, 0xa3, 0x50, 0x2e, 0x81, 0x10,
-	0x98, 0xaf, 0x82, 0x21, 0x9e, 0x12, 0x72, 0xe4, 0xe2, 0x41, 0x36, 0x4d, 0x48, 0x1c, 0x64, 0x23,
-	0x16, 0xc7, 0x4a, 0x49, 0x60, 0x4a, 0x40, 0x2c, 0x4e, 0x62, 0x03, 0x07, 0x8c, 0x31, 0x20, 0x00,
-	0x00, 0xff, 0xff, 0x45, 0xb5, 0x47, 0xc5, 0x33, 0x01, 0x00, 0x00,
+	// 315 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x52, 0x5b, 0x4b, 0xc3, 0x30,
+	0x14, 0xa6, 0xe9, 0xec, 0xec, 0x51, 0x64, 0xc6, 0xe9, 0xc2, 0x44, 0x18, 0x41, 0x61, 0x2f, 0x16,
+	0x36, 0x5f, 0x04, 0x9f, 0x86, 0x0f, 0x22, 0xfa, 0xd4, 0xed, 0x7d, 0xc4, 0xf6, 0x88, 0x61, 0xd3,
+	0xcd, 0xe4, 0xec, 0xf2, 0x3b, 0xfc, 0xc5, 0xd2, 0xa4, 0xc3, 0xb9, 0xcb, 0x5b, 0xcf, 0xf9, 0x2e,
+	0xf9, 0xbe, 0x26, 0xd0, 0xa0, 0x85, 0xa6, 0x85, 0xa2, 0xec, 0xe3, 0xd6, 0xa2, 0x99, 0xeb, 0x0c,
+	0x93, 0xa9, 0x99, 0xd0, 0x84, 0xb3, 0x79, 0x47, 0x26, 0x10, 0xf5, 0xc9, 0xa0, 0xfa, 0xe4, 0x27,
+	0xc0, 0x74, 0x2e, 0x82, 0x56, 0xd0, 0x0e, 0x53, 0xa6, 0x73, 0x5e, 0x87, 0x03, 0x32, 0x2a, 0x1b,
+	0x09, 0xd6, 0x0a, 0xda, 0x71, 0xea, 0x07, 0x39, 0x82, 0xca, 0x60, 0xa1, 0x69, 0x8b, 0xdd, 0x80,
+	0xea, 0xcc, 0xa2, 0x19, 0xea, 0xdc, 0xf1, 0xc3, 0x34, 0x2a, 0xc6, 0xe7, 0x9c, 0x5f, 0x42, 0xfc,
+	0x3e, 0x1b, 0x8f, 0x87, 0x84, 0x4b, 0x12, 0xa1, 0xb3, 0x3a, 0x2c, 0x16, 0x03, 0x5c, 0x12, 0xbf,
+	0x02, 0xc8, 0x0c, 0x2a, 0xc2, 0x7c, 0xa8, 0x48, 0x54, 0x1c, 0x1a, 0x97, 0x9b, 0x1e, 0xc9, 0x17,
+	0x38, 0x7b, 0x74, 0x83, 0x8f, 0x98, 0xe2, 0xf7, 0x0c, 0x2d, 0xf1, 0x1a, 0x84, 0x6a, 0xaa, 0xdd,
+	0xe1, 0x71, 0x5a, 0x7c, 0x72, 0x09, 0x91, 0x75, 0x14, 0x77, 0xf8, 0x51, 0x17, 0x92, 0x79, 0x27,
+	0x29, 0x45, 0x25, 0x22, 0xef, 0xa1, 0xfe, 0xdf, 0xcc, 0x4e, 0x27, 0x5f, 0x16, 0x77, 0xb8, 0xf9,
+	0x6e, 0x6c, 0xd5, 0x4d, 0xde, 0xc0, 0xe9, 0x13, 0x92, 0x97, 0xd9, 0xbd, 0x21, 0xe4, 0x2b, 0xf0,
+	0x75, 0xda, 0x5e, 0xfb, 0x6b, 0xa8, 0xfa, 0x48, 0x56, 0xb0, 0x56, 0xb8, 0x91, 0x76, 0x05, 0x75,
+	0x7f, 0x02, 0xa8, 0x0d, 0x56, 0x17, 0xd7, 0xf7, 0xf7, 0xc6, 0x7b, 0x70, 0xbc, 0xde, 0x81, 0x37,
+	0x0a, 0xe5, 0x8e, 0x5f, 0xd4, 0x14, 0xdb, 0x40, 0x99, 0xe7, 0x01, 0xe0, 0x2f, 0x25, 0x3f, 0x2f,
+	0x78, 0x5b, 0xe5, 0x9a, 0x17, 0x9b, 0x6b, 0x2f, 0x7e, 0x8b, 0xdc, 0xc3, 0xb9, 0xfb, 0x0d, 0x00,
+	0x00, 0xff, 0xff, 0x80, 0x3e, 0xc6, 0x8f, 0x53, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -214,6 +374,7 @@ const _ = grpc.SupportPackageIsVersion4
 type TwitwatchServiceClient interface {
 	// Create new stream to watch it
 	CreateStream(ctx context.Context, in *CreateStreamRequest, opts ...grpc.CallOption) (*CreateStreamResponse, error)
+	GetStreams(ctx context.Context, in *GetStreamsRequest, opts ...grpc.CallOption) (*GetStreamsResponse, error)
 }
 
 type twitwatchServiceClient struct {
@@ -233,10 +394,20 @@ func (c *twitwatchServiceClient) CreateStream(ctx context.Context, in *CreateStr
 	return out, nil
 }
 
+func (c *twitwatchServiceClient) GetStreams(ctx context.Context, in *GetStreamsRequest, opts ...grpc.CallOption) (*GetStreamsResponse, error) {
+	out := new(GetStreamsResponse)
+	err := c.cc.Invoke(ctx, "/v1.TwitwatchService/GetStreams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TwitwatchServiceServer is the server API for TwitwatchService service.
 type TwitwatchServiceServer interface {
 	// Create new stream to watch it
 	CreateStream(context.Context, *CreateStreamRequest) (*CreateStreamResponse, error)
+	GetStreams(context.Context, *GetStreamsRequest) (*GetStreamsResponse, error)
 }
 
 func RegisterTwitwatchServiceServer(s *grpc.Server, srv TwitwatchServiceServer) {
@@ -261,6 +432,24 @@ func _TwitwatchService_CreateStream_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TwitwatchService_GetStreams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStreamsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TwitwatchServiceServer).GetStreams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.TwitwatchService/GetStreams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TwitwatchServiceServer).GetStreams(ctx, req.(*GetStreamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _TwitwatchService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "v1.TwitwatchService",
 	HandlerType: (*TwitwatchServiceServer)(nil),
@@ -268,6 +457,10 @@ var _TwitwatchService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateStream",
 			Handler:    _TwitwatchService_CreateStream_Handler,
+		},
+		{
+			MethodName: "GetStreams",
+			Handler:    _TwitwatchService_GetStreams_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
