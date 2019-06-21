@@ -63,7 +63,10 @@ func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStre
 		return nil, err
 	}
 
-	var streams []*pb.Stream
+	streams, err := s.storage.GetStreams()
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "failed to retrieve streams-> "+err.Error())
+	}
 
 	return &pb.GetStreamsResponse{
 		Api:     apiVersion,

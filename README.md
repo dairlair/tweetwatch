@@ -20,11 +20,23 @@ Run daemon locally
 go run cmd/server/server.go
 ```
 
-Dial server though grpcurl
+#### Dial server though grpcurl
+List of services
 ```shell
 grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list
 ```
 
+List of service methods
 ```shell
 grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list v1.TwitwatchService
+```
+
+Create stream
+```shell
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "stream": {"track": "Tesla"}}' localhost:1234 v1.TwitwatchService.CreateStream
+```
+
+Get streams
+```shell
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1"}' localhost:1234 v1.TwitwatchService.GetStreams
 ```
