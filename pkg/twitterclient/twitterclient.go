@@ -32,7 +32,7 @@ func NewInstance(config Config) *Instance {
 func (instance *Instance) Start() error {
 	client, err := createTwitterClient(instance.config)
 	if err != nil {
-		log.Fatal("Authentication is failed. ", err)
+		log.Error("Authentication is failed. ", err)
 		return err
 	}
 

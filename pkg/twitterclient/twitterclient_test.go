@@ -15,7 +15,7 @@ func TestNewInstance_Successfull(t *testing.T) {
 
 func TestStart_Successfull(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skip test for storage")
+		t.Skip("Skip test for twitterclient successful start")
 	}
 	cfg := Config{
 		TwitterConsumerKey:    os.Getenv("TWITWATCH_TEST_TWITTER_CONSUMER_KEY"),
@@ -27,4 +27,19 @@ func TestStart_Successfull(t *testing.T) {
 
 	err := instance.Start()
 	assert.Nil(t, err)
+}
+
+func TestStart_AuthFailed(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skip test for twitterclient auth failed")
+	}
+	cfg := Config{
+		TwitterConsumerKey:    "a",
+		TwitterConsumerSecret: "b",
+		TwitterAccessToken:    "c",
+		TwitterAccessSecret:   "d",
+	}
+	instance := NewInstance(cfg)
+	err := instance.Start()
+	assert.NotNil(t, err, "Error must be not nil when try to start with wrong credentials")
 }
