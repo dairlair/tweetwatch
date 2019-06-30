@@ -1,8 +1,16 @@
 # github.com/bxcodec/faker/v3 v3.1.0
 github.com/bxcodec/faker/v3
 github.com/bxcodec/faker/v3/support/slice
+# github.com/cenkalti/backoff v2.1.1+incompatible
+github.com/cenkalti/backoff
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
+# github.com/dghubble/go-twitter v0.0.0-20190512073027-53f972dc4b06
+github.com/dghubble/go-twitter/twitter
+# github.com/dghubble/oauth1 v0.5.0
+github.com/dghubble/oauth1
+# github.com/dghubble/sling v1.2.0
+github.com/dghubble/sling
 # github.com/fsnotify/fsnotify v1.4.7
 github.com/fsnotify/fsnotify
 # github.com/golang/protobuf v1.3.1
@@ -11,6 +19,8 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
+# github.com/google/go-querystring v1.0.0
+github.com/google/go-querystring/query
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/printer

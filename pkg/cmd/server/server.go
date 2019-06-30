@@ -35,8 +35,11 @@ func NewInstance(config *Config) *Instance {
 // Start does startup all dependencies (postgres connections pool, gRPC server, etc..)
 func (s *Instance) Start() error {
 
-	// Create storage instance
+	// Create postgres connections pool
 	connPool := storage.CreatePostgresConnection(s.config.Postgres)
+	defer connPool.Close()
+
+	// Create storage instance
 	s.storage = storage.NewStorage(connPool)
 
 	// Run gRPC server
