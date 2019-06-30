@@ -46,12 +46,18 @@ func createTwitterClient(config Config) (*twitter.Client, error) {
 	token := oauth1.NewToken(config.TwitterAccessToken, config.TwitterAccessSecret)
 	httpClient := oauthConfig.Client(oauth1.NoContext, token)
 	client := twitter.NewClient(httpClient)
-
-	// We use this hack to validate Twitter OAuth credentials
-	_, _, err := client.Trends.Available()
+	
+	err := validateTwitterClientCredentials(client)
 	if err != nil {
 		return nil, err
 	}
 
 	return client, nil
+}
+
+func validateTwitterClientCredentials(client *twitter.Client) error {
+	// We use this hack to validate Twitter OAuth credentials
+	_, _, err := client.Trends.Available()
+
+	return err
 }
