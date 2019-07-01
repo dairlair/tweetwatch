@@ -48,6 +48,7 @@ func createTwitterClient(config Config) (*twitter.Client, error) {
 	client := twitter.NewClient(httpClient)
 	
 	err := validateTwitterClientCredentials(client)
+
 	if err != nil {
 		return nil, err
 	}
