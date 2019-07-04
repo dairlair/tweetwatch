@@ -6,6 +6,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// StreamInterface defines all methods that are required by twitterclient 
+// to retrieve twits from Twitter Streaming API.
+type StreamInterface interface {
+	GetId() int64
+	GetTrack() string
+}
+
+// InstanceInterface defines the main object interface which is created by this package.
+type InstanceInterface interface {
+	Start() error
+	AddStream(StreamInterface) error
+	Stop()
+}
+
 // Instance structure is used to store the server's state
 type Instance struct {
 	config Config
