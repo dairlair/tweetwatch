@@ -2,6 +2,7 @@ package storage
 
 import (
 	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	log "github.com/sirupsen/logrus"
 )
 
 // AddStream inserts stream into database
@@ -21,7 +22,10 @@ func (storage *Storage) AddStream(stream *pb.Stream) (id int64, err error) {
 	}
 
 	if err := tx.QueryRow(addStreamSQL, stream.Track).Scan(&id); err != nil {
-		tx.Rollback()
+		txError := tx.Rollback()
+		if txError != nil {
+			log.Errorf("transaction closing failed. %s", txError)
+		}
 		return 0, pgError(err)
 	}
 
