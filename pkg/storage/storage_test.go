@@ -12,7 +12,7 @@ type StorageSuite struct {
 	suite.Suite
 	cfg      PostgresConfig
 	connPool *pgx.ConnPool
-	storage  *Storage
+	storage  Interface
 }
 
 func NewStorageSuite(cfg PostgresConfig) StorageSuite {
@@ -26,10 +26,6 @@ func (suite *StorageSuite) SetupSuite() {
 
 func (suite *StorageSuite) TearDownSuite() {
 	suite.connPool.Close()
-}
-
-type storageHandlerSuite struct {
-	StorageSuite
 }
 
 func TestStorageSuite(t *testing.T) {

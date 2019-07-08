@@ -12,13 +12,19 @@ import (
 
 // Interface must be implemented by postgres based storage or something else.
 type Interface interface {
+<<<<<<< HEAD
 	AddStream(entity.StreamInterface) (id int64, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTwit(entity.TwitInterface) (id int64, err error)
+=======
+	AddStream(stream *pb.Stream) (id int64, err error)
+	GetStreams() (streams []*pb.Stream, err error)
+	AddTwit(twit *pb.Twit, streamIds []int64) (id int64, err error)
+>>>>>>> WIP: save twits with their source-streams
 }
 
 // NewStorage creates new Storage instance
-func NewStorage(connPool *pgx.ConnPool) *Storage {
+func NewStorage(connPool *pgx.ConnPool) Interface {
 	return &Storage{
 		connPool: connPool,
 	}
@@ -42,7 +48,11 @@ func pgError(err error) error {
 	return err
 }
 
+<<<<<<< HEAD
 // CreatePostgresConnection creates postgres connections pool
+=======
+// CreatePostgresConnection just creates Postgres connections pool
+>>>>>>> WIP: save twits with their source-streams
 func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 	pgConf, err := pgx.ParseURI(config.DSN)
 	if err != nil {

@@ -1,0 +1,1 @@
+DROP TABLE twit_stream;
