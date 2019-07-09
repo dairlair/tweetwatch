@@ -1,35 +1,30 @@
 package twitterclient
 
 import (
+	"github.com/dairlair/twitwatch/pkg/twitterclient/twitterstream"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	log "github.com/sirupsen/logrus"
 )
 
-// StreamInterface defines all methods that are required by twitterclient 
-// to retrieve twits from Twitter Streaming API.
-type StreamInterface interface {
-	GetId() int64
-	GetTrack() string
-}
-
 // InstanceInterface defines the main object interface which is created by this package.
 type InstanceInterface interface {
 	Start() error
-	AddStream(StreamInterface) error
-	Stop()
+	AddStream(twitterstream.Interface)
+	GetStreams() map[int64]twitterstream.Interface
 }
 
 // Instance structure is used to store the server's state
 type Instance struct {
 	config Config
 	// Internal resources
-	client *twitter.Client
-	stream *twitter.Stream
+	client  *twitter.Client
+	source  *twitter.Stream
+	streams map[int64]twitterstream.Interface
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config Config) *Instance {
+func NewInstance(config Config) InstanceInterface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -38,7 +33,8 @@ func NewInstance(config Config) *Instance {
 	)
 
 	return &Instance{
-		config: config,
+		config:  config,
+		streams: make(map[int64]twitterstream.Interface),
 	}
 }
 
@@ -53,6 +49,16 @@ func (instance *Instance) Start() error {
 	instance.client = client
 
 	return nil
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) AddStream(stream twitterstream.Interface) {
+	instance.streams[stream.GetID()] = stream
+}
+
+// GetStreams returns all the streams from the current instance of twitterclient
+func (instance *Instance) GetStreams() map[int64]twitterstream.Interface {
+	return instance.streams
 }
 
 func createTwitterClient(config Config) (*twitter.Client, error) {
