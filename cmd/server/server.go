@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/dairlair/twitwatch/pkg/cmd/server"
+	"github.com/dairlair/twitwatch/pkg/twitterclient"
 	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
 	"github.com/dairlair/twitwatch/pkg/storage"
 	log "github.com/sirupsen/logrus"
@@ -35,6 +36,12 @@ func readConfig() server.Config {
 		},
 		GRPC: grpcServer.Config{
 			ListenAddress: viper.GetString("grpc.listen"),
+		},
+		Twitterclient: twitterclient.Config{
+			TwitterConsumerKey:    viper.GetString("twitter.consumerKey"),
+			TwitterConsumerSecret: viper.GetString("twitter.consumerSecret"),
+			TwitterAccessToken:    viper.GetString("twitter.accessToken"),
+			TwitterAccessSecret:   viper.GetString("twitter.accessSecret"),
 		},
 	}
 }

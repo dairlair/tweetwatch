@@ -1,6 +1,8 @@
 package twitterclient
 
 import (
+	"fmt"
+
 	"github.com/dairlair/twitwatch/pkg/twitterclient/twitterstream"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
@@ -9,9 +11,14 @@ import (
 
 // InstanceInterface defines the main object interface which is created by this package.
 type InstanceInterface interface {
+	// Creates Twitter Streaming API client and validates credentials
 	Start() error
 	AddStream(twitterstream.Interface)
 	GetStreams() map[int64]twitterstream.Interface
+	// Runs watching for twits according to specified streams
+	Watch() error
+	// Stops watching for all specified streams
+	Unwatch() error
 }
 
 // Instance structure is used to store the server's state
@@ -59,6 +66,50 @@ func (instance *Instance) AddStream(stream twitterstream.Interface) {
 // GetStreams returns all the streams from the current instance of twitterclient
 func (instance *Instance) GetStreams() map[int64]twitterstream.Interface {
 	return instance.streams
+}
+
+// Watch starts watching
+func (instance *Instance) Watch() error {
+	tracks := []string{"Tesla", "Microsoft"}
+	log.Infof("Starting Stream with tracks [%v]", tracks)
+
+	// Convenience Demux demultiplexed stream messages
+	demux := twitter.NewSwitchDemux()
+	demux.Tweet = instance.onTweet
+
+	// Filter for stream
+	filterParams := &twitter.StreamFilterParams{
+		Track:         tracks,
+		StallWarnings: twitter.Bool(true),
+		Language:      []string{"en"},
+	}
+	stream, err := instance.client.Streams.Filter(filterParams)
+	if err != nil {
+		log.Fatal("Stream not connected... ", err)
+		return err
+	}
+	instance.source = stream
+
+	// Receive messages until stopped or stream quits
+	go demux.HandleChan(stream.Messages)
+
+	return nil
+}
+
+// Unwatch stops watching
+func (instance *Instance) Unwatch() error {
+	return nil
+}
+
+// Unwatch stops watching
+func (instance *Instance) onTwit() {
+	log.Infof("Stopping stream...")
+	instance.source.Stop()
+}
+
+func (instance *Instance) onTweet(tweet *twitter.Tweet) {
+	fmt.Printf("Tweet: %s\n", tweet.IDStr)
+	fmt.Printf("%v\n\n", tweet)
 }
 
 func createTwitterClient(config Config) (*twitter.Client, error) {

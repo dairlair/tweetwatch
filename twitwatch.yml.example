@@ -2,3 +2,8 @@ postgres:
   dsn: "postgres://twitwatch:twitwatch@postgres:5432/twitwatch?sslmode=disable"
 grpc:
   listen: ":1234"
+twitter:
+  consumerKey: ""
+  consumerSecret: ""
+  accessToken: ""
+  accessSecret: ""
