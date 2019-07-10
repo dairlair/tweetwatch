@@ -18,7 +18,7 @@ type InstanceInterface interface {
 	// Runs watching for twits according to specified streams
 	Watch() error
 	// Stops watching for all specified streams
-	Unwatch() error
+	Unwatch()
 }
 
 // Instance structure is used to store the server's state
@@ -70,7 +70,7 @@ func (instance *Instance) GetStreams() map[int64]twitterstream.Interface {
 
 // Watch starts watching
 func (instance *Instance) Watch() error {
-	tracks := []string{"Tesla", "Microsoft"}
+	tracks := instance.getTracks()
 	log.Infof("Starting Stream with tracks [%v]", tracks)
 
 	// Convenience Demux demultiplexed stream messages
@@ -97,14 +97,17 @@ func (instance *Instance) Watch() error {
 }
 
 // Unwatch stops watching
-func (instance *Instance) Unwatch() error {
-	return nil
-}
-
-// Unwatch stops watching
-func (instance *Instance) onTwit() {
+func (instance *Instance) Unwatch() {
 	log.Infof("Stopping stream...")
 	instance.source.Stop()
+}
+
+func (instance *Instance) getTracks() []string {
+	tracks := []string{}
+	for _, stream := range instance.GetStreams() {
+		tracks = append(tracks, stream.GetTrack())
+	}
+	return tracks
 }
 
 func (instance *Instance) onTweet(tweet *twitter.Tweet) {
