@@ -2,11 +2,12 @@ package storage
 
 import (
 	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"github.com/dairlair/twitwatch/pkg/entity"
 	log "github.com/sirupsen/logrus"
 )
 
 // AddStream inserts stream into database
-func (storage *Storage) AddStream(stream *pb.Stream) (id int64, err error) {
+func (storage *Storage) AddStream(stream entity.StreamI) (id int64, err error) {
 
 	const addStreamSQL = `
 		INSERT INTO stream (

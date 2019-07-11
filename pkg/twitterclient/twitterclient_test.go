@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dairlair/twitwatch/pkg/twitterclient/twitterstream"
+	"github.com/dairlair/twitwatch/pkg/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,7 +48,7 @@ func TestStart_AuthFailed(t *testing.T) {
 func TestAddStream_Successful(t *testing.T) {
 	cfg := Config{}
 	instance := NewInstance(cfg)
-	stream := twitterstream.Stream{}
+	stream := entity.Stream{}
 	instance.AddStream(&stream)
 }
 
@@ -57,7 +57,7 @@ func TestGetStreams_Successful(t *testing.T) {
 	cfg := Config{}
 	instance := NewInstance(cfg)
 
-	streams := map[int64]twitterstream.Stream{
+	streams := map[int64]entity.Stream{
 		1: {ID: 1, Track: "Tesla"},
 		2: {ID: 2, Track: "Apple"},
 		3: {ID: 3, Track: "Microsoft"},

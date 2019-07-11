@@ -1,13 +1,12 @@
-package twitterstream
+package entity
 
-// Interface defines all methods that are required by twitterclient
-// to retrieve twits from Twitter Streaming API.
-type Interface interface {
+// StreamInterface describes entity Stream
+type StreamInterface interface {
 	GetID() int64
 	GetTrack() string
 }
 
-// Stream contains info required by twitter client to retrieve data from Twitter Streaming API
+// Stream contains info required by twitter client to retrieve data from Twitter Streaming API and to store stream into the database
 type Stream struct {
 	ID    int64
 	Track string

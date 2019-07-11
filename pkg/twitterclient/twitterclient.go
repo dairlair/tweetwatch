@@ -1,9 +1,11 @@
+// Package twitterclient provides wrapper around Twitter Streaming API
+// The package accepts in config the Storage Interface which provides methods for retrieve active streams and store twits with treir steam
 package twitterclient
 
 import (
 	"fmt"
 
-	"github.com/dairlair/twitwatch/pkg/twitterclient/twitterstream"
+	"github.com/dairlair/twitwatch/pkg/entity"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	log "github.com/sirupsen/logrus"
@@ -13,8 +15,8 @@ import (
 type InstanceInterface interface {
 	// Creates Twitter Streaming API client and validates credentials
 	Start() error
-	AddStream(twitterstream.Interface)
-	GetStreams() map[int64]twitterstream.Interface
+	AddStream(entity.StreamInterface)
+	GetStreams() map[int64]entity.StreamInterface
 	// Runs watching for twits according to specified streams
 	Watch() error
 	// Stops watching for all specified streams
@@ -27,7 +29,7 @@ type Instance struct {
 	// Internal resources
 	client  *twitter.Client
 	source  *twitter.Stream
-	streams map[int64]twitterstream.Interface
+	streams map[int64]entity.StreamInterface
 }
 
 // NewInstance creates new twitter instance scrapper
@@ -41,7 +43,7 @@ func NewInstance(config Config) InstanceInterface {
 
 	return &Instance{
 		config:  config,
-		streams: make(map[int64]twitterstream.Interface),
+		streams: make(map[int64]entity.StreamInterface),
 	}
 }
 
@@ -59,12 +61,12 @@ func (instance *Instance) Start() error {
 }
 
 // AddStream adds desired stream to the current instance of twitterclient
-func (instance *Instance) AddStream(stream twitterstream.Interface) {
+func (instance *Instance) AddStream(stream entity.StreamInterface) {
 	instance.streams[stream.GetID()] = stream
 }
 
 // GetStreams returns all the streams from the current instance of twitterclient
-func (instance *Instance) GetStreams() map[int64]twitterstream.Interface {
+func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 	return instance.streams
 }
 
@@ -103,7 +105,7 @@ func (instance *Instance) Unwatch() {
 }
 
 func (instance *Instance) getTracks() []string {
-	tracks := []string{}
+	var tracks []string
 	for _, stream := range instance.GetStreams() {
 		tracks = append(tracks, stream.GetTrack())
 	}
