@@ -14,7 +14,7 @@ import (
 // Interface must be implemented by postgres based storage or something else.
 type Interface interface {
 	AddStream(entity.StreamInterface) (id int64, err error)
-	GetStreams() (streams []*pb.Stream, err error)
+	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTwit(twit *pb.Twit) (id int64, err error)
 }
 

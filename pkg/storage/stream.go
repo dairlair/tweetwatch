@@ -1,13 +1,12 @@
 package storage
 
 import (
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
 	"github.com/dairlair/twitwatch/pkg/entity"
 	log "github.com/sirupsen/logrus"
 )
 
 // AddStream inserts stream into database
-func (storage *Storage) AddStream(stream entity.StreamI) (id int64, err error) {
+func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err error) {
 
 	const addStreamSQL = `
 		INSERT INTO stream (
@@ -22,7 +21,7 @@ func (storage *Storage) AddStream(stream entity.StreamI) (id int64, err error) {
 		return 0, pgError(err)
 	}
 
-	if err := tx.QueryRow(addStreamSQL, stream.Track).Scan(&id); err != nil {
+	if err := tx.QueryRow(addStreamSQL, stream.GetTrack()).Scan(&id); err != nil {
 		txError := tx.Rollback()
 		if txError != nil {
 			log.Errorf("transaction closing failed. %s", txError)
@@ -38,7 +37,7 @@ func (storage *Storage) AddStream(stream entity.StreamI) (id int64, err error) {
 }
 
 // GetStreams returns
-func (storage *Storage) GetStreams() (streams []*pb.Stream, err error) {
+func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err error) {
 	const getStreamsSQL = `
 		SELECT 
 			stream_id
@@ -53,9 +52,9 @@ func (storage *Storage) GetStreams() (streams []*pb.Stream, err error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var stream pb.Stream
+		var stream entity.Stream
 		if err := rows.Scan(
-			&stream.Id,
+			&stream.ID,
 			&stream.Track,
 		); err != nil {
 			return nil, err

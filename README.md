@@ -13,6 +13,12 @@ To regenerate gRPC service from updated proto files (located in /api/proto) run 
 ./third_party/protoc-gen.sh
 ```
 
+To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:
+```shell
+cd pkg/storage
+mockery -name Interface # Mock type Interface and save generated file into the "mocks" subdirectory
+```
+
 For more information see https://github.com/golang/protobuf#installation
 
 Run daemon locally

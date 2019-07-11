@@ -2,6 +2,7 @@
 
 package mocks
 
+import entity "github.com/dairlair/twitwatch/pkg/entity"
 import mock "github.com/stretchr/testify/mock"
 
 import v1 "github.com/dairlair/twitwatch/pkg/api/v1"
@@ -11,20 +12,20 @@ type Interface struct {
 	mock.Mock
 }
 
-// AddStream provides a mock function with given fields: stream
-func (_m *Interface) AddStream(stream *v1.Stream) (int64, error) {
-	ret := _m.Called(stream)
+// AddStream provides a mock function with given fields: _a0
+func (_m *Interface) AddStream(_a0 entity.StreamInterface) (int64, error) {
+	ret := _m.Called(_a0)
 
 	var r0 int64
-	if rf, ok := ret.Get(0).(func(*v1.Stream) int64); ok {
-		r0 = rf(stream)
+	if rf, ok := ret.Get(0).(func(entity.StreamInterface) int64); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(int64)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*v1.Stream) error); ok {
-		r1 = rf(stream)
+	if rf, ok := ret.Get(1).(func(entity.StreamInterface) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -54,15 +55,15 @@ func (_m *Interface) AddTwit(twit *v1.Twit) (int64, error) {
 }
 
 // GetStreams provides a mock function with given fields:
-func (_m *Interface) GetStreams() ([]*v1.Stream, error) {
+func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
 	ret := _m.Called()
 
-	var r0 []*v1.Stream
-	if rf, ok := ret.Get(0).(func() []*v1.Stream); ok {
+	var r0 []entity.StreamInterface
+	if rf, ok := ret.Get(0).(func() []entity.StreamInterface); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*v1.Stream)
+			r0 = ret.Get(0).([]entity.StreamInterface)
 		}
 	}
 
