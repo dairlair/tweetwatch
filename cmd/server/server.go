@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/dairlair/twitwatch/pkg/cmd/server"
-	"github.com/dairlair/twitwatch/pkg/twitterclient"
 	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
 	"github.com/dairlair/twitwatch/pkg/storage"
+	"github.com/dairlair/twitwatch/pkg/twitterclient"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

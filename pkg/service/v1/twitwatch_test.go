@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"github.com/dairlair/twitwatch/pkg/entity"
 	storageMocks "github.com/dairlair/twitwatch/pkg/storage/mocks"
 )
 
@@ -19,27 +20,29 @@ func TestCreateStream_RequestCreation(t *testing.T) {
 }
 
 func TestCreateStream_Successful(t *testing.T) {
-	stream := pb.Stream{Track: "something"}
+	pbStream := pb.Stream{Track: "something"}
+	entityStream := entity.Stream{Track: pbStream.GetTrack()}
 
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &stream).Return(id, nil)
+	storageMock.On("AddStream", &entityStream).Return(id, nil)
 	s := NewTwitwatchServiceServer(&storageMock)
 
-	req := pb.CreateStreamRequest{Stream: &stream}
+	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
 	assert.Nil(t, err, "Error must be equal nil")
 	assert.Equal(t, id, resp.Id, "Returned id mus be equal ID returned from storage")
 }
 
 func TestCreateStream_FailedOnStorage(t *testing.T) {
-	stream := pb.Stream{Track: "something"}
+	pbStream := pb.Stream{Track: "something"}
+	entityStream := entity.Stream{Track: pbStream.GetTrack()}
 
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &stream).Return(int64(0), errors.New("Integrity violation"))
+	storageMock.On("AddStream", &entityStream).Return(int64(0), errors.New("Integrity violation"))
 	s := NewTwitwatchServiceServer(&storageMock)
 
-	req := pb.CreateStreamRequest{Stream: &stream}
+	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
 
 	assert.Nil(t, resp, "Response must be nil where storage returns error")
@@ -61,7 +64,7 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 
 func TestGetStreams_Successfull(t *testing.T) {
 	storageMock := storageMocks.Interface{}
-	storageMock.On("GetStreams").Return([]*pb.Stream{}, nil)
+	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
 
 	s := NewTwitwatchServiceServer(&storageMock)
 

@@ -12,6 +12,14 @@ type Stream struct {
 	Track string
 }
 
+// NewStream creates object implementing StreamInterface
+func NewStream(id int64, track string) StreamInterface {
+	return &Stream{
+		ID:    id,
+		Track: track,
+	}
+}
+
 // GetID returns the Stream ID
 func (s *Stream) GetID() int64 {
 	return s.ID
