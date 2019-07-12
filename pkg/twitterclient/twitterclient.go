@@ -11,6 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// StorageInterface declares dependency for twitterclient.
+type StorageInterface interface {
+	AddTwit(entity.TwitInterface) (id int64, err error)
+}
+
 // InstanceInterface defines the main object interface which is created by this package.
 type InstanceInterface interface {
 	// Creates Twitter Streaming API client and validates credentials
@@ -27,6 +32,7 @@ type InstanceInterface interface {
 type Instance struct {
 	config Config
 	// Internal resources
+	storage StorageInterface
 	client  *twitter.Client
 	source  *twitter.Stream
 	streams map[int64]entity.StreamInterface
@@ -43,6 +49,7 @@ func NewInstance(config Config) InstanceInterface {
 
 	return &Instance{
 		config:  config,
+		storage: config.Storage,
 		streams: make(map[int64]entity.StreamInterface),
 	}
 }
@@ -115,6 +122,8 @@ func (instance *Instance) getTracks() []string {
 func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 	fmt.Printf("Tweet: %s\n", tweet.IDStr)
 	fmt.Printf("%v\n\n", tweet)
+
+	// @TODO Store twit into the attached storage
 }
 
 func createTwitterClient(config Config) (*twitter.Client, error) {
