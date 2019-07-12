@@ -47,6 +47,10 @@ func NewInstance(config Config) InstanceInterface {
 		config.TwitterAccessSecret,
 	)
 
+	if config.Storage == nil {
+		log.Warn("Storage not attached, tweets won't be saved")
+	}
+
 	return &Instance{
 		config:  config,
 		storage: config.Storage,
@@ -122,8 +126,36 @@ func (instance *Instance) getTracks() []string {
 func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 	fmt.Printf("Tweet: %s\n", tweet.IDStr)
 	fmt.Printf("%v\n\n", tweet)
+	instance.processTweet(createTweetEntity(tweet))
+}
 
-	// @TODO Store twit into the attached storage
+func (instance *Instance) processTweet(tweet entity.TwitInterface) {
+	fmt.Printf("Process tweet: %v\n", tweet)
+	if instance.storage == nil {
+		return
+	}
+	id, err := instance.storage.AddTwit(tweet)
+	if err != nil {
+		log.Errorf("Tweet processing error. %s", err)
+	} else {
+		fmt.Printf("Tweet has been processed sucessfully and saved with ID: %d\n", id)
+	}
+}
+
+func createTweetEntity(tweet *twitter.Tweet) entity.TwitInterface {
+	var fullText string
+	if tweet.ExtendedTweet != nil {
+		fullText = tweet.ExtendedTweet.FullText
+	} else {
+		fullText = tweet.Text
+	}
+	return &entity.Twit{
+		ID:            tweet.ID,
+		TwitterID:     tweet.ID,
+		TwitterUserID: tweet.User.ID,
+		FullText:      fullText,
+		CreatedAt:     tweet.CreatedAt,
+	}
 }
 
 func createTwitterClient(config Config) (*twitter.Client, error) {
@@ -131,7 +163,7 @@ func createTwitterClient(config Config) (*twitter.Client, error) {
 	token := oauth1.NewToken(config.TwitterAccessToken, config.TwitterAccessSecret)
 	httpClient := oauthConfig.Client(oauth1.NoContext, token)
 	client := twitter.NewClient(httpClient)
-	
+
 	err := validateTwitterClientCredentials(client)
 
 	if err != nil {

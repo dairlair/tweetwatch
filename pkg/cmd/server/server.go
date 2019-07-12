@@ -44,6 +44,7 @@ func (s *Instance) Start() error {
 
 	// Create storage instance
 	s.storage = storage.NewStorage(connPool)
+	s.config.Twitterclient.Storage = s.storage
 
 	// Create the twitterclient instance
 	s.twitterClient = twitterclient.NewInstance(s.config.Twitterclient)
