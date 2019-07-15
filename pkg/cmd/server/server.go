@@ -7,7 +7,6 @@ import (
 	"github.com/dairlair/twitwatch/pkg/twitterclient"
 	"google.golang.org/grpc"
 
-	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -21,8 +20,7 @@ type Config struct {
 // Instance stores the server state
 type Instance struct {
 	config        *Config
-	connPool      *pgx.ConnPool
-	storage       *storage.Storage // @TODO Use storage interface instread of pointer
+	storage       *storage.Storage // @TODO Use storage interface instead of pointer
 	grpcServer    *grpc.Server
 	twitterClient twitterclient.InstanceInterface
 }
@@ -53,7 +51,12 @@ func (s *Instance) Start() error {
 		log.Fatalf("twitterclient error: %s\n", err)
 		return err
 	}
+
 	err = s.twitterClient.Watch()
+	if err != nil {
+		log.Fatalf("twitterclient error: %s\n", err)
+		return err
+	}
 
 	// Run gRPC server
 	v1API := serviceV1.NewTwitwatchServiceServer(s.storage)
