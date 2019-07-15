@@ -8,12 +8,13 @@ language: go
 env:
   - GO111MODULE=on
   # Temporary disabled
-  # - GOFLAGS='-mod vendor'
+  - GOFLAGS='-mod vendor'
 
 # We don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
-  - 1.12.x
+  - 1.12.4
+  - 1.12.7
 
 env:
   TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
