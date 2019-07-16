@@ -1,7 +1,7 @@
 package storage
 
 import (
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
 )
 
 func (suite StorageSuite) TestAddTwit_Successful() {

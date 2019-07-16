@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"sync"
 
+<<<<<<< HEAD
 	"github.com/dairlair/tweetwatch/pkg/entity"
+=======
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
+>>>>>>> Repository rename in go modules config and imports
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
 )
