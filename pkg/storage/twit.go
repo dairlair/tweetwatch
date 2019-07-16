@@ -34,7 +34,7 @@ func (storage *Storage) AddTwit(twit entity.TwitInterface, streamIds []int64) (i
 		return 0, pgError(err)
 	}
 
-	err = addTwitStreams(storage.connPool, id, streamIds)
+	// err = addTwitStreams(storage.connPool, id, streamIds)
 	if err != nil {
 		return 0, pgError(err)
 	}
@@ -46,9 +46,9 @@ func (storage *Storage) AddTwit(twit entity.TwitInterface, streamIds []int64) (i
 	return id, nil
 }
 
-func addTwitStreams(conn *pgx.ConnPool, twitId int64, streamIds []int64) error {
-	for _, streamId := range streamIds {
-		err := addTwitStream(conn, twitId, streamId)
+func addTwitStreams(conn *pgx.ConnPool, twitID int64, streamIDs []int64) error {
+	for _, streamID := range streamIDs {
+		err := addTwitStream(conn, twitID, streamID)
 		if err != nil {
 			return err
 		}
@@ -56,8 +56,8 @@ func addTwitStreams(conn *pgx.ConnPool, twitId int64, streamIds []int64) error {
 	return nil
 }
 
-func addTwitStream(conn *pgx.ConnPool, twitId int64, streamId int64) error {
+func addTwitStream(conn *pgx.ConnPool, twitID int64, streamID int64) error {
 	const sql = `INSERT INTO twit_stream (twit_id, stream_id) VALUES ($1, $2)`
-	_, err := conn.Exec(sql, twitId, streamId)
+	_, err := conn.Exec(sql, twitID, streamID)
 	return err
 }
