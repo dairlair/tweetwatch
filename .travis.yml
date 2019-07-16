@@ -43,6 +43,9 @@ services:
 # build and immediately stop. It's sorta like having set -e enabled in bash.
 # Make sure golangci-lint is vendored.
 before_script:
+  - pwd
+  - ls -la
+  - go list ./...
   - psql -c 'create database twitwatch;' -U postgres
   - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWITWATCH_TEST_POSTGRES_DSN" up
 
