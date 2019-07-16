@@ -19,10 +19,10 @@ type Config struct {
 
 // Instance stores the server state
 type Instance struct {
-	config        *Config
-	storage       *storage.Storage // @TODO Use storage interface instead of pointer
-	grpcServer    *grpc.Server
-	twitterClient twitterclient.InstanceInterface
+	config     *Config
+	connPool   *pgx.ConnPool
+	storage    storage.Interface
+	grpcServer *grpc.Server
 }
 
 // NewInstance creates new server instance and copy config into that.
