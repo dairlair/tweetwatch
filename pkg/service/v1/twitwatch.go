@@ -6,9 +6,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
-	"github.com/dairlair/twitwatch/pkg/entity"
-	"github.com/dairlair/twitwatch/pkg/storage"
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
+	"github.com/dairlair/tweetwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/storage"
 )
 
 const (

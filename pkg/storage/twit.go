@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/dairlair/twitwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dairlair/twitwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/stretchr/testify/assert"
 )
 

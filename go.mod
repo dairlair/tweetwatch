@@ -1,4 +1,4 @@
-module github.com/dairlair/twitwatch
+module github.com/dairlair/tweetwatch
 
 go 1.12
 

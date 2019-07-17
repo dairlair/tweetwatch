@@ -1,10 +1,10 @@
 package server
 
 import (
-	grpcServer "github.com/dairlair/twitwatch/pkg/protocol/grpc"
-	serviceV1 "github.com/dairlair/twitwatch/pkg/service/v1"
-	"github.com/dairlair/twitwatch/pkg/storage"
-	"github.com/dairlair/twitwatch/pkg/twitterclient"
+	grpcServer "github.com/dairlair/tweetwatch/pkg/protocol/grpc"
+	serviceV1 "github.com/dairlair/tweetwatch/pkg/service/v1"
+	"github.com/dairlair/tweetwatch/pkg/storage"
+	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"google.golang.org/grpc"
 
 	log "github.com/sirupsen/logrus"

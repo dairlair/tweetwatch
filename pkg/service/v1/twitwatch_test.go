@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
-	"github.com/dairlair/twitwatch/pkg/entity"
-	storageMocks "github.com/dairlair/twitwatch/pkg/storage/mocks"
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
+	"github.com/dairlair/tweetwatch/pkg/entity"
+	storageMocks "github.com/dairlair/tweetwatch/pkg/storage/mocks"
 )
 
 func TestCreateStream_RequestCreation(t *testing.T) {

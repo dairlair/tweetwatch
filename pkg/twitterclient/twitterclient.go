@@ -5,7 +5,7 @@ package twitterclient
 import (
 	"fmt"
 
-	"github.com/dairlair/twitwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	log "github.com/sirupsen/logrus"

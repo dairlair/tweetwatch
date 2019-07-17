@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/dairlair/twitwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
 )
