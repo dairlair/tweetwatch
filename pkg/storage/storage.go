@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"sync"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
 )
 
 // Interface must be implemented by postgres based storage or something else.
 type Interface interface {
-	AddStream(stream *pb.Stream) (id int64, err error)
-	GetStreams() (streams []*pb.Stream, err error)
-	AddTwit(twit *pb.Twit) (id int64, err error)
+	AddStream(entity.StreamInterface) (id int64, err error)
+	GetStreams() (streams []entity.StreamInterface, err error)
+	AddTwit(entity.TwitInterface) (id int64, err error)
 }
 
 // NewStorage creates new Storage instance
@@ -42,6 +42,7 @@ func pgError(err error) error {
 	return err
 }
 
+// CreatePostgresConnection creates postgres connections pool
 func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 	pgConf, err := pgx.ParseURI(config.DSN)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
 	"google.golang.org/grpc"
 )
 

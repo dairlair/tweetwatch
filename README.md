@@ -5,12 +5,18 @@ A Twitter API based daemon for twits analyses purposes
 
 Apply migrations
 ```shell
-migrate -source file:schema/postgres -database "postgres://test:test@localhost:5432/twitwatch_test?sslmode=disable" up
+migrate -source file:schema/postgres -database "postgres://twitwatch:twitwatch@localhost:5432/twitwatch?sslmode=disable" up
 ```
 
 To regenerate gRPC service from updated proto files (located in /api/proto) run this command:
 ```shell
 ./third_party/protoc-gen.sh
+```
+
+To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:
+```shell
+cd pkg/storage
+mockery -name Interface # Mock type Interface and save generated file into the "mocks" subdirectory
 ```
 
 For more information see https://github.com/golang/protobuf#installation

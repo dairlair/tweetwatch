@@ -1,7 +1,7 @@
 package storage
 
 import (
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
+	"github.com/dairlair/tweetwatch/pkg/entity"
 )
 
 const (
@@ -18,7 +18,7 @@ const (
 )
 
 // AddTwit just insert tweet into database
-func (storage *Storage) AddTwit(twit *pb.Twit) (id int64, err error) {
+func (storage *Storage) AddTwit(twit entity.TwitInterface) (id int64, err error) {
 	tx, err := storage.connPool.Begin()
 
 	if err != nil {
@@ -26,8 +26,8 @@ func (storage *Storage) AddTwit(twit *pb.Twit) (id int64, err error) {
 	}
 
 	if err := tx.QueryRow(addTwitSQL,
-		twit.GetId(),
-		twit.GetUserId(),
+		twit.GetID(),
+		twit.GetTwitterUserID(),
 		twit.GetFullText(),
 		twit.GetCreatedAt(),
 	).Scan(&id); err != nil {

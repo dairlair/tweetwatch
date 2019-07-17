@@ -6,8 +6,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/dairlair/twitwatch/pkg/api/v1"
-	"github.com/dairlair/twitwatch/pkg/storage"
+	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
+	"github.com/dairlair/tweetwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/storage"
 )
 
 const (
@@ -45,7 +46,7 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *pb.Creat
 	}
 
 	// Insert stream entity data
-	id, err := s.storage.AddStream(req.GetStream())
+	id, err := s.storage.AddStream(entity.NewStream(req.GetStream().GetId(), req.GetStream().GetTrack()))
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
@@ -68,8 +69,14 @@ func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStre
 		return nil, status.Error(codes.Unknown, "failed to retrieve streams-> "+err.Error())
 	}
 
+	pbStreams := []*pb.Stream{}
+	for _, stream := range streams {
+		pbStream := pb.Stream{Id: stream.GetID(), Track: stream.GetTrack()}
+		pbStreams = append(pbStreams, &pbStream)
+	}
+
 	return &pb.GetStreamsResponse{
 		Api:     apiVersion,
-		Streams: streams,
+		Streams: pbStreams,
 	}, nil
 }
