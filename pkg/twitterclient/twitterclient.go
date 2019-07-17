@@ -14,6 +14,7 @@ import (
 // StorageInterface declares dependency for twitterclient.
 type StorageInterface interface {
 	AddTwit(entity.TwitInterface) (id int64, err error)
+	GetActiveStreams() (streams []entity.StreamInterface, err error)
 }
 
 // InstanceInterface defines the main object interface which is created by this package.
@@ -60,13 +61,22 @@ func NewInstance(config Config) InstanceInterface {
 
 // Start function runs twitter client and validates credentials for Twitter Streaming API
 func (instance *Instance) Start() error {
+	// Init Twitter Streaming API client
 	client, err := createTwitterClient(instance.config)
 	if err != nil {
 		log.Error("Authentication is failed. ", err)
 		return err
 	}
-
 	instance.client = client
+	// Init streams from database
+	streams, err := instance.storage.GetActiveStreams()
+	if err != nil {
+		log.Error("Streams retrieving is failed. ", err)
+		return err
+	}
+	for _, stream := range streams {
+		instance.streams[stream.GetID()] = stream
+	}
 
 	return nil
 }
