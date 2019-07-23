@@ -31,6 +31,7 @@ func (storage *Storage) AddTwit(twit entity.TwitInterface) (id int64, err error)
 		twit.GetFullText(),
 		twit.GetCreatedAt(),
 	).Scan(&id); err != nil {
+		tx.Rollback()
 		return 0, pgError(err)
 	}
 

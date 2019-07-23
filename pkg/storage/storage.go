@@ -15,6 +15,8 @@ type Interface interface {
 	AddStream(entity.StreamInterface) (id int64, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTwit(entity.TwitInterface) (id int64, err error)
+	SignUp(email string, password string) (token string, err error)
+	SignIn(email string, password string) (token string, err error)
 }
 
 // NewStorage creates new Storage instance

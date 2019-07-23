@@ -50,9 +50,39 @@ message GetStreamsResponse {
   repeated Stream streams = 2;
 }
 
+// Request data to create new stream
+message SignUpRequest {
+  // API Major version
+  string api = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// Response that contains data for created stream
+message SignUpResponse {
+  string api = 1;
+  string token = 2; // This token used as access controll token
+}
+
+// Request data to create new stream
+message SignInRequest {
+  // API Major version
+  string api = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// Response that contains data for created stream
+message SignInResponse {
+  string api = 1;
+  string token = 2; // This token used as access controll token
+}
+
 // Service to manage list of watched streams
 service TwitwatchService {
-  // Create new stream to watch it
+  // Creates new stream to watch it
   rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
   rpc GetStreams(GetStreamsRequest) returns (GetStreamsResponse);
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc SignIn(SignInRequest) returns (SignInResponse);
 }

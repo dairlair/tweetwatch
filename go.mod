@@ -6,10 +6,12 @@ require (
 	github.com/bxcodec/faker/v3 v3.1.0
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/cockroachdb/apd v1.1.0 // indirect
+	github.com/dchest/uniuri v0.0.0-20160212164326-8902c56451e9
 	github.com/dghubble/go-twitter v0.0.0-20190512073027-53f972dc4b06
 	github.com/dghubble/oauth1 v0.5.0
 	github.com/dghubble/sling v1.2.0 // indirect
-	github.com/golang/protobuf v1.3.1
+	github.com/fullstorydev/grpcurl v1.3.1 // indirect
+	github.com/golang/protobuf v1.3.2
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.4.0+incompatible
@@ -19,6 +21,7 @@ require (
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.3.0
+	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	golang.org/x/sys v0.0.0-20190422165155-953cdadca894 // indirect
 	google.golang.org/grpc v1.21.1
 )

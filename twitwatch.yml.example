@@ -1,5 +1,5 @@
 postgres:
-  dsn: "postgres://twitwatch:twitwatch@postgres:5432/twitwatch?sslmode=disable"
+  dsn: "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable"
 grpc:
   listen: ":1234"
 twitter:
