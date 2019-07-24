@@ -6,12 +6,7 @@ import (
 )
 
 func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
-	if err != nil {
-		return false
-	}
-	return true
+	return bcrypt.CompareHashAndPassword([]byte(hashedPwd), plainPwd) == nil
 }
 
 func HashAndSalt(pwd []byte) string {
