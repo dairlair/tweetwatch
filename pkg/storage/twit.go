@@ -20,10 +20,14 @@ const (
 // AddTwit just insert tweet into database
 func (storage *Storage) AddTwit(twit entity.TwitInterface) (id int64, err error) {
 	tx, err := storage.connPool.Begin()
-
 	if err != nil {
 		return 0, pgError(err)
 	}
+	defer func() {
+		if err != nil {
+			pgRollback(tx)
+		}
+	}()
 
 	if err := tx.QueryRow(addTwitSQL,
 		twit.GetID(),
@@ -31,7 +35,6 @@ func (storage *Storage) AddTwit(twit entity.TwitInterface) (id int64, err error)
 		twit.GetFullText(),
 		twit.GetCreatedAt(),
 	).Scan(&id); err != nil {
-		tx.Rollback()
 		return 0, pgError(err)
 	}
 

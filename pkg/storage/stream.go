@@ -2,12 +2,10 @@ package storage
 
 import (
 	"github.com/dairlair/tweetwatch/pkg/entity"
-	log "github.com/sirupsen/logrus"
 )
 
 // AddStream inserts stream into database
 func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err error) {
-
 	const addStreamSQL = `
 		INSERT INTO stream (
 			track
@@ -20,12 +18,13 @@ func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err 
 	if err != nil {
 		return 0, pgError(err)
 	}
+	defer func() {
+		if err != nil {
+			pgRollback(tx)
+		}
+	}()
 
 	if err := tx.QueryRow(addStreamSQL, stream.GetTrack()).Scan(&id); err != nil {
-		txError := tx.Rollback()
-		if txError != nil {
-			log.Errorf("transaction closing failed. %s", txError)
-		}
 		return 0, pgError(err)
 	}
 

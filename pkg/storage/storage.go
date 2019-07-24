@@ -44,6 +44,12 @@ func pgError(err error) error {
 	return err
 }
 
+func pgRollback(tx *pgx.Tx) {
+	if err := tx.Rollback(); err != nil {
+		log.Fatalf("transaction rollback failed-> %s", err)
+	}
+}
+
 // CreatePostgresConnection creates postgres connections pool
 func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 	pgConf, err := pgx.ParseURI(config.DSN)
