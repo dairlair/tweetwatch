@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/dairlair/tweetwatch/pkg/security"
 	"github.com/dchest/uniuri"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -32,12 +32,19 @@ const (
 // SignUp registers new user in system
 func (storage *Storage) SignUp(email string, password string) (token string, err error) {
 	tx, err := storage.connPool.Begin()
+	defer func() {
+		if err != nil {
+			if txErr := tx.Rollback(); txErr != nil {
+				log.Fatalf("rollback failed-> %s", txErr)
+			}
+		}
+	}()
 
 	if err != nil {
 		return "", pgError(err)
 	}
 
-	hash := hashAndSalt([]byte(password))
+	hash := security.HashAndSalt([]byte(password))
 	token = uniuri.New()
 
 	if err := tx.QueryRow(signUpSQL,
@@ -45,7 +52,6 @@ func (storage *Storage) SignUp(email string, password string) (token string, err
 		hash,
 		token,
 	).Scan(&token); err != nil {
-		tx.Rollback()
 		return "", pgError(err)
 	}
 
@@ -66,32 +72,9 @@ func (storage *Storage) SignIn(email string, password string) (token string, err
 		return "", pgError(err)
 	}
 
-	log.Infof("Retrieved hash: %v, token: %v", storedHash, storedToken)
-
-	if !comparePasswords(storedHash, []byte(password)) {
-		log.Infof("Invalid credentials")
-		return "", errors.New("Invalid credentials")
+	if !security.ComparePasswords(storedHash, []byte(password)) {
+		return "", errors.New("invalid credentials")
 	}
 
 	return storedToken, nil
-}
-
-func comparePasswords(hashedPwd string, plainPwd []byte) bool {
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
-	if err != nil {
-		log.Warn(err)
-		return false
-	}
-
-	return true
-}
-
-/** @TODO Move this methods to security / auth package */
-func hashAndSalt(pwd []byte) string {
-	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
-	if err != nil {
-		log.Warn(err)
-	}
-	return string(hash)
 }
