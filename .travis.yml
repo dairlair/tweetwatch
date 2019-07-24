@@ -49,7 +49,7 @@ before_script:
   - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWITWATCH_TEST_POSTGRES_DSN" up
 
 script:
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
