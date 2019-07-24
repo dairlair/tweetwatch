@@ -3,23 +3,26 @@ A Twitter API based daemon for twits analyses purposes
 
 ## Developers guide
 
-Apply migrations
+Apply migrations command:
 ```shell
 migrate -source file:schema/postgres -database "postgres://twitwatch:twitwatch@localhost:5432/twitwatch?sslmode=disable" up
 ```
 
+### gRPC proto updates
 To regenerate gRPC service from updated proto files (located in /api/proto) run this command:
 ```shell
 ./third_party/protoc-gen.sh
 ```
 
+For more information see https://github.com/golang/protobuf#installation
+
+### Mockery mocks
 To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:
 ```shell
 cd pkg/storage
 mockery -name Interface # Mock type Interface and save generated file into the "mocks" subdirectory
 ```
 
-For more information see https://github.com/golang/protobuf#installation
 
 Run daemon locally
 ```shell
@@ -46,3 +49,14 @@ Get streams
 ```shell
 grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1"}' localhost:1234 v1.TwitwatchService.GetStreams
 ```
+
+Sign up
+```shell
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1234 v1.TwitwatchService.SignUp
+```
+
+Sign in
+```shell
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1234 v1.TwitwatchService.SignIn
+```
+

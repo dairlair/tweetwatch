@@ -15,6 +15,8 @@ type Interface interface {
 	AddStream(entity.StreamInterface) (id int64, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTwit(entity.TwitInterface) (id int64, err error)
+	SignUp(email string, password string) (token string, err error)
+	SignIn(email string, password string) (token string, err error)
 }
 
 // NewStorage creates new Storage instance
@@ -40,6 +42,12 @@ type Storage struct {
 func pgError(err error) error {
 	log.Error(err)
 	return err
+}
+
+func pgRollback(tx *pgx.Tx) {
+	if err := tx.Rollback(); err != nil {
+		log.Fatalf("transaction rollback failed-> %s", err)
+	}
 }
 
 // CreatePostgresConnection creates postgres connections pool

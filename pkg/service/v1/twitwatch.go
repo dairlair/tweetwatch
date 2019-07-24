@@ -80,3 +80,37 @@ func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStre
 		Streams: pbStreams,
 	}, nil
 }
+
+func (s *twitwatchServiceServer) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.SignUpResponse, error) {
+	// Check if the API version requested by client is supported by server
+	if err := s.checkAPI(req.GetApi()); err != nil {
+		return nil, err
+	}
+
+	token, err := s.storage.SignUp(req.GetEmail(), req.GetPassword())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "failed to sign up-> "+err.Error())
+	}
+
+	return &pb.SignUpResponse{
+		Api:   apiVersion,
+		Token: token,
+	}, nil
+}
+
+func (s *twitwatchServiceServer) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
+	// Check if the API version requested by client is supported by server
+	if err := s.checkAPI(req.GetApi()); err != nil {
+		return nil, err
+	}
+
+	token, err := s.storage.SignIn(req.GetEmail(), req.GetPassword())
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "failed to sign in-> "+err.Error())
+	}
+
+	return &pb.SignInResponse{
+		Api:   apiVersion,
+		Token: token,
+	}, nil
+}
