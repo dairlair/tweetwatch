@@ -54,4 +54,5 @@ func configureViper() {
 	viper.AddConfigPath("$HOME/.twitwatch")
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.SetDefault("grpc.listen", ":1308")
 }
