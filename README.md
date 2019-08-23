@@ -25,7 +25,21 @@ mockery -name Interface # Mock type Interface and save generated file into the "
 
 
 Run daemon locally
+
+When configured through config file (tweetwatch.yml)
 ```shell
+go run cmd/server/server.go
+```
+
+...or with config througn environment variables:
+
+```shell
+POSTGRES_DSN="postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" \
+GRPC_LISTEN=":1234" \
+TWITTER_CONSUMER_KEY="SOME_TWITTER_CONSUMER_KEY" \
+TWITTER_CONSUMER_SECRET="SOME_TWITTER_CONSUMER_KEY" \
+TWITTER_ACCESS_TOKEN="SOME_TWITTER_ACCESS_TOKEN" \
+TWITTER_ACCESS_SECRET="SOME_TWITTER_ACCESS_SECRET" \
 go run cmd/server/server.go
 ```
 
