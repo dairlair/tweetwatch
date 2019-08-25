@@ -3,26 +3,25 @@ dist: xenial
 
 language: go
 
-# Force-enable Go modules. Also force go to use the code in vendor/
-# These will both be unnecessary when Go 1.13 lands.
-env:
-  - GO111MODULE=on
-  # Temporary disabled
-  # - GOFLAGS='-mod vendor'
-
 # We don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
   - 1.12.x
 
 env:
-  TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
-  # These environment variables must be available during tests running:
-  # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
-  # TWITWATCH_TEST_TWITTER_CONSUMER_SECRET
-  # TWITWATCH_TEST_TWITTER_ACCESS_TOKEN
-  # TWITWATCH_TEST_TWITTER_ACCESS_SECRET
-  export TRAVIS_COMMIT_SHORT="$(git rev-parse --short ${TRAVIS_COMMIT})"
+  global:
+    # Force-enable Go modules. Also force go to use the code in vendor/
+    # These will both be unnecessary when Go 1.13 lands.
+    - GO111MODULE=on
+    # Temporary disabled
+    # - GOFLAGS='-mod vendor'
+    - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
+    # These environment variables must be available during tests running:
+    # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
+    # TWITWATCH_TEST_TWITTER_CONSUMER_SECRET
+    # TWITWATCH_TEST_TWITTER_ACCESS_TOKEN
+    # TWITWATCH_TEST_TWITTER_ACCESS_SECRET
+    - TRAVIS_COMMIT_SHORT="$(git rev-parse --short ${TRAVIS_COMMIT})"
 
 # Only clone the most recent commit.
 git:
@@ -49,13 +48,13 @@ before_script:
   
 
 before_install:
-  - echo "TSK: $TRAVIS_COMMIT_SHORT"
+  - echo Travis short commit ${TRAVIS_COMMIT_SHORT}}
   - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
   # - docker run ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} /go/src/github.com/kainlite/whatismyip-go/whatismyip-go.test
   - docker run -d -p 127.0.0.1:1308:1308 ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT}
 
 script:
-  - echo "TSK: $TRAVIS_COMMIT_SHORT"
+  - echo Travis short commit ${TRAVIS_COMMIT_SHORT}
   - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
   # - grpccurl 127.0.0.1:1234
   # Push built image to the Docker Hub registry
