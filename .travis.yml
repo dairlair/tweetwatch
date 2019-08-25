@@ -48,18 +48,16 @@ before_script:
   
 
 before_install:
-  - echo Travis short commit ${TRAVIS_COMMIT_SHORT}}
   - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
   # - docker run ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} /go/src/github.com/kainlite/whatismyip-go/whatismyip-go.test
   - docker run -d -p 127.0.0.1:1308:1308 ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT}
 
 script:
-  - echo Travis short commit ${TRAVIS_COMMIT_SHORT}
   - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
   # - grpccurl 127.0.0.1:1234
   # Push built image to the Docker Hub registry
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
+  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT}
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
