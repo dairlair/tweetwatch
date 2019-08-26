@@ -13,12 +13,12 @@ import (
 
 func main() {
 	config := readConfig()
-	log.Infof("Config: %v\n", config)
+	log.Infof("config: %v\n", config)
 
 	srv := server.NewInstance(&config)
 	err := srv.Start()
 	if err != nil {
-		log.Errorf("twitwatch start failed: %s", err)
+		log.Errorf("tweetwatch start failed: %s", err)
 	}
 }
 
@@ -29,6 +29,9 @@ func readConfig() server.Config {
 	if err != nil {
 		log.Warnf("config file not read: %s", err)
 	}
+
+	twitterProvider := viper.GetString("twitter.provider")
+	log.Infof("twitter provider: %s", twitterProvider)
 
 	return server.Config{
 		Postgres: storage.PostgresConfig{
@@ -55,4 +58,9 @@ func configureViper() {
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetDefault("grpc.listen", ":1308")
+	viper.SetDefault("twitter.provider", "go-twitter")
+}
+
+func injectTwitterClient(provider String) {
+
 }

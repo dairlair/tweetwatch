@@ -3,6 +3,7 @@ postgres:
 grpc:
   listen: ":1308"
 twitter:
+  provider: "" # May be "go-twitter" (default) or "void". The "void" provider does not connect to Twitter API.
   consumerKey: ""
   consumerSecret: ""
   accessToken: ""
