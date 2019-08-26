@@ -35,7 +35,7 @@ go run cmd/server/server.go
 
 ```shell
 POSTGRES_DSN="postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" \
-GRPC_LISTEN=":1234" \
+GRPC_LISTEN=":1308" \
 TWITTER_CONSUMER_KEY="SOME_TWITTER_CONSUMER_KEY" \
 TWITTER_CONSUMER_SECRET="SOME_TWITTER_CONSUMER_KEY" \
 TWITTER_ACCESS_TOKEN="SOME_TWITTER_ACCESS_TOKEN" \
@@ -46,31 +46,31 @@ go run cmd/server/server.go
 #### Dial server though grpcurl
 List of services
 ```shell
-grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list
+grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1308 list
 ```
 
 List of service methods
 ```shell
-grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1234 list v1.TwitwatchService
+grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1308 list v1.TwitwatchService
 ```
 
 Create stream
 ```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "stream": {"track": "Tesla"}}' localhost:1234 v1.TwitwatchService.CreateStream
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "stream": {"track": "Tesla"}}' localhost:1308 v1.TwitwatchService.CreateStream
 ```
 
 Get streams
 ```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1"}' localhost:1234 v1.TwitwatchService.GetStreams
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1"}' localhost:1308 v1.TwitwatchService.GetStreams
 ```
 
 Sign up
 ```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1234 v1.TwitwatchService.SignUp
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1308 v1.TwitwatchService.SignUp
 ```
 
 Sign in
 ```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1234 v1.TwitwatchService.SignIn
+grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1308 v1.TwitwatchService.SignIn
 ```
 
