@@ -3,25 +3,25 @@ dist: xenial
 
 language: go
 
-# Force-enable Go modules. Also force go to use the code in vendor/
-# These will both be unnecessary when Go 1.13 lands.
-env:
-  - GO111MODULE=on
-  # Temporary disabled
-  # - GOFLAGS='-mod vendor'
-
 # We don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
   - 1.12.x
 
 env:
-  TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
-  # These environment variables must be available during tests running:
-  # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
-  # TWITWATCH_TEST_TWITTER_CONSUMER_SECRET
-  # TWITWATCH_TEST_TWITTER_ACCESS_TOKEN
-  # TWITWATCH_TEST_TWITTER_ACCESS_SECRET
+  global:
+    # Force-enable Go modules. Also force go to use the code in vendor/
+    # These will both be unnecessary when Go 1.13 lands.
+    - GO111MODULE=on
+    # Temporary disabled
+    # - GOFLAGS='-mod vendor'
+    - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
+    # These environment variables must be available during tests running:
+    # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
+    # TWITWATCH_TEST_TWITTER_CONSUMER_SECRET
+    # TWITWATCH_TEST_TWITTER_ACCESS_TOKEN
+    # TWITWATCH_TEST_TWITTER_ACCESS_SECRET
+    - TRAVIS_COMMIT_SHORT="$(git rev-parse --short ${TRAVIS_COMMIT})"
 
 # Only clone the most recent commit.
 git:
@@ -37,19 +37,26 @@ notifications:
 
 services:
   - postgresql
+  - docker
 
 # Anything in before_script that returns a nonzero exit code will flunk the
 # build and immediately stop. It's sorta like having set -e enabled in bash.
 # Make sure golangci-lint is vendored.
 before_script:
-  - pwd
-  - ls -la
-  - go list ./...
   - psql -c 'create database twitwatch;' -U postgres
   - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWITWATCH_TEST_POSTGRES_DSN" up
 
-script:
-  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+# Main pipe line
+
+jobs:
+  include:
+    - stage: test
+      script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+    - stage: build docker image
+      script:
+        - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
