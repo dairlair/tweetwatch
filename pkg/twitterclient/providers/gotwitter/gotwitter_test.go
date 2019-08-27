@@ -1,6 +1,7 @@
-package twitterclient
+package gotwitter
 
 import (
+	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"os"
 	"testing"
 
@@ -9,7 +10,7 @@ import (
 )
 
 func TestNewInstance_Successful(t *testing.T) {
-	cfg := Config{}
+	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
 	assert.IsType(t, &Instance{}, instance, "Object must have type twitterclient.Instance")
 }
@@ -18,7 +19,7 @@ func TestStart_Successful(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skip test for twitterclient successful start")
 	}
-	cfg := Config{
+	cfg := twitterclient.Config{
 		TwitterConsumerKey:    os.Getenv("TWITWATCH_TEST_TWITTER_CONSUMER_KEY"),
 		TwitterConsumerSecret: os.Getenv("TWITWATCH_TEST_TWITTER_CONSUMER_SECRET"),
 		TwitterAccessToken:    os.Getenv("TWITWATCH_TEST_TWITTER_ACCESS_TOKEN"),
@@ -34,7 +35,7 @@ func TestStart_AuthFailed(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skip test for twitterclient auth failed")
 	}
-	cfg := Config{
+	cfg := twitterclient.Config{
 		TwitterConsumerKey:    "a",
 		TwitterConsumerSecret: "b",
 		TwitterAccessToken:    "c",
@@ -46,7 +47,7 @@ func TestStart_AuthFailed(t *testing.T) {
 }
 
 func TestAddStream_Successful(t *testing.T) {
-	cfg := Config{}
+	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
 	stream := entity.Stream{}
 	instance.AddStream(&stream)
@@ -54,7 +55,7 @@ func TestAddStream_Successful(t *testing.T) {
 
 func TestGetStreams_Successful(t *testing.T) {
 
-	cfg := Config{}
+	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
 
 	streams := map[int64]entity.Stream{

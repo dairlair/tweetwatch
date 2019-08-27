@@ -17,18 +17,26 @@ type Config struct {
 	Twitterclient twitterclient.Config
 }
 
+type TwitterClientProvider func (config twitterclient.Config) twitterclient.InstanceInterface
+
+type Providers struct {
+	CreateTwitterclient TwitterClientProvider
+}
+
 // Instance stores the server state
 type Instance struct {
 	config        *Config
+	providers     Providers
 	storage       *storage.Storage // @TODO Use storage interface instead of pointer
 	grpcServer    *grpc.Server
 	twitterClient twitterclient.InstanceInterface
 }
 
 // NewInstance creates new server instance and copy config into that.
-func NewInstance(config *Config) *Instance {
+func NewInstance(config *Config, providers Providers) *Instance {
 	s := &Instance{
 		config: config,
+		providers: providers,
 	}
 	return s
 }
@@ -45,7 +53,7 @@ func (s *Instance) Start() error {
 	s.config.Twitterclient.Storage = s.storage
 
 	// Create the twitterclient instance
-	s.twitterClient = twitterclient.NewInstance(s.config.Twitterclient)
+	s.twitterClient = s.providers.CreateTwitterclient(s.config.Twitterclient)
 	err := s.twitterClient.Start()
 	if err != nil {
 		log.Fatalf("twitterclient error: %s\n", err)
