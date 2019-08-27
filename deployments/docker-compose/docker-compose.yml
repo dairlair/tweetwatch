@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  # Tweetwatch Service
+  tweetwatch:
+    image: dairlair/tweetwatch:9cc8691
+    ports:
+      - "1308:1308"
+    restart: unless-stopped
+    depends_on:
+      - postgress # This service depends on postgres and migrations. Start these first.
+    environment: # Pass environment variables to the service
+      POSTGRES_DSN: POSTGRES_DSN="postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
+
+  # Postgres Service
+  postgres:
+    image: "postgres:12"
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
