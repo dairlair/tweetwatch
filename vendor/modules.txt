@@ -76,8 +76,8 @@ github.com/stretchr/testify/require
 # golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/ssh/terminal
-golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20190522155817-f3200d17e092
 golang.org/x/net/trace
 golang.org/x/net/internal/timeseries
