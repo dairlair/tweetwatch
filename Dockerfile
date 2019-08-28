@@ -2,8 +2,8 @@
 FROM golang:latest AS builder
 ADD . /tweetwatch
 WORKDIR /tweetwatch
-RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tweetwatch-server cmd/server/server.go
+# We run go build with flag "-mod vendor" to use vendor version of packages stored in the repository.
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o /tweetwatch-server cmd/server/server.go
 
 # Final stage
 FROM alpine:latest
