@@ -52,13 +52,21 @@ jobs:
   include:
     - stage: test
       script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-
-    - stage: build docker image
-      script:
-        - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
-        - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:edge
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push ${DOCKER_USERNAME}/${TRAVIS_REPO_SLUG}
+#
+#    - stage: build docker image
+#      script:
+#        - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
+#        - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:edge
+#        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#        - docker push ${DOCKER_USERNAME}/${TRAVIS_REPO_SLUG}
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  # Publish the docker image.
+  # Each successful build in the master branch also will  be published with tag "latest".
+  # Each successful build (any branch exclude master) will be published with tag "edge".
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo "edge" ; fi`
+  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
+  - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:$TAG
+  - docker push ${TRAVIS_REPO_SLUG}
