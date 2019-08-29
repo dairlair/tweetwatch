@@ -8,8 +8,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o /tweetwatch
 # Final stage
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
-COPY --from=builder /tweetwatch-server ./
-COPY --from=builder /tweetwatch/schema ./schema
-RUN chmod +x ./tweetwatch-server
-ENTRYPOINT ["./tweetwatch-server"]
+COPY --from=builder /tweetwatch-server /tweetwatch/server
+COPY --from=builder /tweetwatch/schema /tweetwatch/schema
+RUN chmod +x /tweetwatch/server
+ENTRYPOINT ["/tweetwatch/server"]
 EXPOSE 1308
