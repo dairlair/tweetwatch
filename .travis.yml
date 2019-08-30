@@ -13,7 +13,7 @@ env:
     # Force-enable Go modules. Also force go to use the code in vendor/
     # These will both be unnecessary when Go 1.13 lands.
     - GO111MODULE=on
-    - GOFLAGS="-mod vendor"
+    # - GOFLAGS="-mod vendor"
     - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
     # These environment variables must be available during tests running:
     # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
@@ -50,14 +50,7 @@ before_script:
 jobs:
   include:
     - stage: test
-      script: go $GOFLAGS test -race -coverprofile=coverage.txt -covermode=atomic ./...
-#
-#    - stage: build docker image
-#      script:
-#        - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
-#        - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:edge
-#        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#        - docker push ${DOCKER_USERNAME}/${TRAVIS_REPO_SLUG}
+      script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
