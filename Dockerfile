@@ -16,7 +16,7 @@ COPY --from=builder /tweetwatch-server /tweetwatch/server
 RUN chmod +x /tweetwatch/server
 # These files are required to migrate database
 COPY --from=builder /tweetwatch/schema /tweetwatch/schema
-COPY --from=builedr /tweetwatch/tools/migrate.linux-amd64 /tweetwatch/migrate
+COPY --from=builder /tweetwatch/tools/migrate.linux-amd64 /tweetwatch/migrate
 RUN chmod +x /tweetwatch/migrate
 ENTRYPOINT ["/tweetwatch/server"]
 EXPOSE 1308
