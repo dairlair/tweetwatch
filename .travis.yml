@@ -63,5 +63,4 @@ after_success:
   - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
   - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:$TAG
   - docker image ls
-  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT}
-  - docker push ${TRAVIS_REPO_SLUG}:$TAG
+  - docker push ${TRAVIS_REPO_SLUG}
