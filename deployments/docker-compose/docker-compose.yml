@@ -26,5 +26,11 @@ services:
     networks:
       - backend
 
+  tweetwatch-migrations:
+    restart: never
+    networks:
+      - backend
+    command: "/tweetwatch/migrate -path=/tweetwatch/schema -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}?sslmode=disable up"
+
 networks:
   backend:
