@@ -13,8 +13,7 @@ env:
     # Force-enable Go modules. Also force go to use the code in vendor/
     # These will both be unnecessary when Go 1.13 lands.
     - GO111MODULE=on
-    # Temporary disabled
-    # - GOFLAGS='-mod vendor'
+    - GOFLAGS="-mod vendor"
     - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
     # These environment variables must be available during tests running:
     # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
@@ -51,7 +50,7 @@ before_script:
 jobs:
   include:
     - stage: test
-      script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      script: go $GOFLAGS test -race -coverprofile=coverage.txt -covermode=atomic ./...
 #
 #    - stage: build docker image
 #      script:
