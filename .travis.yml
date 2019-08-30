@@ -69,4 +69,5 @@ after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo "edge" ; fi`
   - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
   - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:$TAG
-  - docker push ${TRAVIS_REPO_SLUG}
+  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT}
+  - docker push ${TRAVIS_REPO_SLUG}:$TAG
