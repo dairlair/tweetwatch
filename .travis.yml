@@ -14,6 +14,7 @@ env:
     # These will both be unnecessary when Go 1.13 lands.
     - GO111MODULE=on
     # - GOFLAGS="-mod vendor"
+    - CUSTOM_GOFLAGS="-mod vendor"
     - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
     # These environment variables must be available during tests running:
     # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
@@ -50,7 +51,7 @@ before_script:
 jobs:
   include:
     - stage: test
-      script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      script: go test $CUSTOM_GOFLAGS -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
