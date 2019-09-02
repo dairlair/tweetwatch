@@ -1,4 +1,4 @@
-# use the latest ubuntu environment (18.04) available on travis
+# use the latest ubuntu environment (16.04) available on travis
 dist: xenial
 
 language: go
@@ -6,15 +6,15 @@ language: go
 # We don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
-  - 1.12.x
+  - "1.12.x"
 
 env:
   global:
     # Force-enable Go modules. Also force go to use the code in vendor/
     # These will both be unnecessary when Go 1.13 lands.
     - GO111MODULE=on
-    # Temporary disabled
-    # - GOFLAGS='-mod vendor'
+    # - GOFLAGS="-mod vendor"
+    - CUSTOM_GOFLAGS="-mod vendor"
     - TWITWATCH_TEST_POSTGRES_DSN="postgres://postgres@127.0.0.1:5432/twitwatch"
     # These environment variables must be available during tests running:
     # TWITWATCH_TEST_TWITTER_CONSUMER_KEY
@@ -51,12 +51,16 @@ before_script:
 jobs:
   include:
     - stage: test
-      script: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-
-    - stage: build docker image
-      script:
-        - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      script: go test $CUSTOM_GOFLAGS -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  # Publish the docker image.
+  # Each successful build in the master branch also will  be published with tag "latest".
+  # Each successful build (any branch exclude master) will be published with tag "edge".
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo "edge" ; fi`
+  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} -f Dockerfile .
+  - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT_SHORT} ${TRAVIS_REPO_SLUG}:$TAG
+  - docker image ls
+  - docker push ${TRAVIS_REPO_SLUG}
