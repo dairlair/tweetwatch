@@ -3,34 +3,38 @@ version: '3'
 services:
   # Tweetwatch Service
   tweetwatch:
-    image: dairlair/tweetwatch:edge
+    image: dairlair/tweetwatch:6ea6b9f
     ports:
       - "1308:1308"
     restart: unless-stopped
     depends_on:
       - postgres # This service depends on postgres and migrations. Start these first.
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
     environment: # Pass environment variables to the service
       POSTGRES_DSN: "postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}?sslmode=disable"
       TWITTER_PROVIDER: "${TWITTER_PROVIDER}"
-    networks: # Networks to join (Services on the same network can communicate with each other using their name)
-      - backend
+
 
   # Postgres Service
   postgres:
     image: "postgres:12"
     restart: unless-stopped
+    networks:
+      - backend
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    networks:
-      - backend
 
-  tweetwatch-migrations:
-    restart: never
+  migrations:
+    image: dairlair/tweetwatch:6ea6b9f
+    restart: "no"
+    depends_on:
+      - postgres # This service depends on postgres and migrations. Start these first.
     networks:
       - backend
-    command: "/tweetwatch/migrate -path=/tweetwatch/schema -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}?sslmode=disable up"
+    entrypoint: "/tweetwatch/migrate -path=/tweetwatch/schema/postgres -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}?sslmode=disable up"
 
 networks:
   backend:
