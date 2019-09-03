@@ -42,13 +42,17 @@ func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
 
 // Start function runs twitter client and validates credentials for Twitter Streaming API
 func (instance *Instance) Start() error {
+	// Init Twitter Streaming API client
 	client, err := createTwitterClient(instance.config)
 	if err != nil {
-		log.Error("Authentication is failed. ", err)
 		return err
 	}
-
 	instance.client = client
+
+	// Restore state from the storage
+	if err = instance.restoreStreams(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -149,6 +153,7 @@ func createTwitterClient(config twitterclient.Config) (*twitter.Client, error) {
 	err := validateTwitterClientCredentials(client)
 
 	if err != nil {
+		log.Error("Authentication is failed. ", err)
 		return nil, err
 	}
 
@@ -160,4 +165,19 @@ func validateTwitterClientCredentials(client *twitter.Client) error {
 	_, _, err := client.Trends.Available()
 
 	return err
+}
+
+func (instance *Instance) restoreStreams() error {
+	// Init streams from database
+	streams, err := instance.storage.GetActiveStreams()
+	if err != nil {
+		log.Error("Streams retrieving is failed. ", err)
+
+		return err
+	}
+	for _, stream := range streams {
+		instance.AddStream(stream)
+	}
+
+	return nil
 }

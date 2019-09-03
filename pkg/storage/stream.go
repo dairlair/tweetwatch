@@ -35,7 +35,7 @@ func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err 
 	return id, nil
 }
 
-// GetStreams returns
+// GetStreams returns all existing streams
 func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err error) {
 	const getStreamsSQL = `
 		SELECT 
@@ -62,4 +62,10 @@ func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err erro
 	}
 
 	return streams, nil
+}
+
+// GetStreams returns all active streams (streams with flag "is_active" = TRUE)
+func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, err error) {
+	// @TODO Refactor when tweet table got is_active flag.
+	return storage.GetStreams()
 }
