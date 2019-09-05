@@ -21,7 +21,7 @@ type Instance struct {
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
+func NewInstance(config twitterclient.Config, storage twitterclient.StorageInterface) twitterclient.InstanceInterface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -29,13 +29,13 @@ func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
 		config.TwitterAccessSecret,
 	)
 
-	if config.Storage == nil {
+	if storage == nil {
 		log.Warn("Storage not attached, tweets won't be saved")
 	}
 
 	return &Instance{
 		config:  config,
-		storage: config.Storage,
+		storage: storage,
 		streams: make(map[int64]entity.StreamInterface),
 	}
 }

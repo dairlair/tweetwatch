@@ -26,7 +26,7 @@ func TestCreateStream_Successful(t *testing.T) {
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &entityStream).Return(id, nil)
-	s := NewTwitwatchServiceServer(&storageMock)
+	s := NewTweetwatchServiceServer(&storageMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -40,7 +40,7 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &entityStream).Return(int64(0), errors.New("Integrity violation"))
-	s := NewTwitwatchServiceServer(&storageMock)
+	s := NewTweetwatchServiceServer(&storageMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -53,7 +53,7 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 	stream := pb.Stream{Track: "something"}
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &stream).Return(int64(1), nil)
-	s := NewTwitwatchServiceServer(&storageMock)
+	s := NewTweetwatchServiceServer(&storageMock)
 
 	req := pb.CreateStreamRequest{Stream: &stream, Api: "v0"}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -66,7 +66,7 @@ func TestGetStreams_Successfull(t *testing.T) {
 	storageMock := storageMocks.Interface{}
 	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
 
-	s := NewTwitwatchServiceServer(&storageMock)
+	s := NewTweetwatchServiceServer(&storageMock)
 
 	req := pb.GetStreamsRequest{}
 	resp, err := s.GetStreams(context.Background(), &req)

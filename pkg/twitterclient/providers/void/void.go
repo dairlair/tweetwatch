@@ -10,7 +10,7 @@ type Instance struct {
 }
 
 // NewInstance creates new twitter scrapper (void)
-func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
+func NewInstance(_ twitterclient.Config, _ twitterclient.StorageInterface) twitterclient.InstanceInterface {
 	return &Instance{}
 }
 

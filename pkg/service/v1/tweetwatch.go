@@ -2,13 +2,13 @@ package v1
 
 import (
 	"context"
-
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/storage"
+	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 )
 
 const (
@@ -16,18 +16,22 @@ const (
 	apiVersion = "v1"
 )
 
-// twitwatchServiceServer is implementation of v1.ToDoServiceServer proto interface
-type twitwatchServiceServer struct {
+// tweetwatchServiceServer is implementation of v1.ToDoServiceServer proto interface
+type tweetwatchServiceServer struct {
 	storage storage.Interface
+	twitterClient twitterclient.InstanceInterface
 }
 
-// NewTwitwatchServiceServer creates TwitWatch service
-func NewTwitwatchServiceServer(s storage.Interface) pb.TwitwatchServiceServer {
-	return &twitwatchServiceServer{storage: s}
+// NewTweetwatchServiceServer creates TwitWatch service
+func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.InstanceInterface) pb.TwitwatchServiceServer {
+	return &tweetwatchServiceServer{
+		storage: s,
+		twitterClient: t,
+	}
 }
 
 // checkAPI checks if the API version requested by client is supported by server
-func (s *twitwatchServiceServer) checkAPI(api string) error {
+func (s *tweetwatchServiceServer) checkAPI(api string) error {
 	// API version is "" means use current version of the service
 	if len(api) > 0 {
 		if apiVersion != api {
@@ -39,17 +43,25 @@ func (s *twitwatchServiceServer) checkAPI(api string) error {
 }
 
 // Create new stream
-func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *pb.CreateStreamRequest) (*pb.CreateStreamResponse, error) {
+func (s *tweetwatchServiceServer) CreateStream(ctx context.Context, req *pb.CreateStreamRequest) (*pb.CreateStreamResponse, error) {
 	// Check if the API version requested by client is supported by server
 	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
 	}
 
+	stream := entity.NewStream(req.GetStream().GetId(), req.GetStream().GetTrack())
+
 	// Insert stream entity data
-	id, err := s.storage.AddStream(entity.NewStream(req.GetStream().GetId(), req.GetStream().GetTrack()))
+	id, err := s.storage.AddStream(stream)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
+
+	// Ask twitter client reload streams. @TODO implement it and remove this test code.
+	s.twitterClient.AddStream(stream)
+	s.twitterClient.Unwatch()
+	_ = s.twitterClient.Watch()
+
 
 	return &pb.CreateStreamResponse{
 		Api: apiVersion,
@@ -58,7 +70,7 @@ func (s *twitwatchServiceServer) CreateStream(ctx context.Context, req *pb.Creat
 }
 
 // GetStreams Returns list of streams
-func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStreamsRequest) (*pb.GetStreamsResponse, error) {
+func (s *tweetwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStreamsRequest) (*pb.GetStreamsResponse, error) {
 	// Check if the API version requested by client is supported by server
 	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
@@ -81,7 +93,7 @@ func (s *twitwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStre
 	}, nil
 }
 
-func (s *twitwatchServiceServer) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.SignUpResponse, error) {
+func (s *tweetwatchServiceServer) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.SignUpResponse, error) {
 	// Check if the API version requested by client is supported by server
 	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
@@ -98,7 +110,7 @@ func (s *twitwatchServiceServer) SignUp(ctx context.Context, req *pb.SignUpReque
 	}, nil
 }
 
-func (s *twitwatchServiceServer) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
+func (s *tweetwatchServiceServer) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
 	// Check if the API version requested by client is supported by server
 	if err := s.checkAPI(req.GetApi()); err != nil {
 		return nil, err
