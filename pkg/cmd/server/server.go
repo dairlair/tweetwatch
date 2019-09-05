@@ -67,6 +67,7 @@ func (s *Instance) Start() error {
 	}
 
 	// Run gRPC server
+	// @TODO Pass twitterClient as dependency to the service.
 	v1API := serviceV1.NewTwitwatchServiceServer(s.storage)
 	server, err := grpcServer.RunServer(v1API, s.config.GRPC)
 	if err != nil {
