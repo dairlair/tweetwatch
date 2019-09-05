@@ -5,7 +5,7 @@ A Twitter API based daemon for twits analyses purposes
 
 Apply migrations command:
 ```shell
-migrate -source file:schema/postgres -database "postgres://twitwatch:twitwatch@localhost:5432/twitwatch?sslmode=disable" up
+migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" up
 ```
 
 ### gRPC proto updates

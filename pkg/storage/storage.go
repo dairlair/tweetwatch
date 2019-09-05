@@ -71,7 +71,7 @@ func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 			Password: pgConf.Password,
 			Database: pgConf.Database,
 			RuntimeParams: map[string]string{
-				"application_name": "twitwatch",
+				"application_name": "tweetwatch",
 			},
 		},
 		MaxConnections: 1,

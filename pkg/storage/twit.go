@@ -6,14 +6,14 @@ import (
 
 const (
 	addTwitSQL = `
-		INSERT INTO twit (
+		INSERT INTO tweet (
 			id
 			, user_id
 			, full_text
 			, created_at
 		) VALUES (
 			$1, $2, $3, $4
-		) RETURNING twit_id
+		) RETURNING tweet_id
 	`
 )
 
