@@ -11,35 +11,19 @@ import (
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 )
 
-const (
-	// apiVersion is version of API is provided by server
-	apiVersion = "v1"
-)
-
-// tweetwatchServiceServer is implementation of v1.ToDoServiceServer proto interface
+// tweetwatchServiceServer is implementation of pb.TwitwatchServiceServer proto interface
+// See github.com/dairlair/tweetwatch/pkg/api/v1/TwitwatchServiceServer
 type tweetwatchServiceServer struct {
 	storage storage.Interface
-	twitterClient twitterclient.InstanceInterface
+	twitterClient twitterclient.Interface
 }
 
 // NewTweetwatchServiceServer creates TwitWatch service
-func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.InstanceInterface) pb.TwitwatchServiceServer {
+func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.Interface) pb.TwitwatchServiceServer {
 	return &tweetwatchServiceServer{
 		storage: s,
 		twitterClient: t,
 	}
-}
-
-// checkAPI checks if the API version requested by client is supported by server
-func (s *tweetwatchServiceServer) checkAPI(api string) error {
-	// API version is "" means use current version of the service
-	if len(api) > 0 {
-		if apiVersion != api {
-			return status.Errorf(codes.Unimplemented,
-				"unsupported API version: service implements API version '%s', but asked for '%s'", apiVersion, api)
-		}
-	}
-	return nil
 }
 
 // Create new stream
@@ -81,7 +65,7 @@ func (s *tweetwatchServiceServer) GetStreams(ctx context.Context, req *pb.GetStr
 		return nil, status.Error(codes.Unknown, "failed to retrieve streams-> "+err.Error())
 	}
 
-	pbStreams := []*pb.Stream{}
+	var pbStreams []*pb.Stream
 	for _, stream := range streams {
 		pbStream := pb.Stream{Id: stream.GetID(), Track: stream.GetTrack()}
 		pbStreams = append(pbStreams, &pbStream)

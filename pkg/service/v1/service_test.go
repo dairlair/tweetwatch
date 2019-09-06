@@ -10,6 +10,7 @@ import (
 	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	storageMocks "github.com/dairlair/tweetwatch/pkg/storage/mocks"
+	twitterclientMocks "github.com/dairlair/tweetwatch/pkg/twitterclient/mocks"
 )
 
 func TestCreateStream_RequestCreation(t *testing.T) {
@@ -26,7 +27,8 @@ func TestCreateStream_Successful(t *testing.T) {
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &entityStream).Return(id, nil)
-	s := NewTweetwatchServiceServer(&storageMock)
+	twitterclientMock := twitterclientMocks.Interface{}
+	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -40,7 +42,8 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &entityStream).Return(int64(0), errors.New("Integrity violation"))
-	s := NewTweetwatchServiceServer(&storageMock)
+	twitterclientMock := twitterclientMocks.Interface{}
+	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -53,7 +56,8 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 	stream := pb.Stream{Track: "something"}
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &stream).Return(int64(1), nil)
-	s := NewTweetwatchServiceServer(&storageMock)
+	twitterclientMock := twitterclientMocks.Interface{}
+	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &stream, Api: "v0"}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -62,11 +66,11 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 	assert.NotNil(t, err, "Service must returns error")
 }
 
-func TestGetStreams_Successfull(t *testing.T) {
+func TestGetStreams_Successful(t *testing.T) {
 	storageMock := storageMocks.Interface{}
 	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
-
-	s := NewTweetwatchServiceServer(&storageMock)
+	twitterclientMock := twitterclientMocks.Interface{}
+	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.GetStreamsRequest{}
 	resp, err := s.GetStreams(context.Background(), &req)

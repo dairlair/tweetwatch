@@ -21,7 +21,7 @@ type Instance struct {
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config, storage twitterclient.StorageInterface) twitterclient.InstanceInterface {
+func NewInstance(config twitterclient.Config, storage twitterclient.StorageInterface) twitterclient.Interface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,

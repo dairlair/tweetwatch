@@ -1,5 +1,5 @@
 // Package twitterclient provides wrapper around Twitter Streaming API
-// The package accepts in config the Storage Interface which provides methods for retrieve active streams and store twits with treir steam
+// The package accepts in config the Storage Interface which provides methods for retrieve active streams and store twits with their steam
 package twitterclient
 
 import (
@@ -7,14 +7,15 @@ import (
 )
 
 // StorageInterface declares dependency for twitterclient.
+// @DEPRECATED. Twitter client should not to know about storage. Update comments in this file after refactoring.
 type StorageInterface interface {
 	AddTwit(entity.TwitInterface) (id int64, err error)
 	// Twitterclient need to retrieve from
 	GetActiveStreams() (streams []entity.StreamInterface, err error)
 }
 
-// InstanceInterface defines the main object interface which is created by this package.
-type InstanceInterface interface {
+// Interface defines the main object interface which is created by this package.
+type Interface interface {
 	// Creates Twitter Streaming API client and validates credentials.
 	Start() error
 	// Add stream to watch it.
