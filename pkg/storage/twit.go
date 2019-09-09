@@ -18,7 +18,7 @@ const (
 )
 
 // AddTwit just insert tweet into database
-func (storage *Storage) AddTwit(twit entity.TwitInterface) (id int64, err error) {
+func (storage *Storage) AddTwit(twit entity.TweetInterface) (id int64, err error) {
 	tx, err := storage.connPool.Begin()
 	if err != nil {
 		return 0, pgError(err)

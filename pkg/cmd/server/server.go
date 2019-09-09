@@ -17,7 +17,7 @@ type Config struct {
 	Twitterclient twitterclient.Config
 }
 
-type TwitterClientProvider func (config twitterclient.Config, storage twitterclient.StorageInterface) twitterclient.Interface
+type TwitterClientProvider func (config twitterclient.Config) twitterclient.Interface
 
 type Providers struct {
 	CreateTwitterclient TwitterClientProvider

@@ -13,15 +13,20 @@ import (
 // Instance structure is used to store the server's state
 type Instance struct {
 	config twitterclient.Config
+	// We will send to this channel all found tweets with associated streams
+	output chan <- entity.TweetStreamsInterface
+
+	// Internal state
+	streams map[int64]entity.StreamInterface
+
+
 	// Internal resources
-	storage twitterclient.StorageInterface
 	client  *twitter.Client
 	source  *twitter.Stream
-	streams map[int64]entity.StreamInterface
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config, storage twitterclient.StorageInterface) twitterclient.Interface {
+func NewInstance(config twitterclient.Config, output chan <- entity.TweetStreamsInterface) twitterclient.Interface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -29,13 +34,9 @@ func NewInstance(config twitterclient.Config, storage twitterclient.StorageInter
 		config.TwitterAccessSecret,
 	)
 
-	if storage == nil {
-		log.Warn("Storage not attached, tweets won't be saved")
-	}
-
 	return &Instance{
 		config:  config,
-		storage: storage,
+		output: output,
 		streams: make(map[int64]entity.StreamInterface),
 	}
 }
@@ -48,11 +49,6 @@ func (instance *Instance) Start() error {
 		return err
 	}
 	instance.client = client
-
-	// Restore state from the storage
-	if err = instance.restoreStreams(); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -115,27 +111,18 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 	instance.processTweet(createTweetEntity(tweet))
 }
 
-func (instance *Instance) processTweet(tweet entity.TwitInterface) {
+func (instance *Instance) processTweet(tweet entity.TweetInterface) {
 	fmt.Printf("Process tweet: %v\n", tweet)
-	if instance.storage == nil {
-		return
-	}
-	id, err := instance.storage.AddTwit(tweet)
-	if err != nil {
-		log.Errorf("Tweet processing error. %s", err)
-	} else {
-		fmt.Printf("Tweet has been processed sucessfully and saved with ID: %d\n", id)
-	}
 }
 
-func createTweetEntity(tweet *twitter.Tweet) entity.TwitInterface {
+func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
 	var fullText string
 	if tweet.ExtendedTweet != nil {
 		fullText = tweet.ExtendedTweet.FullText
 	} else {
 		fullText = tweet.Text
 	}
-	return &entity.Twit{
+	return &entity.Tweet{
 		ID:            tweet.ID,
 		TwitterID:     tweet.ID,
 		TwitterUserID: tweet.User.ID,
@@ -165,19 +152,4 @@ func validateTwitterClientCredentials(client *twitter.Client) error {
 	_, _, err := client.Trends.Available()
 
 	return err
-}
-
-func (instance *Instance) restoreStreams() error {
-	// Init streams from database
-	streams, err := instance.storage.GetActiveStreams()
-	if err != nil {
-		log.Error("Streams retrieving is failed. ", err)
-
-		return err
-	}
-	for _, stream := range streams {
-		instance.AddStream(stream)
-	}
-
-	return nil
 }

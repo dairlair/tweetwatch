@@ -9,7 +9,7 @@ import (
 // StorageInterface declares dependency for twitterclient.
 // @DEPRECATED. Twitter client should not to know about storage. Update comments in this file after refactoring.
 type StorageInterface interface {
-	AddTwit(entity.TwitInterface) (id int64, err error)
+	AddTwit(entity.TweetInterface) (id int64, err error)
 	// Twitterclient need to retrieve from
 	GetActiveStreams() (streams []entity.StreamInterface, err error)
 }
