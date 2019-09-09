@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/dairlair/tweetwatch/pkg/entity"
 	grpcServer "github.com/dairlair/tweetwatch/pkg/protocol/grpc"
 	serviceV1 "github.com/dairlair/tweetwatch/pkg/service/v1"
 	"github.com/dairlair/tweetwatch/pkg/storage"
@@ -17,7 +18,10 @@ type Config struct {
 	Twitterclient twitterclient.Config
 }
 
-type TwitterClientProvider func (config twitterclient.Config) twitterclient.Interface
+type TwitterClientProvider func(
+		config twitterclient.Config,
+		output chan<- entity.TweetStreamsInterface,
+	) twitterclient.Interface
 
 type Providers struct {
 	CreateTwitterclient TwitterClientProvider
@@ -50,7 +54,12 @@ func (s *Instance) Start() error {
 	storageInstance := storage.NewStorage(connPool)
 
 	// Create the twitterclient instance
-	twitterClient := s.providers.CreateTwitterclient(s.config.Twitterclient, storageInstance)
+	ch := make(chan entity.TweetStreamsInterface)
+	twitterClient := s.providers.CreateTwitterclient(s.config.Twitterclient, ch)
+
+	//go func(output chan <- entity.TweetStreamsInterface) {
+	//	tweetStreams <- output
+	//}(ch)
 
 	// @TODO Move that to the service server
 	err := twitterClient.Start()

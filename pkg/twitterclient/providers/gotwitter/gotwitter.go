@@ -111,9 +111,7 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 	instance.processTweet(createTweetEntity(tweet))
 }
 
-func (instance *Instance) processTweet(tweet entity.TweetInterface) {
-	fmt.Printf("Process tweet: %v\n", tweet)
-}
+
 
 func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
 	var fullText string
