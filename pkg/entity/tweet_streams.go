@@ -26,3 +26,11 @@ func (ts *tweetStreams) GetTweet() TweetInterface {
 func (ts *tweetStreams) GetStreams() []StreamInterface {
 	return ts.streams
 }
+
+func StreamsMapToSlice(streamsMap map[int64]StreamInterface) []StreamInterface {
+	var streamsSlice []StreamInterface
+	for _, value := range streamsMap {
+		streamsSlice = append(streamsSlice, value)
+	}
+	return streamsSlice
+}

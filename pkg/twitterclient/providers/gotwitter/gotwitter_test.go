@@ -11,7 +11,8 @@ import (
 
 func TestNewInstance_Successful(t *testing.T) {
 	cfg := twitterclient.Config{}
-	instance := NewInstance(cfg)
+	output := make (chan entity.TweetStreamsInterface)
+	instance := NewInstance(cfg, output)
 	assert.IsType(t, &Instance{}, instance, "Object must have type twitterclient.Instance")
 }
 
@@ -41,22 +42,24 @@ func TestStart_AuthFailed(t *testing.T) {
 		TwitterAccessToken:    "c",
 		TwitterAccessSecret:   "d",
 	}
-	instance := NewInstance(cfg)
+	output := make (chan entity.TweetStreamsInterface)
+	instance := NewInstance(cfg, output)
 	err := instance.Start()
 	assert.NotNil(t, err, "Error must be not nil when try to start with wrong credentials")
 }
 
 func TestAddStream_Successful(t *testing.T) {
 	cfg := twitterclient.Config{}
-	instance := NewInstance(cfg)
+	output := make (chan entity.TweetStreamsInterface)
+	instance := NewInstance(cfg, output)
 	stream := entity.Stream{}
 	instance.AddStream(&stream)
 }
 
 func TestGetStreams_Successful(t *testing.T) {
-
 	cfg := twitterclient.Config{}
-	instance := NewInstance(cfg)
+	output := make (chan entity.TweetStreamsInterface)
+	instance := NewInstance(cfg, output)
 
 	streams := map[int64]entity.Stream{
 		1: {ID: 1, Track: "Tesla"},
