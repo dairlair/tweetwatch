@@ -44,7 +44,7 @@ func (s *tweetwatchServiceServer) CreateStream(ctx context.Context, req *pb.Crea
 	stream := entity.NewStream(req.GetStream().GetId(), req.GetStream().GetTrack())
 
 	// Insert stream entity data
-	id, err := s.storage.AddStream(stream)
+	stream, err := s.storage.AddStream(stream)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "failed to save stream-> "+err.Error())
 	}
@@ -57,7 +57,7 @@ func (s *tweetwatchServiceServer) CreateStream(ctx context.Context, req *pb.Crea
 
 	return &pb.CreateStreamResponse{
 		Api: apiVersion,
-		Id:  id,
+		Id:  stream.GetID(),
 	}, nil
 }
 
@@ -121,13 +121,28 @@ func (s *tweetwatchServiceServer) SignIn(ctx context.Context, req *pb.SignInRequ
 
 func (s *tweetwatchServiceServer) up() {
 	log.Infof("Tweetwatch service up...")
-	go func(input chan entity.TweetStreamsInterface) {
+	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {
-			log.Infof("Store tweet to the database. %v", tweetStreams.GetTweet().GetID())
+			log.Infof("Store tweet to the database. %v\n", tweetStreams.GetTweet().GetID())
+			_, err := storage.AddTweetStreams(tweetStreams)
+			if err != nil {
+				log.Fatalf("storage error: %s\n", err)
+			}
 		}
-	} (s.tweetStreamsChannel)
+	} (s.tweetStreamsChannel, s.storage)
 	log.Infof("Tweetwatch service is ready to accept tweets")
-	err := s.twitterClient.Start()
+
+	// Restore streams
+	streams, err := s.storage.GetStreams()
+	if err != nil {
+		log.Fatalf("failed to restore streams: %s\n", err)
+	}
+
+	for _, stream := range streams {
+		s.twitterClient.AddStream(stream)
+	}
+
+	err = s.twitterClient.Start()
 	if err != nil {
 		log.Fatalf("twitterclient error: %s\n", err)
 	}

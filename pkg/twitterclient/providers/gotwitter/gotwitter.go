@@ -51,6 +51,10 @@ func (instance *Instance) Start() error {
 
 // AddStream adds desired stream to the current instance of twitterclient
 func (instance *Instance) AddStream(stream entity.StreamInterface) {
+	if stream.GetID() < 1 {
+		log.Errorf("stream without id can not be added")
+		return
+	}
 	instance.streams[stream.GetID()] = stream
 }
 
