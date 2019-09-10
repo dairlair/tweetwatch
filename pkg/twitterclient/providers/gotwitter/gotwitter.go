@@ -12,20 +12,18 @@ import (
 // Instance structure is used to store the server's state
 type Instance struct {
 	config twitterclient.Config
+
+	// Currently watched streams
+	streams map[int64]entity.StreamInterface
 	// We will send to this channel all found tweets with associated streams
 	output chan entity.TweetStreamsInterface
-
-	// Internal state
-	streams map[int64]entity.StreamInterface
-
-
 	// Internal resources
 	client  *twitter.Client
 	source  *twitter.Stream
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config, output chan entity.TweetStreamsInterface) twitterclient.Interface {
+func NewInstance(config twitterclient.Config) twitterclient.Interface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -35,7 +33,6 @@ func NewInstance(config twitterclient.Config, output chan entity.TweetStreamsInt
 
 	return &Instance{
 		config:  config,
-		output: output,
 		streams: make(map[int64]entity.StreamInterface),
 	}
 }
@@ -63,7 +60,8 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 }
 
 // Watch starts watching
-func (instance *Instance) Watch() error {
+func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
+	instance.output = output
 	tracks := instance.getTracks()
 	log.Infof("Starting Stream with tracks [%v]", tracks)
 
@@ -94,11 +92,6 @@ func (instance *Instance) Watch() error {
 func (instance *Instance) Unwatch() {
 	log.Infof("Stopping stream...")
 	instance.source.Stop()
-}
-
-// Unwatch stops watching
-func (instance *Instance) GetOutput() chan entity.TweetStreamsInterface {
-	return instance.output
 }
 
 func (instance *Instance) getTracks() []string {

@@ -17,11 +17,7 @@ type Interface interface {
 	// Returns currently loaded and watched streams.
 	GetStreams() map[int64]entity.StreamInterface
 	// Runs watching for twits according to specified streams.
-	Watch() error
+	Watch(chan entity.TweetStreamsInterface) error
 	// Stops watching for all specified streams.
 	Unwatch()
-	// Returns channel which should be used
-	// @TODO Consider pass channel to Watch() function and create it inside service, not a server.
-	// @TODO it will allow pass read-only channel to twitterclient
-	GetOutput() chan entity.TweetStreamsInterface
 }

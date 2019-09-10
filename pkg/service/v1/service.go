@@ -16,6 +16,7 @@ import (
 // See github.com/dairlair/tweetwatch/pkg/api/v1/TwitwatchServiceServer
 type tweetwatchServiceServer struct {
 	storage storage.Interface
+	tweetStreamsChannel chan entity.TweetStreamsInterface
 	twitterClient twitterclient.Interface
 }
 
@@ -23,10 +24,12 @@ type tweetwatchServiceServer struct {
 func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.Interface) pb.TwitwatchServiceServer {
 	server := &tweetwatchServiceServer{
 		storage: s,
+		tweetStreamsChannel: make(chan entity.TweetStreamsInterface),
 		twitterClient: t,
 	}
 
 	server.up()
+
 
 	return server
 }
@@ -49,7 +52,7 @@ func (s *tweetwatchServiceServer) CreateStream(ctx context.Context, req *pb.Crea
 	// Ask twitter client reload streams. @TODO implement it and remove this test code.
 	s.twitterClient.AddStream(stream)
 	s.twitterClient.Unwatch()
-	_ = s.twitterClient.Watch()
+	_ = s.twitterClient.Watch(s.tweetStreamsChannel)
 
 
 	return &pb.CreateStreamResponse{
@@ -122,6 +125,11 @@ func (s *tweetwatchServiceServer) up() {
 		for tweetStreams := range input {
 			log.Infof("Store tweet to the database. %v", tweetStreams.GetTweet().GetID())
 		}
-	} (s.twitterClient.GetOutput())
+	} (s.tweetStreamsChannel)
 	log.Infof("Tweetwatch service is ready to accept tweets")
+	err := s.twitterClient.Start()
+	if err != nil {
+		log.Fatalf("twitterclient error: %s\n", err)
+	}
+	_ = s.twitterClient.Watch(s.tweetStreamsChannel)
 }

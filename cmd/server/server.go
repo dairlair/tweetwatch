@@ -45,7 +45,7 @@ func readConfig() (server.Config, server.Providers, error) {
 	}
 
 	providers := server.Providers{
-		CreateTwitterclient: twitterProvider,
+		TwitterClientProvider: twitterProvider,
 	}
 
 	return server.Config{
