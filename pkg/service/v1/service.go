@@ -24,7 +24,7 @@ type tweetwatchServiceServer struct {
 func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.Interface) pb.TwitwatchServiceServer {
 	server := &tweetwatchServiceServer{
 		storage: s,
-		tweetStreamsChannel: make(chan entity.TweetStreamsInterface),
+		tweetStreamsChannel: make(chan entity.TweetStreamsInterface, 100),
 		twitterClient: t,
 	}
 
