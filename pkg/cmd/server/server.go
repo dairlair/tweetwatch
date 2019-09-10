@@ -20,7 +20,7 @@ type Config struct {
 
 type TwitterClientProvider func(
 		config twitterclient.Config,
-		output chan<- entity.TweetStreamsInterface,
+		output chan entity.TweetStreamsInterface,
 	) twitterclient.Interface
 
 type Providers struct {
@@ -56,10 +56,6 @@ func (s *Instance) Start() error {
 	// Create the twitterclient instance
 	ch := make(chan entity.TweetStreamsInterface)
 	twitterClient := s.providers.CreateTwitterclient(s.config.Twitterclient, ch)
-
-	//go func(output chan <- entity.TweetStreamsInterface) {
-	//	tweetStreams <- output
-	//}(ch)
 
 	// @TODO Move that to the service server
 	err := twitterClient.Start()

@@ -1,18 +1,12 @@
+//
 // Package twitterclient provides wrapper around Twitter Streaming API
 // The package accepts in config the Storage Interface which provides methods for retrieve active streams and store twits with their steam
+//
 package twitterclient
 
 import (
 	"github.com/dairlair/tweetwatch/pkg/entity"
 )
-
-// StorageInterface declares dependency for twitterclient.
-// @DEPRECATED. Twitter client should not to know about storage. Update comments in this file after refactoring.
-type StorageInterface interface {
-	AddTwit(entity.TweetInterface) (id int64, err error)
-	// Twitterclient need to retrieve from
-	GetActiveStreams() (streams []entity.StreamInterface, err error)
-}
 
 // Interface defines the main object interface which is created by this package.
 type Interface interface {
@@ -26,4 +20,8 @@ type Interface interface {
 	Watch() error
 	// Stops watching for all specified streams.
 	Unwatch()
+	// Returns channel which should be used
+	// @TODO Consider pass channel to Watch() function and create it inside service, not a server.
+	// @TODO it will allow pass read-only channel to twitterclient
+	GetOutput() chan entity.TweetStreamsInterface
 }

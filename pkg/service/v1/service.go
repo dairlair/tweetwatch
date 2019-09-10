@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -20,10 +21,14 @@ type tweetwatchServiceServer struct {
 
 // NewTweetwatchServiceServer creates TwitWatch service
 func NewTweetwatchServiceServer(s storage.Interface, t twitterclient.Interface) pb.TwitwatchServiceServer {
-	return &tweetwatchServiceServer{
+	server := &tweetwatchServiceServer{
 		storage: s,
 		twitterClient: t,
 	}
+
+	server.up()
+
+	return server
 }
 
 // Create new stream
@@ -109,4 +114,14 @@ func (s *tweetwatchServiceServer) SignIn(ctx context.Context, req *pb.SignInRequ
 		Api:   apiVersion,
 		Token: token,
 	}, nil
+}
+
+func (s *tweetwatchServiceServer) up() {
+	log.Infof("Tweetwatch service up...")
+	go func(input chan entity.TweetStreamsInterface) {
+		for tweetStreams := range input {
+			log.Infof("Store tweet to the database. %v", tweetStreams.GetTweet().GetID())
+		}
+	} (s.twitterClient.GetOutput())
+	log.Infof("Tweetwatch service is ready to accept tweets")
 }

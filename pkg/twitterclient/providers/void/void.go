@@ -8,12 +8,12 @@ import (
 
 // Instance structure is used to store the server's state
 type Instance struct {
-	output chan <- entity.TweetStreamsInterface
+	output chan entity.TweetStreamsInterface
 	streams map[int64]entity.StreamInterface
 }
 
 // NewInstance creates new twitter scrapper (void)
-func NewInstance(_ twitterclient.Config, output chan <- entity.TweetStreamsInterface) twitterclient.Interface {
+func NewInstance(_ twitterclient.Config, output chan entity.TweetStreamsInterface) twitterclient.Interface {
 	return &Instance{
 		output: output,
 		streams: make(map[int64]entity.StreamInterface),
@@ -57,4 +57,9 @@ func (instance *Instance) Watch() error {
 
 // Unwatch stops watching
 func (instance *Instance) Unwatch() {
+}
+
+// Unwatch stops watching
+func (instance *Instance) GetOutput() chan entity.TweetStreamsInterface {
+	return instance.output
 }

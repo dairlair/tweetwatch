@@ -1,7 +1,6 @@
 package gotwitter
 
 import (
-	"fmt"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"github.com/dghubble/go-twitter/twitter"
@@ -14,7 +13,7 @@ import (
 type Instance struct {
 	config twitterclient.Config
 	// We will send to this channel all found tweets with associated streams
-	output chan <- entity.TweetStreamsInterface
+	output chan entity.TweetStreamsInterface
 
 	// Internal state
 	streams map[int64]entity.StreamInterface
@@ -26,7 +25,7 @@ type Instance struct {
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config, output chan <- entity.TweetStreamsInterface) twitterclient.Interface {
+func NewInstance(config twitterclient.Config, output chan entity.TweetStreamsInterface) twitterclient.Interface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -97,6 +96,11 @@ func (instance *Instance) Unwatch() {
 	instance.source.Stop()
 }
 
+// Unwatch stops watching
+func (instance *Instance) GetOutput() chan entity.TweetStreamsInterface {
+	return instance.output
+}
+
 func (instance *Instance) getTracks() []string {
 	var tracks []string
 	for _, stream := range instance.GetStreams() {
@@ -106,8 +110,8 @@ func (instance *Instance) getTracks() []string {
 }
 
 func (instance *Instance) onTweet(tweet *twitter.Tweet) {
-	fmt.Printf("Tweet: %s\n", tweet.IDStr)
-	fmt.Printf("%v\n\n", tweet)
+	log.Infof("Tweet: %s\n", tweet.IDStr)
+	log.Infof("%v\n\n", tweet)
 	instance.processTweet(createTweetEntity(tweet))
 }
 
