@@ -41,7 +41,7 @@ func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error 
 			TwitterID:     9381,
 			TwitterUserID: 5234,
 			FullText:      "Just a fake tweet from void",
-			CreatedAt:     "",
+			CreatedAt:     time.Now().Format("20060102150405"),
 		}
 		tweetStreams := entity.NewTweetStreams(&tweet, entity.StreamsMapToSlice(instance.GetStreams()))
 		for i := 0; i < 5; i++ {

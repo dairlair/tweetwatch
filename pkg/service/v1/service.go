@@ -123,7 +123,7 @@ func (s *tweetwatchServiceServer) up() {
 	log.Infof("Tweetwatch service up...")
 	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {
-			log.Infof("Store tweet to the database. %v\n", tweetStreams.GetTweet().GetID())
+			log.Infof("Store tweet to the database: %d\n", tweetStreams.GetTweet().GetTwitterID())
 			_, err := storage.AddTweetStreams(tweetStreams)
 			if err != nil {
 				log.Fatalf("storage error: %s\n", err)

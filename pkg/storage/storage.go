@@ -37,6 +37,8 @@ func pgError(err error) error {
 func pgRollback(tx *pgx.Tx) {
 	if err := tx.Rollback(); err != nil {
 		log.Fatalf("transaction rollback failed-> %s", err)
+	} else {
+		log.Debugf("transaction rollback complete")
 	}
 }
 

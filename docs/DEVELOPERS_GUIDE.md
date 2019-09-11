@@ -5,6 +5,8 @@ Apply migrations command:
 migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" up
 ```
 
+Command migrate docs is available [here](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
+
 ### gRPC proto updates
 To regenerate gRPC service from updated proto files (located in /api/proto) run this command:
 ```shell
