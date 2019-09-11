@@ -15,6 +15,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+func init() {
+	log.SetLevel(log.WarnLevel)
+}
+
 func main() {
 	config, providers, err := readConfig()
 	if err != nil {

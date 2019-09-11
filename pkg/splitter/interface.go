@@ -13,5 +13,5 @@ type Interface interface {
 	// As instance:
 	//   We have currently active streams: ["Tesla", "Trump", "Golang"] and with these streams we got a tweet:
 	//   ""
-	Split (tweetInterface TweetInterface, stream []StreamInterface) TweetStreamsInterface
+	Split (tweetInterface TweetInterface, streams []StreamInterface) TweetStreamsInterface
 }

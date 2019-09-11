@@ -1,17 +1,22 @@
 package gotwitter
 
 import (
-	"fmt"
 	"github.com/dairlair/tweetwatch/pkg/entity"
+	"github.com/dairlair/tweetwatch/pkg/splitter"
+	"github.com/dairlair/tweetwatch/pkg/splitter/providers/substring"
 	log "github.com/sirupsen/logrus"
 )
 
+// @TODO This function should be replaced to the injected dependency using.
+func getSplitter() splitter.Interface {
+	return substring.NewInstance()
+}
+
 // processTweet should find which streams are source of this tweet
 func (instance *Instance) processTweet(tweet entity.TweetInterface) {
-	fmt.Printf("Process tweet: %v\n", tweet)
+	log.Infof("Process tweet: %v\n", tweet)
 
-	// Now lets assume than every tweet belongs all streams, just for a test...
-	tweetStreams := entity.NewTweetStreams(tweet, entity.StreamsMapToSlice(instance.GetStreams()))
+	tweetStreams := getSplitter().Split(tweet, entity.StreamsMapToSlice(instance.GetStreams()))
 
 	select {
 	case instance.output <- tweetStreams:
