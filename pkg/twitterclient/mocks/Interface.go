@@ -52,13 +52,13 @@ func (_m *Interface) Unwatch() {
 	_m.Called()
 }
 
-// Watch provides a mock function with given fields:
-func (_m *Interface) Watch() error {
-	ret := _m.Called()
+// Watch provides a mock function with given fields: _a0
+func (_m *Interface) Watch(_a0 chan entity.TweetStreamsInterface) error {
+	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func() error); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(chan entity.TweetStreamsInterface) error); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}

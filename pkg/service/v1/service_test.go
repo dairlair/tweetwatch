@@ -27,6 +27,7 @@ func TestCreateStream_Successful(t *testing.T) {
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &entityStream).Return(id, nil)
+	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0))
 	twitterclientMock := twitterclientMocks.Interface{}
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
