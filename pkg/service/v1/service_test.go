@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	pb "github.com/dairlair/tweetwatch/pkg/api/v1"
 	"github.com/dairlair/tweetwatch/pkg/entity"
@@ -26,9 +27,15 @@ func TestCreateStream_Successful(t *testing.T) {
 
 	var id int64 = 1
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &entityStream).Return(id, nil)
-	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0))
+	returnedStream := entityStream
+	returnedStream.ID = id
+	storageMock.On("AddStream", &entityStream).Return(returnedStream, nil)
+	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
 	twitterclientMock := twitterclientMocks.Interface{}
+	twitterclientMock.On("Start").Return(nil)
+	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
+	twitterclientMock.On("AddStream", returnedStream).Return()
+	twitterclientMock.On("Unwatch").Return()
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
@@ -42,8 +49,12 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 	entityStream := entity.Stream{Track: pbStream.GetTrack()}
 
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &entityStream).Return(int64(0), errors.New("Integrity violation"))
+	storageMock.On("AddStream", &entityStream).Return(entity.Stream{}, errors.New("integrity violation"))
+	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
 	twitterclientMock := twitterclientMocks.Interface{}
+	twitterclientMock.On("Start").Return(nil)
+	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
+	twitterclientMock.On("AddStream", mock.AnythingOfType("entity.StreamInterface")).Return()
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &pbStream}
@@ -56,8 +67,11 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 func TestCreateStream_WrongApiVersion(t *testing.T) {
 	stream := pb.Stream{Track: "something"}
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &stream).Return(int64(1), nil)
+	storageMock.On("AddStream", &stream).Return(entity.Stream{}, nil)
+	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
 	twitterclientMock := twitterclientMocks.Interface{}
+	twitterclientMock.On("Start").Return(nil)
+	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.CreateStreamRequest{Stream: &stream, Api: "v0"}
