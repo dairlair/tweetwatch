@@ -41,14 +41,13 @@ func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error 
 			TwitterID:     9381,
 			TwitterUserID: 5234,
 			FullText:      "Just a fake tweet from void",
-			CreatedAt:     time.Now().Format("20060102150405"),
+			CreatedAt:     time.Now().Format("2006-01-02 15:04:05"),
 		}
 		tweetStreams := entity.NewTweetStreams(&tweet, entity.StreamsMapToSlice(instance.GetStreams()))
 		for i := 0; i < 5; i++ {
 			<-time.After(time.Second)
 			select {
 			case output <- tweetStreams:
-				log.Infof("Tweet with streams sent to output")
 			default:
 				log.Errorf("Can not send tweet and streams to output")
 			}

@@ -12,6 +12,7 @@ import (
 
 // Config is configuration for the Server
 type Config struct {
+	LogLevel string
 	Postgres      storage.PostgresConfig
 	GRPC          grpcServer.Config
 	Twitterclient twitterclient.Config

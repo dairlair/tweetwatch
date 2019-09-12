@@ -20,7 +20,6 @@ func (instance *Instance) processTweet(tweet entity.TweetInterface) {
 
 	select {
 	case instance.output <- tweetStreams:
-		log.Infof("Tweet with streams sent to output")
 	default:
 		log.Errorf("Can not send tweet and streams to output. Tweet will be ignored.")
 	}
