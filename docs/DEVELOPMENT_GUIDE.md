@@ -13,10 +13,7 @@ For more information see https://github.com/golang/protobuf#installation
 To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:
 
 ```shell
-cd pkg/storage
-mockery -name Interface # Mock type Interface and save generated file into the "mocks" subdirectory
-cd pkg/twitterclient
-mockery -name Interface # Mock type Interface and save generated file into the "mocks" subdirectory
+./tools/regenerate-mocks.sh
 ```
 
 #### Dial server though grpcurl
