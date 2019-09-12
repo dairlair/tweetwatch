@@ -29,12 +29,12 @@ func TestCreateStream_Successful(t *testing.T) {
 	storageMock := storageMocks.Interface{}
 	returnedStream := entityStream
 	returnedStream.ID = id
-	storageMock.On("AddStream", &entityStream).Return(returnedStream, nil)
+	storageMock.On("AddStream", &entityStream).Return(&returnedStream, nil)
 	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
 	twitterclientMock := twitterclientMocks.Interface{}
 	twitterclientMock.On("Start").Return(nil)
 	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
-	twitterclientMock.On("AddStream", returnedStream).Return()
+	twitterclientMock.On("AddStream", &returnedStream).Return()
 	twitterclientMock.On("Unwatch").Return()
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
@@ -49,7 +49,7 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 	entityStream := entity.Stream{Track: pbStream.GetTrack()}
 
 	storageMock := storageMocks.Interface{}
-	storageMock.On("AddStream", &entityStream).Return(entity.Stream{}, errors.New("integrity violation"))
+	storageMock.On("AddStream", &entityStream).Return(&entity.Stream{}, errors.New("integrity violation"))
 	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
 	twitterclientMock := twitterclientMocks.Interface{}
 	twitterclientMock.On("Start").Return(nil)
@@ -85,6 +85,8 @@ func TestGetStreams_Successful(t *testing.T) {
 	storageMock := storageMocks.Interface{}
 	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
 	twitterclientMock := twitterclientMocks.Interface{}
+	twitterclientMock.On("Start").Return(nil)
+	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
 	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
 
 	req := pb.GetStreamsRequest{}
