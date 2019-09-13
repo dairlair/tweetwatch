@@ -65,14 +65,10 @@ func TestCreateStream_FailedOnStorage(t *testing.T) {
 }
 
 func TestCreateStream_WrongApiVersion(t *testing.T) {
+	storageMock := createStorageMock()
 	stream := pb.Stream{Track: "something"}
-	storageMock := storageMocks.Interface{}
 	storageMock.On("AddStream", &stream).Return(entity.Stream{}, nil)
-	storageMock.On("GetStreams").Return(make([]entity.StreamInterface, 0), nil)
-	twitterclientMock := twitterclientMocks.Interface{}
-	twitterclientMock.On("Start").Return(nil)
-	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
-	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
+	s := NewTweetwatchServiceServer(createStorageMock(), createTwitterclientMock())
 
 	req := pb.CreateStreamRequest{Stream: &stream, Api: "v0"}
 	resp, err := s.CreateStream(context.Background(), &req)
@@ -82,17 +78,25 @@ func TestCreateStream_WrongApiVersion(t *testing.T) {
 }
 
 func TestGetStreams_Successful(t *testing.T) {
-	storageMock := storageMocks.Interface{}
-	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
-	twitterclientMock := twitterclientMocks.Interface{}
-	twitterclientMock.On("Start").Return(nil)
-	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
-	s := NewTweetwatchServiceServer(&storageMock, &twitterclientMock)
-
+	s := NewTweetwatchServiceServer(createStorageMock(), createTwitterclientMock())
 	req := pb.GetStreamsRequest{}
 	resp, err := s.GetStreams(context.Background(), &req)
 
 	assert.Nil(t, err, "Error must be equal nil")
 	assert.NotNil(t, resp, "Response must be not null")
 	assert.IsType(t, []*pb.Stream{}, resp.GetStreams())
+}
+
+func createStorageMock() *storageMocks.Interface {
+	storageMock := storageMocks.Interface{}
+
+	storageMock.On("GetStreams").Return([]entity.StreamInterface{}, nil)
+	return &storageMock
+}
+
+func createTwitterclientMock() *twitterclientMocks.Interface {
+	twitterclientMock := twitterclientMocks.Interface{}
+	twitterclientMock.On("Start").Return(nil)
+	twitterclientMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
+	return &twitterclientMock
 }
