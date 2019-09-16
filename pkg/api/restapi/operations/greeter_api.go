@@ -36,10 +36,25 @@ func NewGreeterAPI(spec *loads.Document) *GreeterAPI {
 		APIKeyAuthenticator: security.APIKeyAuth,
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
+		JSONProducer:        runtime.JSONProducer(),
 		TxtProducer:         runtime.TextProducer(),
 		GetGreetingHandler: GetGreetingHandlerFunc(func(params GetGreetingParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetGreeting has not yet been implemented")
 		}),
+		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation Login has not yet been implemented")
+		}),
+		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
+			return middleware.NotImplemented("operation Signup has not yet been implemented")
+		}),
+
+		// Applies when the Authorization header is set with the Basic scheme
+		BasicAuth: func(user string, pass string) (interface{}, error) {
+			return nil, errors.NotImplemented("basic auth  (Basic) has not yet been implemented")
+		},
+
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -68,11 +83,24 @@ type GreeterAPI struct {
 	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
 
+	// JSONProducer registers a producer for a "application/json" mime type
+	JSONProducer runtime.Producer
 	// TxtProducer registers a producer for a "text/plain" mime type
 	TxtProducer runtime.Producer
 
+	// BasicAuth registers a function that takes username and password and returns a principal
+	// it performs authentication with basic auth
+	BasicAuth func(string, string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
 	// GetGreetingHandler sets the operation handler for the get greeting operation
 	GetGreetingHandler GetGreetingHandler
+	// LoginHandler sets the operation handler for the login operation
+	LoginHandler LoginHandler
+	// SignupHandler sets the operation handler for the signup operation
+	SignupHandler SignupHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -132,12 +160,28 @@ func (o *GreeterAPI) Validate() error {
 		unregistered = append(unregistered, "JSONConsumer")
 	}
 
+	if o.JSONProducer == nil {
+		unregistered = append(unregistered, "JSONProducer")
+	}
+
 	if o.TxtProducer == nil {
 		unregistered = append(unregistered, "TxtProducer")
 	}
 
+	if o.BasicAuth == nil {
+		unregistered = append(unregistered, "BasicAuth")
+	}
+
 	if o.GetGreetingHandler == nil {
 		unregistered = append(unregistered, "GetGreetingHandler")
+	}
+
+	if o.LoginHandler == nil {
+		unregistered = append(unregistered, "LoginHandler")
+	}
+
+	if o.SignupHandler == nil {
+		unregistered = append(unregistered, "SignupHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -155,14 +199,23 @@ func (o *GreeterAPI) ServeErrorFor(operationID string) func(http.ResponseWriter,
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *GreeterAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+
+		case "Basic":
+			result[name] = o.BasicAuthenticator(o.BasicAuth)
+
+		}
+	}
+	return result
 
 }
 
 // Authorizer returns the registered authorizer
 func (o *GreeterAPI) Authorizer() runtime.Authorizer {
 
-	return nil
+	return o.APIAuthorizer
 
 }
 
@@ -192,6 +245,9 @@ func (o *GreeterAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produc
 	result := make(map[string]runtime.Producer)
 	for _, mt := range mediaTypes {
 		switch mt {
+
+		case "application/json":
+			result["application/json"] = o.JSONProducer
 
 		case "text/plain":
 			result["text/plain"] = o.TxtProducer
@@ -242,6 +298,16 @@ func (o *GreeterAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/hello"] = NewGetGreeting(o.context, o.GetGreetingHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/login"] = NewLogin(o.context, o.LoginHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/signup"] = NewSignup(o.context, o.SignupHandler)
 
 }
 

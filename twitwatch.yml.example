@@ -2,8 +2,8 @@ server:
   logLevel: "info" # Available values: panic, fatal, error, warn, warning, info, debug, trace
 postgres:
   dsn: "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable"
-grpc:
-  listen: ":1308"
+rest:
+  port: 1308
 twitter:
   provider: "go-twitter" # May be "go-twitter" (default) or "void". The "void" provider does not connect to Twitter API.
   consumerKey: ""

@@ -13,6 +13,7 @@ Package restapi Tweetwatch Server
     - application/json
 
     Produces:
+    - application/json
     - text/plain
 
 swagger:meta

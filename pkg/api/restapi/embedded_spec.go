@@ -18,6 +18,12 @@ var (
 
 func init() {
 	SwaggerJSON = json.RawMessage([]byte(`{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "swagger": "2.0",
   "info": {
     "title": "Tweetwatch Server",
@@ -44,14 +50,135 @@ func init() {
             "schema": {
               "description": "contains the actual greeting as plain text",
               "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "security": [
+          {
+            "Basic": []
+          }
+        ],
+        "operationId": "login",
+        "responses": {
+          "200": {
+            "description": "Log In",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "operationId": "signup",
+        "parameters": [
+          {
+            "description": "New User",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created",
+            "schema": {
+              "$ref": "#/definitions/GeneralResponse"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
             }
           }
         }
       }
     }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GeneralResponse": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Token": {
+      "required": [
+        "user",
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "password": {
+          "type": "string",
+          "format": "password"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    },
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
   }
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "swagger": "2.0",
   "info": {
     "title": "Tweetwatch Server",
@@ -82,6 +209,121 @@ func init() {
           }
         }
       }
+    },
+    "/login": {
+      "get": {
+        "security": [
+          {
+            "Basic": []
+          }
+        ],
+        "operationId": "login",
+        "responses": {
+          "200": {
+            "description": "Log In",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "operationId": "signup",
+        "parameters": [
+          {
+            "description": "New User",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created",
+            "schema": {
+              "$ref": "#/definitions/GeneralResponse"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GeneralResponse": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Token": {
+      "required": [
+        "user",
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "password": {
+          "type": "string",
+          "format": "password"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    },
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
     }
   }
 }`))
