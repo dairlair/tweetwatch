@@ -22,9 +22,6 @@ func (instance *instance) Split(tweet TweetInterface, streams []StreamInterface)
 
 		if strings.Contains(strings.ToLower(tweet.GetFullText()), strings.ToLower(stream.GetTrack())) {
 			matchedStreams = append(matchedStreams, stream)
-			//log.Warnf("Matched [%s] with [%s]", stream.GetTrack(), tweet.GetFullText())
-		} else {
-			//log.Warnf("Not matched [%s] with [%s]", stream.GetTrack(), tweet.GetFullText())
 		}
 	}
 
