@@ -5,7 +5,7 @@ import (
 )
 
 // AddStream inserts stream into database
-func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err error) {
+func (storage *Storage) AddStream(stream entity.StreamInterface) (result entity.StreamInterface, err error) {
 	const addStreamSQL = `
 		INSERT INTO stream (
 			track
@@ -16,7 +16,7 @@ func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err 
 
 	tx, err := storage.connPool.Begin()
 	if err != nil {
-		return 0, pgError(err)
+		return nil, pgError(err)
 	}
 	defer func() {
 		if err != nil {
@@ -24,18 +24,21 @@ func (storage *Storage) AddStream(stream entity.StreamInterface) (id int64, err 
 		}
 	}()
 
+	var id int64
 	if err := tx.QueryRow(addStreamSQL, stream.GetTrack()).Scan(&id); err != nil {
-		return 0, pgError(err)
+		return nil, pgError(err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, pgError(err)
+		return nil, pgError(err)
 	}
 
-	return id, nil
+	result = entity.NewStream(id, stream.GetTrack())
+
+	return result, nil
 }
 
-// GetStreams returns
+// GetStreams returns all existing streams
 func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err error) {
 	const getStreamsSQL = `
 		SELECT 
@@ -62,4 +65,10 @@ func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err erro
 	}
 
 	return streams, nil
+}
+
+// GetStreams returns all active streams (streams with flag "is_active" = TRUE)
+func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, err error) {
+	// @TODO Refactor when tweet table got is_active flag.
+	return storage.GetStreams()
 }

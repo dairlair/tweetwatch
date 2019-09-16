@@ -5,7 +5,8 @@ import (
 )
 
 func (suite StorageSuite) TestAddStream_Successful() {
-	id, err := suite.storage.AddStream(&entity.Stream{Track: "something"})
-	suite.True(id > 0)
+	stream, err := suite.storage.AddStream(&entity.Stream{Track: "something"})
+	suite.NotNil(stream)
+	suite.True(stream.GetID() > 0)
 	suite.Equal(err, nil)
 }

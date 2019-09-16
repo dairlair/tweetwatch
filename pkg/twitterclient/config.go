@@ -6,6 +6,4 @@ type Config struct {
 	TwitterConsumerSecret string
 	TwitterAccessToken    string
 	TwitterAccessSecret   string
-
-	Storage StorageInterface
 }

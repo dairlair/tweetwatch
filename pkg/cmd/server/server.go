@@ -12,24 +12,23 @@ import (
 
 // Config is configuration for the Server
 type Config struct {
+	LogLevel string
 	Postgres      storage.PostgresConfig
 	GRPC          grpcServer.Config
 	Twitterclient twitterclient.Config
 }
 
-type TwitterClientProvider func (config twitterclient.Config) twitterclient.InstanceInterface
+type TwitterClientProvider func(config twitterclient.Config) twitterclient.Interface
 
 type Providers struct {
-	CreateTwitterclient TwitterClientProvider
+	TwitterClientProvider TwitterClientProvider
 }
 
 // Instance stores the server state
 type Instance struct {
 	config        *Config
 	providers     Providers
-	storage       *storage.Storage // @TODO Use storage interface instead of pointer
 	grpcServer    *grpc.Server
-	twitterClient twitterclient.InstanceInterface
 }
 
 // NewInstance creates new server instance and copy config into that.
@@ -49,25 +48,13 @@ func (s *Instance) Start() error {
 	defer connPool.Close()
 
 	// Create storage instance
-	s.storage = storage.NewStorage(connPool)
-	s.config.Twitterclient.Storage = s.storage
+	storageInstance := storage.NewStorage(connPool)
 
 	// Create the twitterclient instance
-	s.twitterClient = s.providers.CreateTwitterclient(s.config.Twitterclient)
-	err := s.twitterClient.Start()
-	if err != nil {
-		log.Fatalf("twitterclient error: %s\n", err)
-		return err
-	}
-
-	err = s.twitterClient.Watch()
-	if err != nil {
-		log.Fatalf("twitterclient error: %s\n", err)
-		return err
-	}
+	twitterClient := s.providers.TwitterClientProvider(s.config.Twitterclient)
 
 	// Run gRPC server
-	v1API := serviceV1.NewTwitwatchServiceServer(s.storage)
+	v1API := serviceV1.NewTweetwatchServiceServer(storageInstance, twitterClient)
 	server, err := grpcServer.RunServer(v1API, s.config.GRPC)
 	if err != nil {
 		log.Fatalf("gRPC server error: %s\n", err)

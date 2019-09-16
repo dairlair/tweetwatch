@@ -5,22 +5,12 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/jackc/pgx"
 	log "github.com/sirupsen/logrus"
 )
 
-// Interface must be implemented by postgres based storage or something else.
-type Interface interface {
-	AddStream(entity.StreamInterface) (id int64, err error)
-	GetStreams() (streams []entity.StreamInterface, err error)
-	AddTwit(entity.TwitInterface) (id int64, err error)
-	SignUp(email string, password string) (token string, err error)
-	SignIn(email string, password string) (token string, err error)
-}
-
 // NewStorage creates new Storage instance
-func NewStorage(connPool *pgx.ConnPool) *Storage {
+func NewStorage(connPool *pgx.ConnPool) Interface {
 	return &Storage{
 		connPool: connPool,
 	}
@@ -47,6 +37,8 @@ func pgError(err error) error {
 func pgRollback(tx *pgx.Tx) {
 	if err := tx.Rollback(); err != nil {
 		log.Fatalf("transaction rollback failed-> %s", err)
+	} else {
+		log.Debugf("transaction rollback complete")
 	}
 }
 
@@ -71,7 +63,7 @@ func CreatePostgresConnection(config PostgresConfig) *pgx.ConnPool {
 			Password: pgConf.Password,
 			Database: pgConf.Database,
 			RuntimeParams: map[string]string{
-				"application_name": "twitwatch",
+				"application_name": "tweetwatch",
 			},
 		},
 		MaxConnections: 1,

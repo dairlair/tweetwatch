@@ -12,7 +12,7 @@ type StorageSuite struct {
 	suite.Suite
 	cfg      PostgresConfig
 	connPool *pgx.ConnPool
-	storage  *Storage
+	storage  Interface
 }
 
 func NewStorageSuite(cfg PostgresConfig) StorageSuite {
@@ -28,16 +28,12 @@ func (suite *StorageSuite) TearDownSuite() {
 	suite.connPool.Close()
 }
 
-type storageHandlerSuite struct {
-	StorageSuite
-}
-
 func TestStorageSuite(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skip test for storage")
 	}
 	cfg := PostgresConfig{
-		DSN: os.Getenv("TWITWATCH_TEST_POSTGRES_DSN"),
+		DSN: os.Getenv("TWEETWATCH_TEST_POSTGRES_DSN"),
 	}
 	storageSuite := NewStorageSuite(cfg)
 	suite.Run(t, &storageSuite)

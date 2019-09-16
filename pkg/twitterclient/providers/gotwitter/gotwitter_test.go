@@ -54,7 +54,6 @@ func TestAddStream_Successful(t *testing.T) {
 }
 
 func TestGetStreams_Successful(t *testing.T) {
-
 	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
 

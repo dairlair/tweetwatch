@@ -1,7 +1,6 @@
 package gotwitter
 
 import (
-	"fmt"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"github.com/dghubble/go-twitter/twitter"
@@ -13,15 +12,18 @@ import (
 // Instance structure is used to store the server's state
 type Instance struct {
 	config twitterclient.Config
+
+	// Currently watched streams
+	streams map[int64]entity.StreamInterface
+	// We will send to this channel all found tweets with associated streams
+	output chan entity.TweetStreamsInterface
 	// Internal resources
-	storage twitterclient.StorageInterface
 	client  *twitter.Client
 	source  *twitter.Stream
-	streams map[int64]entity.StreamInterface
 }
 
 // NewInstance creates new twitter instance scrapper
-func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
+func NewInstance(config twitterclient.Config) twitterclient.Interface {
 	log.Infof("Twitter: consumer key=%s, consumer_secret=%s, access token=%s, access secret=%s",
 		config.TwitterConsumerKey,
 		config.TwitterConsumerSecret,
@@ -29,25 +31,19 @@ func NewInstance(config twitterclient.Config) twitterclient.InstanceInterface {
 		config.TwitterAccessSecret,
 	)
 
-	if config.Storage == nil {
-		log.Warn("Storage not attached, tweets won't be saved")
-	}
-
 	return &Instance{
 		config:  config,
-		storage: config.Storage,
 		streams: make(map[int64]entity.StreamInterface),
 	}
 }
 
 // Start function runs twitter client and validates credentials for Twitter Streaming API
 func (instance *Instance) Start() error {
+	// Init Twitter Streaming API client
 	client, err := createTwitterClient(instance.config)
 	if err != nil {
-		log.Error("Authentication is failed. ", err)
 		return err
 	}
-
 	instance.client = client
 
 	return nil
@@ -55,6 +51,10 @@ func (instance *Instance) Start() error {
 
 // AddStream adds desired stream to the current instance of twitterclient
 func (instance *Instance) AddStream(stream entity.StreamInterface) {
+	if stream.GetID() < 1 {
+		log.Errorf("stream without id can not be added")
+		return
+	}
 	instance.streams[stream.GetID()] = stream
 }
 
@@ -64,7 +64,8 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 }
 
 // Watch starts watching
-func (instance *Instance) Watch() error {
+func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
+	instance.output = output
 	tracks := instance.getTracks()
 	log.Infof("Starting Stream with tracks [%v]", tracks)
 
@@ -106,32 +107,21 @@ func (instance *Instance) getTracks() []string {
 }
 
 func (instance *Instance) onTweet(tweet *twitter.Tweet) {
-	fmt.Printf("Tweet: %s\n", tweet.IDStr)
-	fmt.Printf("%v\n\n", tweet)
+	log.Infof("Tweet: %s\n", tweet.IDStr)
+	log.Infof("%v\n\n", tweet)
 	instance.processTweet(createTweetEntity(tweet))
 }
 
-func (instance *Instance) processTweet(tweet entity.TwitInterface) {
-	fmt.Printf("Process tweet: %v\n", tweet)
-	if instance.storage == nil {
-		return
-	}
-	id, err := instance.storage.AddTwit(tweet)
-	if err != nil {
-		log.Errorf("Tweet processing error. %s", err)
-	} else {
-		fmt.Printf("Tweet has been processed sucessfully and saved with ID: %d\n", id)
-	}
-}
 
-func createTweetEntity(tweet *twitter.Tweet) entity.TwitInterface {
+
+func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
 	var fullText string
 	if tweet.ExtendedTweet != nil {
 		fullText = tweet.ExtendedTweet.FullText
 	} else {
 		fullText = tweet.Text
 	}
-	return &entity.Twit{
+	return &entity.Tweet{
 		ID:            tweet.ID,
 		TwitterID:     tweet.ID,
 		TwitterUserID: tweet.User.ID,
@@ -149,6 +139,7 @@ func createTwitterClient(config twitterclient.Config) (*twitter.Client, error) {
 	err := validateTwitterClientCredentials(client)
 
 	if err != nil {
+		log.Error("Authentication is failed. ", err)
 		return nil, err
 	}
 
