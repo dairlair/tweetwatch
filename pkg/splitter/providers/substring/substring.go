@@ -26,7 +26,7 @@ func (instance *instance) Split(tweet TweetInterface, streams []StreamInterface)
 	}
 
 	if len(matchedStreams) == 0 {
-		log.Warnf("Not matched [%s] with any stream", tweet.GetFullText())
+		log.Warnf("Not matched [%s] [%s] with any stream", tweet.GetTwitterID(), tweet.GetFullText())
 	}
 
 	if len(matchedStreams) > 1 {

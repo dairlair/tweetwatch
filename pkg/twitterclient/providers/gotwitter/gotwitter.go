@@ -115,19 +115,26 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 
 
 func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
+	return &entity.Tweet{
+		ID:            tweet.ID,
+		TwitterID:     tweet.ID,
+		TwitterUserID: tweet.User.ID,
+		FullText:      getFullText(tweet),
+		CreatedAt:     tweet.CreatedAt,
+	}
+}
+
+func getFullText(tweet *twitter.Tweet) string {
+	if tweet.RetweetedStatus != nil {
+		return getFullText(tweet.RetweetedStatus)
+	}
 	var fullText string
 	if tweet.ExtendedTweet != nil {
 		fullText = tweet.ExtendedTweet.FullText
 	} else {
 		fullText = tweet.Text
 	}
-	return &entity.Tweet{
-		ID:            tweet.ID,
-		TwitterID:     tweet.ID,
-		TwitterUserID: tweet.User.ID,
-		FullText:      fullText,
-		CreatedAt:     tweet.CreatedAt,
-	}
+	return fullText
 }
 
 func createTwitterClient(config twitterclient.Config) (*twitter.Client, error) {
