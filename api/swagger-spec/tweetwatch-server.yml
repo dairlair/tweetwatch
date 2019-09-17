@@ -5,7 +5,7 @@
 # See https://habr.com/ru/company/lamoda/blog/463301/
 swagger: '2.0'
 info:
-  version: 1.0.0
+  version: '0.0.1'
   title: Tweetwatch Server  
 consumes:
   - application/json
@@ -40,7 +40,7 @@ paths:
     get:
       operationId: login
       security:
-        - Basic: [] # Так указываем применяемую схему!
+        - Basic: []
       responses:
         "200":
           description: Log In
@@ -100,6 +100,9 @@ definitions:
         type: string
     required:
       - message
+# Default Security requirements for all operations
+security:
+  - isRegistered: []
 securityDefinitions:
   Basic:
     type: basic
