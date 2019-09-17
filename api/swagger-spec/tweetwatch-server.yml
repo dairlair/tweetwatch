@@ -2,6 +2,7 @@
 # See https://goswagger.io/tutorial/custom-server.html
 # See https://github.com/go-swagger/go-swagger/blob/master/examples/composed-auth/swagger.yml
 # See https://mean-dev.info/authentication-rest-api-swagger/
+# See https://habr.com/ru/company/lamoda/blog/463301/
 swagger: '2.0'
 info:
   version: 1.0.0
@@ -24,6 +25,10 @@ paths:
       responses:
         "200":
           description: User created
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        "422":
+          description: Email already taken
           schema:
             $ref: "#/definitions/GeneralResponse"
         # responses may fall through to errors

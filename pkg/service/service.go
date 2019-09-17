@@ -88,7 +88,8 @@ func (service *Service) SignUp (params operations.SignupParams) middleware.Respo
 	token, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
 
 	if err != nil {
-		return middleware.NotImplemented("Error handling not implemented")
+		payload := models.ErrorResponse{Message: swag.String("Email already taken")}
+		return operations.NewSignupDefault(422).WithPayload(&payload)
 	}
 
 	message := fmt.Sprintf("User [%s] registered with token [%s]", *params.User.Email, token)
