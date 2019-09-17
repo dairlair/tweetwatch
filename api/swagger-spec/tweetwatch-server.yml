@@ -36,11 +36,22 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /login:
+
+  /account:
     get:
+      operationId: account
+      security:
+        - isRegistered: []
+      responses:
+        "200":
+          description: Returns info about current user
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+  /login:
+    post:
       operationId: login
       security:
-        - Basic: []
+        - isRegistered: []
       responses:
         "200":
           description: Log In
@@ -51,23 +62,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /hello:
-    get:
-      produces:
-        - text/plain
-      parameters:
-        - name: name
-          required: false
-          type: string
-          in: query
-          description: defaults to World if not given
-      operationId: getGreeting
-      responses:
-        200:
-          description: returns a greeting
-          schema:
-            type: string
-            description: contains the actual greeting as plain text
 definitions:
   User:
     properties:
@@ -104,9 +98,11 @@ definitions:
 security:
   - isRegistered: []
 securityDefinitions:
-  Basic:
+  isRegistered:
+    # This scheme uses the header: "Authorization: Basic {base64 encoded string defined by username:password}"
+    # Scopes are not supported with this type of authorization.
     type: basic
-  JWT:
-    type: apiKey
-    name: Authorization
-    in: header
+#  JWT:
+#    type: apiKey
+#    name: Authorization
+#    in: header

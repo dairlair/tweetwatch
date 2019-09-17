@@ -7,7 +7,7 @@ import (
 	"github.com/dchest/uniuri"
 )
 
-// SignUp registers new user in system
+// SignUpHandler registers new user in system
 func (storage *Storage) SignUp(email string, password string) (token string, err error) {
 	const signUpSQL = `
 		INSERT INTO "user" (
@@ -47,8 +47,8 @@ func (storage *Storage) SignUp(email string, password string) (token string, err
 	return token, nil
 }
 
-// SignIn authenticate user, set temp token for him and returns token
-func (storage *Storage) SignIn(email string, password string) (token string, err error) {
+// Login authenticate user, set temp token for him and returns token
+func (storage *Storage) Login(email string, password string) (token string, err error) {
 	const signInSQL = `
 		SELECT 
 			hash

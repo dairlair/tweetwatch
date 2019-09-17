@@ -27,39 +27,32 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Tweetwatch Server",
-    "version": "1.0.0"
+    "version": "0.0.1"
   },
   "paths": {
-    "/hello": {
+    "/account": {
       "get": {
-        "produces": [
-          "text/plain"
-        ],
-        "operationId": "getGreeting",
-        "parameters": [
+        "security": [
           {
-            "type": "string",
-            "description": "defaults to World if not given",
-            "name": "name",
-            "in": "query"
+            "isRegistered": []
           }
         ],
+        "operationId": "account",
         "responses": {
           "200": {
-            "description": "returns a greeting",
+            "description": "Returns info about current user",
             "schema": {
-              "description": "contains the actual greeting as plain text",
-              "type": "string"
+              "$ref": "#/definitions/GeneralResponse"
             }
           }
         }
       }
     },
     "/login": {
-      "get": {
+      "post": {
         "security": [
           {
-            "Basic": []
+            "isRegistered": []
           }
         ],
         "operationId": "login",
@@ -96,6 +89,12 @@ func init() {
         "responses": {
           "200": {
             "description": "User created",
+            "schema": {
+              "$ref": "#/definitions/GeneralResponse"
+            }
+          },
+          "422": {
+            "description": "Email already taken",
             "schema": {
               "$ref": "#/definitions/GeneralResponse"
             }
@@ -162,15 +161,15 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "Basic": {
+    "isRegistered": {
       "type": "basic"
-    },
-    "JWT": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
     }
-  }
+  },
+  "security": [
+    {
+      "isRegistered": []
+    }
+  ]
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
   "consumes": [
@@ -182,39 +181,32 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Tweetwatch Server",
-    "version": "1.0.0"
+    "version": "0.0.1"
   },
   "paths": {
-    "/hello": {
+    "/account": {
       "get": {
-        "produces": [
-          "text/plain"
-        ],
-        "operationId": "getGreeting",
-        "parameters": [
+        "security": [
           {
-            "type": "string",
-            "description": "defaults to World if not given",
-            "name": "name",
-            "in": "query"
+            "isRegistered": []
           }
         ],
+        "operationId": "account",
         "responses": {
           "200": {
-            "description": "returns a greeting",
+            "description": "Returns info about current user",
             "schema": {
-              "description": "contains the actual greeting as plain text",
-              "type": "string"
+              "$ref": "#/definitions/GeneralResponse"
             }
           }
         }
       }
     },
     "/login": {
-      "get": {
+      "post": {
         "security": [
           {
-            "Basic": []
+            "isRegistered": []
           }
         ],
         "operationId": "login",
@@ -251,6 +243,12 @@ func init() {
         "responses": {
           "200": {
             "description": "User created",
+            "schema": {
+              "$ref": "#/definitions/GeneralResponse"
+            }
+          },
+          "422": {
+            "description": "Email already taken",
             "schema": {
               "$ref": "#/definitions/GeneralResponse"
             }
@@ -317,14 +315,14 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "Basic": {
+    "isRegistered": {
       "type": "basic"
-    },
-    "JWT": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
     }
-  }
+  },
+  "security": [
+    {
+      "isRegistered": []
+    }
+  ]
 }`))
 }

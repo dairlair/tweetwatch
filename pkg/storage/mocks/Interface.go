@@ -79,8 +79,8 @@ func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
 	return r0, r1
 }
 
-// SignIn provides a mock function with given fields: email, password
-func (_m *Interface) SignIn(email string, password string) (string, error) {
+// Login provides a mock function with given fields: email, password
+func (_m *Interface) Login(email string, password string) (string, error) {
 	ret := _m.Called(email, password)
 
 	var r0 string
@@ -100,7 +100,7 @@ func (_m *Interface) SignIn(email string, password string) (string, error) {
 	return r0, r1
 }
 
-// SignUp provides a mock function with given fields: email, password
+// SignUpHandler provides a mock function with given fields: email, password
 func (_m *Interface) SignUp(email string, password string) (string, error) {
 	ret := _m.Called(email, password)
 

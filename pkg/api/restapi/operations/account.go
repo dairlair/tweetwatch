@@ -11,40 +11,40 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 )
 
-// SignupHandlerFunc turns a function with the right signature into a signup handler
-type SignupHandlerFunc func(SignupParams, interface{}) middleware.Responder
+// AccountHandlerFunc turns a function with the right signature into a account handler
+type AccountHandlerFunc func(AccountParams, interface{}) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn SignupHandlerFunc) Handle(params SignupParams, principal interface{}) middleware.Responder {
+func (fn AccountHandlerFunc) Handle(params AccountParams, principal interface{}) middleware.Responder {
 	return fn(params, principal)
 }
 
-// SignupHandler interface for that can handle valid signup params
-type SignupHandler interface {
-	Handle(SignupParams, interface{}) middleware.Responder
+// AccountHandler interface for that can handle valid account params
+type AccountHandler interface {
+	Handle(AccountParams, interface{}) middleware.Responder
 }
 
-// NewSignup creates a new http.Handler for the signup operation
-func NewSignup(ctx *middleware.Context, handler SignupHandler) *Signup {
-	return &Signup{Context: ctx, Handler: handler}
+// NewAccount creates a new http.Handler for the account operation
+func NewAccount(ctx *middleware.Context, handler AccountHandler) *Account {
+	return &Account{Context: ctx, Handler: handler}
 }
 
-/*Signup swagger:route POST /signup signup
+/*Account swagger:route GET /account account
 
-Signup signup API
+Account account API
 
 */
-type Signup struct {
+type Account struct {
 	Context *middleware.Context
-	Handler SignupHandler
+	Handler AccountHandler
 }
 
-func (o *Signup) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (o *Account) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
 		r = rCtx
 	}
-	var Params = NewSignupParams()
+	var Params = NewAccountParams()
 
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {

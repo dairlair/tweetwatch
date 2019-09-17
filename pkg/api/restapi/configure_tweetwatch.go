@@ -13,13 +13,13 @@ import (
 	"github.com/dairlair/tweetwatch/pkg/api/restapi/operations"
 )
 
-//go:generate swagger generate server --target ../../api --name Greeter --spec ../../../api/swagger-spec/tweetwatch-server.yml --exclude-main
+//go:generate swagger generate server --target ../../api --name Tweetwatch --spec ../../../api/swagger-spec/tweetwatch-server.yml --exclude-main
 
-func configureFlags(api *operations.GreeterAPI) {
+func configureFlags(api *operations.TweetwatchAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-func configureAPI(api *operations.GreeterAPI) http.Handler {
+func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -31,11 +31,31 @@ func configureAPI(api *operations.GreeterAPI) http.Handler {
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
-	api.TxtProducer = runtime.TextProducer()
+	api.JSONProducer = runtime.JSONProducer()
 
-	if api.GetGreetingHandler == nil {
-		api.GetGreetingHandler = operations.GetGreetingHandlerFunc(func(params operations.GetGreetingParams) middleware.Responder {
-			return middleware.NotImplemented("operation .GetGreeting has not yet been implemented")
+	// Applies when the Authorization header is set with the Basic scheme
+	api.IsRegisteredAuth = func(user string, pass string) (interface{}, error) {
+		return nil, errors.NotImplemented("basic auth  (isRegistered) has not yet been implemented")
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
+	if api.AccountHandler == nil {
+		api.AccountHandler = operations.AccountHandlerFunc(func(params operations.AccountParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation .Account has not yet been implemented")
+		})
+	}
+	if api.LoginHandler == nil {
+		api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation .Login has not yet been implemented")
+		})
+	}
+	if api.SignupHandler == nil {
+		api.SignupHandler = operations.SignupHandlerFunc(func(params operations.SignupParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation .Signup has not yet been implemented")
 		})
 	}
 

@@ -57,6 +57,50 @@ func (o *SignupOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produc
 	}
 }
 
+// SignupUnprocessableEntityCode is the HTTP code returned for type SignupUnprocessableEntity
+const SignupUnprocessableEntityCode int = 422
+
+/*SignupUnprocessableEntity Email already taken
+
+swagger:response signupUnprocessableEntity
+*/
+type SignupUnprocessableEntity struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.GeneralResponse `json:"body,omitempty"`
+}
+
+// NewSignupUnprocessableEntity creates SignupUnprocessableEntity with default headers values
+func NewSignupUnprocessableEntity() *SignupUnprocessableEntity {
+
+	return &SignupUnprocessableEntity{}
+}
+
+// WithPayload adds the payload to the signup unprocessable entity response
+func (o *SignupUnprocessableEntity) WithPayload(payload *models.GeneralResponse) *SignupUnprocessableEntity {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the signup unprocessable entity response
+func (o *SignupUnprocessableEntity) SetPayload(payload *models.GeneralResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *SignupUnprocessableEntity) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(422)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 /*SignupDefault Error
 
 swagger:response signupDefault

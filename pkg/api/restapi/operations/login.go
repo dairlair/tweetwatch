@@ -29,7 +29,7 @@ func NewLogin(ctx *middleware.Context, handler LoginHandler) *Login {
 	return &Login{Context: ctx, Handler: handler}
 }
 
-/*Login swagger:route GET /login login
+/*Login swagger:route POST /login login
 
 Login login API
 

@@ -1,21 +1,17 @@
 package service
 
 import (
-	"fmt"
-	"github.com/dairlair/tweetwatch/pkg/api/models"
 	"github.com/dairlair/tweetwatch/pkg/api/restapi"
 	"github.com/dairlair/tweetwatch/pkg/api/restapi/operations"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"github.com/go-openapi/loads"
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/swag"
 	log "github.com/sirupsen/logrus"
 )
 
 type Service struct {
-	API *operations.GreeterAPI
+	API *operations.TweetwatchAPI
 	storage storage.Interface
 	twitterclient twitterclient.Interface
 	tweetStreamsChannel chan entity.TweetStreamsInterface
@@ -33,19 +29,20 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 		log.Fatalln(err)
 	}
 	// create new service API
-	service.API = operations.NewGreeterAPI(swaggerSpec)
-	// set handlers
-	service.API.SignupHandler = operations.SignupHandlerFunc(service.SignUp)
-	service.API.GetGreetingHandler = operations.GetGreetingHandlerFunc(
-		func(params operations.GetGreetingParams) middleware.Responder {
-			name := swag.StringValue(params.Name)
-			if name == "" {
-				name = "World"
-			}
+	service.API = operations.NewTweetwatchAPI(swaggerSpec)
 
-			greeting := fmt.Sprintf("Hello, %s!", name)
-			return operations.NewGetGreetingOK().WithPayload(greeting)
-		})
+	// set handlers
+	//service.API.IsRegisteredAuth = service.login
+	service.API.IsRegisteredAuth = func(user string, pass string) (interface{}, error) {
+		// The header: Authorization: Basic {base64 string} has already been decoded by the runtime as a
+		// username:password pair
+		log.Errorf("IsRegisteredAuth handler called\n")
+		return service.login(user, pass)
+	}
+	service.API.Logger = log.Printf
+	service.API.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
+	service.API.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
+
 	// up...
 	service.up()
 
@@ -80,21 +77,4 @@ func (service *Service) up() {
 		log.Fatalf("twitterclient error: %s\n", err)
 	}
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
-}
-
-
-func (service *Service) SignUp (params operations.SignupParams) middleware.Responder {
-
-	token, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
-
-	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("Email already taken")}
-		return operations.NewSignupDefault(422).WithPayload(&payload)
-	}
-
-	message := fmt.Sprintf("User [%s] registered with token [%s]", *params.User.Email, token)
-	payload := models.GeneralResponse{
-		Message: &message,
-	}
-	return operations.NewSignupOK().WithPayload(&payload)
 }
