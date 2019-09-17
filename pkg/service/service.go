@@ -85,13 +85,13 @@ func (service *Service) up() {
 
 func (service *Service) SignUp (params operations.SignupParams) middleware.Responder {
 
-	token, err := service.storage.SignUp(*params.User.Username, params.User.Password.String())
+	token, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
 
 	if err != nil {
 		return middleware.NotImplemented("Error handling not implemented")
 	}
 
-	message := fmt.Sprintf("User [%s] registered with token [%s]", *params.User.Username, token)
+	message := fmt.Sprintf("User [%s] registered with token [%s]", *params.User.Email, token)
 	payload := models.GeneralResponse{
 		Message: &message,
 	}

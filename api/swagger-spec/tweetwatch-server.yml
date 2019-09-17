@@ -66,13 +66,13 @@ paths:
 definitions:
   User:
     properties:
-      username: 
+      email:
         type: string
       password:
         type: string
         format: password
     required:
-      - username
+      - email
       - password
   Token:
     properties:

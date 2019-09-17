@@ -147,16 +147,16 @@ func init() {
     },
     "User": {
       "required": [
-        "username",
+        "email",
         "password"
       ],
       "properties": {
+        "email": {
+          "type": "string"
+        },
         "password": {
           "type": "string",
           "format": "password"
-        },
-        "username": {
-          "type": "string"
         }
       }
     }
@@ -302,16 +302,16 @@ func init() {
     },
     "User": {
       "required": [
-        "username",
+        "email",
         "password"
       ],
       "properties": {
+        "email": {
+          "type": "string"
+        },
         "password": {
           "type": "string",
           "format": "password"
-        },
-        "username": {
-          "type": "string"
         }
       }
     }
