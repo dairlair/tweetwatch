@@ -1,12 +1,15 @@
 package service
 
 import (
+	"fmt"
+	"github.com/dairlair/tweetwatch/pkg/api/models"
 	"github.com/dairlair/tweetwatch/pkg/api/restapi"
 	"github.com/dairlair/tweetwatch/pkg/api/restapi/operations"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"github.com/go-openapi/loads"
+	"github.com/go-openapi/runtime/middleware"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -36,6 +39,13 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.IsRegisteredAuth  =service.isRegisteredAuth
 	api.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
 	api.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
+	api.AccountHandler = operations.AccountHandlerFunc(func(params operations.AccountParams, user *models.User) middleware.Responder {
+		message := fmt.Sprintf("AccountHandler [%v], [%v]", params, user.Email)
+		payload := models.GeneralResponse{
+			Message: &message,
+		}
+		return operations.NewAccountOK().WithPayload(&payload)
+	})
 	service.API = api
 
 	// up...
