@@ -8,7 +8,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-func (service *Service) SignUpHandler(params operations.SignupParams, data interface{}) middleware.Responder {
+func (service *Service) SignUpHandler(params operations.SignupParams) middleware.Responder {
 
 	token, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
 

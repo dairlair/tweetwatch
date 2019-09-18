@@ -9,19 +9,21 @@ import (
 	"net/http"
 
 	middleware "github.com/go-openapi/runtime/middleware"
+
+	models "github.com/dairlair/tweetwatch/pkg/api/models"
 )
 
 // LoginHandlerFunc turns a function with the right signature into a login handler
-type LoginHandlerFunc func(LoginParams, interface{}) middleware.Responder
+type LoginHandlerFunc func(LoginParams, *models.User) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn LoginHandlerFunc) Handle(params LoginParams, principal interface{}) middleware.Responder {
+func (fn LoginHandlerFunc) Handle(params LoginParams, principal *models.User) middleware.Responder {
 	return fn(params, principal)
 }
 
 // LoginHandler interface for that can handle valid login params
 type LoginHandler interface {
-	Handle(LoginParams, interface{}) middleware.Responder
+	Handle(LoginParams, *models.User) middleware.Responder
 }
 
 // NewLogin creates a new http.Handler for the login operation
@@ -54,9 +56,9 @@ func (o *Login) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal interface{}
+	var principal *models.User
 	if uprinc != nil {
-		principal = uprinc
+		principal = uprinc.(*models.User) // this is really a models.User, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

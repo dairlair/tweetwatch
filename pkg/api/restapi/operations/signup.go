@@ -12,16 +12,16 @@ import (
 )
 
 // SignupHandlerFunc turns a function with the right signature into a signup handler
-type SignupHandlerFunc func(SignupParams, interface{}) middleware.Responder
+type SignupHandlerFunc func(SignupParams) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn SignupHandlerFunc) Handle(params SignupParams, principal interface{}) middleware.Responder {
-	return fn(params, principal)
+func (fn SignupHandlerFunc) Handle(params SignupParams) middleware.Responder {
+	return fn(params)
 }
 
 // SignupHandler interface for that can handle valid signup params
 type SignupHandler interface {
-	Handle(SignupParams, interface{}) middleware.Responder
+	Handle(SignupParams) middleware.Responder
 }
 
 // NewSignup creates a new http.Handler for the signup operation
@@ -46,25 +46,12 @@ func (o *Signup) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 	var Params = NewSignupParams()
 
-	uprinc, aCtx, err := o.Context.Authorize(r, route)
-	if err != nil {
-		o.Context.Respond(rw, r, route.Produces, route, err)
-		return
-	}
-	if aCtx != nil {
-		r = aCtx
-	}
-	var principal interface{}
-	if uprinc != nil {
-		principal = uprinc
-	}
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params, principal) // actually handle the request
+	res := o.Handler.Handle(Params) // actually handle the request
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 

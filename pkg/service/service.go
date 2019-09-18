@@ -29,19 +29,14 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 		log.Fatalln(err)
 	}
 	// create new service API
-	service.API = operations.NewTweetwatchAPI(swaggerSpec)
+	api := operations.NewTweetwatchAPI(swaggerSpec)
 
 	// set handlers
-	//service.API.IsRegisteredAuth = service.login
-	service.API.IsRegisteredAuth = func(user string, pass string) (interface{}, error) {
-		// The header: Authorization: Basic {base64 string} has already been decoded by the runtime as a
-		// username:password pair
-		log.Errorf("IsRegisteredAuth handler called\n")
-		return service.login(user, pass)
-	}
-	service.API.Logger = log.Printf
-	service.API.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
-	service.API.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
+	api.Logger = log.Printf
+	api.IsRegisteredAuth  =service.isRegisteredAuth
+	api.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
+	api.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
+	service.API = api
 
 	// up...
 	service.up()

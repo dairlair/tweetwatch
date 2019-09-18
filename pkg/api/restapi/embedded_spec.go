@@ -74,6 +74,7 @@ func init() {
     },
     "/signup": {
       "post": {
+        "security": [],
         "operationId": "signup",
         "parameters": [
           {
@@ -228,6 +229,7 @@ func init() {
     },
     "/signup": {
       "post": {
+        "security": [],
         "operationId": "signup",
         "parameters": [
           {

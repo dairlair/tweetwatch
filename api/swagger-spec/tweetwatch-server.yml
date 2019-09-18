@@ -15,6 +15,7 @@ paths:
   /signup:
     post:
       operationId: signup
+      security: []
       parameters:
         - name: user
           in: body
