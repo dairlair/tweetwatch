@@ -1,0 +1,8 @@
+- name: WHEN email and password are valid MUST return successful responce
+  method: GET
+  path: /signup
+  response:
+    200: >
+      {
+          "currentLight": "red"
+      }
