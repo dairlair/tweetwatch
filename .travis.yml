@@ -55,9 +55,10 @@ jobs:
 
     - stage: e2e
       script:
+        - go run cmd/server/server.go
         - cd tests/e2e
-        - npm i
-        - npm run test
+        - yarn
+        - yarn test
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
