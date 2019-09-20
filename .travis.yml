@@ -59,7 +59,7 @@ jobs:
         - POSTGRES_DSN="$TWEETWATCH_TEST_POSTGRES_DSN" TWITTER_PROVIDER=void REST_PORT=1308 go run -mod=vendor cmd/server/server.go
         - TWEETWATCH_PID=$!
         - echo $TWEETWATCH_PID
-        - sleep 3
+        - sleep 15
         - curl "http://localhost:1308/login"
         - netstat -natp
         - ps aux

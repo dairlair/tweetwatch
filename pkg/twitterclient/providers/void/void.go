@@ -44,7 +44,7 @@ func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error 
 			CreatedAt:     time.Now().Format("2006-01-02 15:04:05"),
 		}
 		tweetStreams := entity.NewTweetStreams(&tweet, entity.StreamsMapToSlice(instance.GetStreams()))
-		for i := 0; i < 5; i++ {
+		for i := 0; i < 1; i++ {
 			<-time.After(time.Second)
 			select {
 			case output <- tweetStreams:
