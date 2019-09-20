@@ -59,6 +59,7 @@ func (instance *Instance) Start() {
 	// create server
 	server := restapi.NewServer(serviceInstance.API)
 	server.Port = instance.config.RESTListen
+	log.Infof("Start listen on %d port", server.Port)
 	defer func() {
 		err := server.Shutdown()
 		if err != nil {

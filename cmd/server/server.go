@@ -80,7 +80,7 @@ func configureViper() {
 	viper.AddConfigPath("$HOME/.twitwatch")
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.SetDefault("rest.listen", ":1308")
+	viper.SetDefault("rest.post", "1308")
 	viper.SetDefault("twitter.provider", "go-twitter")
 	viper.SetDefault("server.logLevel", "warning")
 }
