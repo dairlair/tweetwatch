@@ -57,6 +57,8 @@ jobs:
       script:
         - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWEETWATCH_TEST_POSTGRES_DSN" up
         - POSTGRES_DSN="$TWEETWATCH_TEST_POSTGRES_DSN" TWITTER_PROVIDER=void REST_PORT=1308 go run -mod=vendor cmd/server/server.go &
+        - sleep 3
+        - netstat -natp | grep "PID\|1308"
         - ps aux
         - cd tests/e2e
         - yarn
