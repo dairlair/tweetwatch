@@ -53,6 +53,12 @@ jobs:
     - stage: test
       script: go test $CUSTOM_GOFLAGS -race -coverprofile=coverage.txt -covermode=atomic ./...
 
+    - stage: e2e
+      script:
+        - cd tests/e2e
+        - npm i
+        - npm run test
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   # Publish the docker image.

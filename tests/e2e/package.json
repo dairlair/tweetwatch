@@ -3,5 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/express": "^4.17.1",
+    "@types/mocha": "^5.2.7",
+    "@types/mongoose": "^5.5.17",
+    "@types/node": "^12.7.5",
+    "@types/supertest": "^2.0.8",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+    "test-dev": "nodemon --watch . --ext ts --exec yarn test",
+    "test": "mocha -r ts-node/register test/**/*.test.ts"
+  }
 }
