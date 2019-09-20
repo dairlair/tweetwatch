@@ -60,7 +60,8 @@ jobs:
         - TWEETWATCH_PID=$!
         - echo $TWEETWATCH_PID
         - sleep 3
-        - netstat -natp | grep "PID\|1308"
+        - curl "http://localhost:1308/login"
+        - netstat -natp
         - ps aux
         - cd tests/e2e
         - yarn
