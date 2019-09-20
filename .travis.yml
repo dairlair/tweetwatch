@@ -55,7 +55,9 @@ jobs:
 
     - stage: e2e
       script:
-        - go run cmd/server/server.go
+        - psql -c 'create database twitwatch;' -U postgres
+        - ./tools/migrate.linux-amd64 -source file:schema/postgres -database "$TWEETWATCH_TEST_POSTGRES_DSN" up
+        - go run cmd/server/server.go &
         - cd tests/e2e
         - yarn
         - yarn test
