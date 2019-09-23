@@ -42,6 +42,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		AccountHandler: AccountHandlerFunc(func(params AccountParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation Account has not yet been implemented")
 		}),
+		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
+		}),
 		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation Login has not yet been implemented")
 		}),
@@ -96,6 +99,8 @@ type TweetwatchAPI struct {
 
 	// AccountHandler sets the operation handler for the account operation
 	AccountHandler AccountHandler
+	// CreateTopicHandler sets the operation handler for the create topic operation
+	CreateTopicHandler CreateTopicHandler
 	// LoginHandler sets the operation handler for the login operation
 	LoginHandler LoginHandler
 	// SignupHandler sets the operation handler for the signup operation
@@ -169,6 +174,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.AccountHandler == nil {
 		unregistered = append(unregistered, "AccountHandler")
+	}
+
+	if o.CreateTopicHandler == nil {
+		unregistered = append(unregistered, "CreateTopicHandler")
 	}
 
 	if o.LoginHandler == nil {
@@ -292,6 +301,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/account"] = NewAccount(o.context, o.AccountHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/topic"] = NewCreateTopic(o.context, o.CreateTopicHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

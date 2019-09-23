@@ -108,9 +108,47 @@ func init() {
           }
         }
       }
+    },
+    "/topic": {
+      "post": {
+        "operationId": "createTopic",
+        "parameters": [
+          {
+            "description": "New Topic",
+            "name": "topic",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTopicRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic created",
+            "schema": {
+              "$ref": "#/definitions/Topic"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CreateTopicRequest": {
+      "required": [
+        "name",
+        "track"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "track": {
+          "type": "string"
+        }
+      }
+    },
     "ErrorResponse": {
       "required": [
         "message"
@@ -141,6 +179,24 @@ func init() {
           "type": "string"
         },
         "user": {
+          "type": "string"
+        }
+      }
+    },
+    "Topic": {
+      "required": [
+        "id",
+        "name",
+        "track"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "track": {
           "type": "string"
         }
       }
@@ -277,9 +333,47 @@ func init() {
           }
         }
       }
+    },
+    "/topic": {
+      "post": {
+        "operationId": "createTopic",
+        "parameters": [
+          {
+            "description": "New Topic",
+            "name": "topic",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTopicRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic created",
+            "schema": {
+              "$ref": "#/definitions/Topic"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CreateTopicRequest": {
+      "required": [
+        "name",
+        "track"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "track": {
+          "type": "string"
+        }
+      }
+    },
     "ErrorResponse": {
       "required": [
         "message"
@@ -310,6 +404,24 @@ func init() {
           "type": "string"
         },
         "user": {
+          "type": "string"
+        }
+      }
+    },
+    "Topic": {
+      "required": [
+        "id",
+        "name",
+        "track"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "track": {
           "type": "string"
         }
       }

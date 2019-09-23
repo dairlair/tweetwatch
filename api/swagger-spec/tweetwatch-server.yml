@@ -37,17 +37,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
-  /account:
-    get:
-      operationId: account
-      security:
-        - isRegistered: []
-      responses:
-        "200":
-          description: Returns info about current user
-          schema:
-            $ref: "#/definitions/UserResponse"
   /login:
     post:
       operationId: login
@@ -63,6 +52,21 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /topic:
+    post:
+      operationId: createTopic
+      parameters:
+        - name: topic
+          in: body
+          description: New Topic
+          required: true
+          schema:
+            $ref: '#/definitions/CreateTopicRequest'
+      responses:
+        "200":
+          description: Topic created
+          schema:
+            $ref: "#/definitions/Topic"
 definitions:
   UserResponse:
     properties:
@@ -83,6 +87,27 @@ definitions:
     required:
       - email
       - password
+  CreateTopicRequest:
+    properties:
+      name:
+        type: string
+      track:
+        type: string
+    required:
+      - name
+      - track
+  Topic:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      track:
+        type: string
+    required:
+      - id
+      - name
+      - track
   Token:
     properties:
       user:

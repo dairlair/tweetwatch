@@ -56,8 +56,9 @@ func (storage *Storage) Login(email string, password string) (id *int64, err err
 	`
 
 	var storedHash string
+	var userId int64
 
-	if err := storage.connPool.QueryRow(signInSQL, email).Scan(&storedHash, id); err != nil {
+	if err := storage.connPool.QueryRow(signInSQL, email).Scan(&storedHash, &userId); err != nil {
 		return nil, pgError(err)
 	}
 
@@ -65,5 +66,5 @@ func (storage *Storage) Login(email string, password string) (id *int64, err err
 		return nil, errors.New("invalid credentials")
 	}
 
-	return id, nil
+	return &userId, nil
 }

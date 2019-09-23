@@ -5,8 +5,19 @@ const request = supertest('http://localhost:1308');
 
 var email: String, password: String;
 
-email = "john." + Date.now() + "@example.com";
-password = "secret";
+before(async () => {  
+    email = "john." + Date.now() + "@example.com";
+    password = "secret";
+})
+
+it('Should POST /signup return 2000 and id and email with valid credentials', async function () {
+    const res = await request
+        .post('/signup')
+        .send({email: email, password: password});
+
+    expect(res.body).has.property("id").greaterThan(0);
+    expect(res.body).has.property("email").eq(email);
+});
 
 it('Should POST /signup return 422 for missing email', async function () {   
     const res = await request
@@ -28,15 +39,6 @@ it('Should POST /signup return 422 for missing password', async function () {
     expect(res.body).not.has.property("id");
     expect(res.body).not.has.property("email");
     expect(res.body).has.property("message").eq("password in body is required");
-});
-
-it('Should POST /signup return id and email with valid credentials', async function () {
-    const res = await request
-        .post('/signup')
-        .send({email: email, password: password});
-
-    expect(res.body).has.property("id").greaterThan(0);
-    expect(res.body).has.property("email").eq(email);
 });
 
 it('Should POST /signup return 422 for email already taken', async function () {   
