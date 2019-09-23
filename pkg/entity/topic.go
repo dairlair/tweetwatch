@@ -5,16 +5,16 @@ type TopicInterface interface {
 	GetID() int64
 	GetUserID() int64
 	GetName() string
-	GetTrack() string
+	GetTracks() []string
 	GetCreatedAt() string
 }
 
 // Topic is a basic structure implementing TopicInterface
 type Topic struct {
 	ID        int64
-	UserID int64
+	UserID    int64
 	Name      string
-	Track     string
+	Tracks    []string
 	CreatedAt string
 }
 
@@ -34,8 +34,8 @@ func (t *Topic) GetName() string {
 }
 
 // GetTrack returns the topic's track
-func (t *Topic) GetTrack() string {
-	return t.Track
+func (t *Topic) GetTracks() []string {
+	return t.Tracks
 }
 
 // GetCreatedAt returns twit's full text

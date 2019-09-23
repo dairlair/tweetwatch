@@ -30,24 +30,6 @@ func init() {
     "version": "0.0.1"
   },
   "paths": {
-    "/account": {
-      "get": {
-        "security": [
-          {
-            "isRegistered": []
-          }
-        ],
-        "operationId": "account",
-        "responses": {
-          "200": {
-            "description": "Returns info about current user",
-            "schema": {
-              "$ref": "#/definitions/UserResponse"
-            }
-          }
-        }
-      }
-    },
     "/login": {
       "post": {
         "security": [
@@ -129,6 +111,12 @@ func init() {
             "schema": {
               "$ref": "#/definitions/Topic"
             }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
         }
       }
@@ -138,14 +126,17 @@ func init() {
     "CreateTopicRequest": {
       "required": [
         "name",
-        "track"
+        "tracks"
       ],
       "properties": {
         "name": {
           "type": "string"
         },
-        "track": {
-          "type": "string"
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -187,17 +178,24 @@ func init() {
       "required": [
         "id",
         "name",
-        "track"
+        "tracks",
+        "createdAt"
       ],
       "properties": {
+        "createdAt": {
+          "type": "string"
+        },
         "id": {
           "type": "integer"
         },
         "name": {
           "type": "string"
         },
-        "track": {
-          "type": "string"
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -255,24 +253,6 @@ func init() {
     "version": "0.0.1"
   },
   "paths": {
-    "/account": {
-      "get": {
-        "security": [
-          {
-            "isRegistered": []
-          }
-        ],
-        "operationId": "account",
-        "responses": {
-          "200": {
-            "description": "Returns info about current user",
-            "schema": {
-              "$ref": "#/definitions/UserResponse"
-            }
-          }
-        }
-      }
-    },
     "/login": {
       "post": {
         "security": [
@@ -354,6 +334,12 @@ func init() {
             "schema": {
               "$ref": "#/definitions/Topic"
             }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
         }
       }
@@ -363,14 +349,17 @@ func init() {
     "CreateTopicRequest": {
       "required": [
         "name",
-        "track"
+        "tracks"
       ],
       "properties": {
         "name": {
           "type": "string"
         },
-        "track": {
-          "type": "string"
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -412,17 +401,24 @@ func init() {
       "required": [
         "id",
         "name",
-        "track"
+        "tracks",
+        "createdAt"
       ],
       "properties": {
+        "createdAt": {
+          "type": "string"
+        },
         "id": {
           "type": "integer"
         },
         "name": {
           "type": "string"
         },
-        "track": {
-          "type": "string"
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

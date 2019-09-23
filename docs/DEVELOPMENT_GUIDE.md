@@ -9,6 +9,8 @@ http post :1308/signup email=john@example.com password=secret
 # And login then...
 basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i-`
 http POST :1308/login "Authorization:Basic ${basic}"
+# Or create your first topic
+http POST :1308/topic "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
 ```
 
 # Swagger stubs regenerate

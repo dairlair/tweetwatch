@@ -39,9 +39,6 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
-		AccountHandler: AccountHandlerFunc(func(params AccountParams, principal *models.UserResponse) middleware.Responder {
-			return middleware.NotImplemented("operation Account has not yet been implemented")
-		}),
 		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
 		}),
@@ -97,8 +94,6 @@ type TweetwatchAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
-	// AccountHandler sets the operation handler for the account operation
-	AccountHandler AccountHandler
 	// CreateTopicHandler sets the operation handler for the create topic operation
 	CreateTopicHandler CreateTopicHandler
 	// LoginHandler sets the operation handler for the login operation
@@ -170,10 +165,6 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.IsRegisteredAuth == nil {
 		unregistered = append(unregistered, "IsRegisteredAuth")
-	}
-
-	if o.AccountHandler == nil {
-		unregistered = append(unregistered, "AccountHandler")
 	}
 
 	if o.CreateTopicHandler == nil {
@@ -296,11 +287,6 @@ func (o *TweetwatchAPI) initHandlerCache() {
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/account"] = NewAccount(o.context, o.AccountHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

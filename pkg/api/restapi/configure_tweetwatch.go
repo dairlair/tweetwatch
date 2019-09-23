@@ -45,9 +45,9 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	//
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
-	if api.AccountHandler == nil {
-		api.AccountHandler = operations.AccountHandlerFunc(func(params operations.AccountParams, principal *models.UserResponse) middleware.Responder {
-			return middleware.NotImplemented("operation .Account has not yet been implemented")
+	if api.CreateTopicHandler == nil {
+		api.CreateTopicHandler = operations.CreateTopicHandlerFunc(func(params operations.CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation .CreateTopic has not yet been implemented")
 		})
 	}
 	if api.LoginHandler == nil {

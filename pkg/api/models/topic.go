@@ -17,6 +17,10 @@ import (
 // swagger:model Topic
 type Topic struct {
 
+	// created at
+	// Required: true
+	CreatedAt *string `json:"createdAt"`
+
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
@@ -25,14 +29,18 @@ type Topic struct {
 	// Required: true
 	Name *string `json:"name"`
 
-	// track
+	// tracks
 	// Required: true
-	Track *string `json:"track"`
+	Tracks []string `json:"tracks"`
 }
 
 // Validate validates this topic
 func (m *Topic) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
@@ -42,13 +50,22 @@ func (m *Topic) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateTrack(formats); err != nil {
+	if err := m.validateTracks(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Topic) validateCreatedAt(formats strfmt.Registry) error {
+
+	if err := validate.Required("createdAt", "body", m.CreatedAt); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -70,9 +87,9 @@ func (m *Topic) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Topic) validateTrack(formats strfmt.Registry) error {
+func (m *Topic) validateTracks(formats strfmt.Registry) error {
 
-	if err := validate.Required("track", "body", m.Track); err != nil {
+	if err := validate.Required("tracks", "body", m.Tracks); err != nil {
 		return err
 	}
 

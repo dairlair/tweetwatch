@@ -67,6 +67,10 @@ paths:
           description: Topic created
           schema:
             $ref: "#/definitions/Topic"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 definitions:
   UserResponse:
     properties:
@@ -91,23 +95,30 @@ definitions:
     properties:
       name:
         type: string
-      track:
-        type: string
+      tracks:
+        type: array
+        items:
+          type: string
     required:
       - name
-      - track
+      - tracks
   Topic:
     properties:
       id:
         type: integer
       name:
         type: string
-      track:
+      tracks:
+        type: array
+        items:
+          type: string
+      createdAt:
         type: string
     required:
       - id
       - name
-      - track
+      - tracks
+      - createdAt
   Token:
     properties:
       user:

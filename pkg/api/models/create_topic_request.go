@@ -21,9 +21,9 @@ type CreateTopicRequest struct {
 	// Required: true
 	Name *string `json:"name"`
 
-	// track
+	// tracks
 	// Required: true
-	Track *string `json:"track"`
+	Tracks []string `json:"tracks"`
 }
 
 // Validate validates this create topic request
@@ -34,7 +34,7 @@ func (m *CreateTopicRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateTrack(formats); err != nil {
+	if err := m.validateTracks(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -53,9 +53,9 @@ func (m *CreateTopicRequest) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateTopicRequest) validateTrack(formats strfmt.Registry) error {
+func (m *CreateTopicRequest) validateTracks(formats strfmt.Registry) error {
 
-	if err := validate.Required("track", "body", m.Track); err != nil {
+	if err := validate.Required("tracks", "body", m.Tracks); err != nil {
 		return err
 	}
 

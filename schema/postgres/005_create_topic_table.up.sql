@@ -2,8 +2,8 @@ CREATE TABLE topic (
     topic_id BIGSERIAL PRIMARY KEY
     , user_id BIGINT REFERENCES "user"(user_id) ON DELETE CASCADE
     , name TEXT NOT NULL
-    , tracks TEXT NOT NULL
-    , created_at   TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , tracks TEXT[] NOT NULL
+    , created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE stream
