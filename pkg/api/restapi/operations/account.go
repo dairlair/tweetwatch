@@ -14,16 +14,16 @@ import (
 )
 
 // AccountHandlerFunc turns a function with the right signature into a account handler
-type AccountHandlerFunc func(AccountParams, *models.User) middleware.Responder
+type AccountHandlerFunc func(AccountParams, *models.UserResponse) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn AccountHandlerFunc) Handle(params AccountParams, principal *models.User) middleware.Responder {
+func (fn AccountHandlerFunc) Handle(params AccountParams, principal *models.UserResponse) middleware.Responder {
 	return fn(params, principal)
 }
 
 // AccountHandler interface for that can handle valid account params
 type AccountHandler interface {
-	Handle(AccountParams, *models.User) middleware.Responder
+	Handle(AccountParams, *models.UserResponse) middleware.Responder
 }
 
 // NewAccount creates a new http.Handler for the account operation
@@ -56,9 +56,9 @@ func (o *Account) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal *models.User
+	var principal *models.UserResponse
 	if uprinc != nil {
-		principal = uprinc.(*models.User) // this is really a models.User, I promise
+		principal = uprinc.(*models.UserResponse) // this is really a models.UserResponse, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

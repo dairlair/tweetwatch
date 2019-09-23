@@ -39,10 +39,10 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
-		AccountHandler: AccountHandlerFunc(func(params AccountParams, principal *models.User) middleware.Responder {
+		AccountHandler: AccountHandlerFunc(func(params AccountParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation Account has not yet been implemented")
 		}),
-		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal *models.User) middleware.Responder {
+		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation Login has not yet been implemented")
 		}),
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
@@ -50,7 +50,7 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		}),
 
 		// Applies when the Authorization header is set with the Basic scheme
-		IsRegisteredAuth: func(user string, pass string) (*models.User, error) {
+		IsRegisteredAuth: func(user string, pass string) (*models.UserResponse, error) {
 			return nil, errors.NotImplemented("basic auth  (isRegistered) has not yet been implemented")
 		},
 
@@ -89,7 +89,7 @@ type TweetwatchAPI struct {
 
 	// IsRegisteredAuth registers a function that takes username and password and returns a principal
 	// it performs authentication with basic auth
-	IsRegisteredAuth func(string, string) (*models.User, error)
+	IsRegisteredAuth func(string, string) (*models.UserResponse, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer

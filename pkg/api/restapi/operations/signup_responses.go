@@ -25,7 +25,7 @@ type SignupOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.GeneralResponse `json:"body,omitempty"`
+	Payload *models.UserResponse `json:"body,omitempty"`
 }
 
 // NewSignupOK creates SignupOK with default headers values
@@ -35,13 +35,13 @@ func NewSignupOK() *SignupOK {
 }
 
 // WithPayload adds the payload to the signup o k response
-func (o *SignupOK) WithPayload(payload *models.GeneralResponse) *SignupOK {
+func (o *SignupOK) WithPayload(payload *models.UserResponse) *SignupOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the signup o k response
-func (o *SignupOK) SetPayload(payload *models.GeneralResponse) {
+func (o *SignupOK) SetPayload(payload *models.UserResponse) {
 	o.Payload = payload
 }
 
@@ -69,7 +69,7 @@ type SignupUnprocessableEntity struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.GeneralResponse `json:"body,omitempty"`
+	Payload *models.ErrorResponse `json:"body,omitempty"`
 }
 
 // NewSignupUnprocessableEntity creates SignupUnprocessableEntity with default headers values
@@ -79,13 +79,13 @@ func NewSignupUnprocessableEntity() *SignupUnprocessableEntity {
 }
 
 // WithPayload adds the payload to the signup unprocessable entity response
-func (o *SignupUnprocessableEntity) WithPayload(payload *models.GeneralResponse) *SignupUnprocessableEntity {
+func (o *SignupUnprocessableEntity) WithPayload(payload *models.ErrorResponse) *SignupUnprocessableEntity {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the signup unprocessable entity response
-func (o *SignupUnprocessableEntity) SetPayload(payload *models.GeneralResponse) {
+func (o *SignupUnprocessableEntity) SetPayload(payload *models.ErrorResponse) {
 	o.Payload = payload
 }
 

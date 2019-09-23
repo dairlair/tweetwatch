@@ -25,7 +25,7 @@ type AccountOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.GeneralResponse `json:"body,omitempty"`
+	Payload *models.UserResponse `json:"body,omitempty"`
 }
 
 // NewAccountOK creates AccountOK with default headers values
@@ -35,13 +35,13 @@ func NewAccountOK() *AccountOK {
 }
 
 // WithPayload adds the payload to the account o k response
-func (o *AccountOK) WithPayload(payload *models.GeneralResponse) *AccountOK {
+func (o *AccountOK) WithPayload(payload *models.UserResponse) *AccountOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the account o k response
-func (o *AccountOK) SetPayload(payload *models.GeneralResponse) {
+func (o *AccountOK) SetPayload(payload *models.UserResponse) {
 	o.Payload = payload
 }
 

@@ -22,16 +22,16 @@ paths:
           description: New User
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserRequest'
       responses:
         "200":
           description: User created
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/UserResponse"
         "422":
           description: Email already taken
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/ErrorResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -47,7 +47,7 @@ paths:
         "200":
           description: Returns info about current user
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/UserResponse"
   /login:
     post:
       operationId: login
@@ -64,7 +64,16 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 definitions:
-  User:
+  UserResponse:
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+    required:
+      - id
+      - email
+  UserRequest:
     properties:
       email:
         type: string

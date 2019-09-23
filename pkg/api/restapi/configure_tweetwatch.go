@@ -15,7 +15,7 @@ import (
 	models "github.com/dairlair/tweetwatch/pkg/api/models"
 )
 
-//go:generate swagger generate server --target ../../api --name Tweetwatch --spec ../../../api/swagger-spec/tweetwatch-server.yml --principal models.User --exclude-main
+//go:generate swagger generate server --target ../../api --name Tweetwatch --spec ../../../api/swagger-spec/tweetwatch-server.yml --principal models.UserResponse --exclude-main
 
 func configureFlags(api *operations.TweetwatchAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -36,7 +36,7 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the Authorization header is set with the Basic scheme
-	api.IsRegisteredAuth = func(user string, pass string) (*models.User, error) {
+	api.IsRegisteredAuth = func(user string, pass string) (*models.UserResponse, error) {
 		return nil, errors.NotImplemented("basic auth  (isRegistered) has not yet been implemented")
 	}
 
@@ -46,12 +46,12 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 	if api.AccountHandler == nil {
-		api.AccountHandler = operations.AccountHandlerFunc(func(params operations.AccountParams, principal *models.User) middleware.Responder {
+		api.AccountHandler = operations.AccountHandlerFunc(func(params operations.AccountParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation .Account has not yet been implemented")
 		})
 	}
 	if api.LoginHandler == nil {
-		api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams, principal *models.User) middleware.Responder {
+		api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation .Login has not yet been implemented")
 		})
 	}

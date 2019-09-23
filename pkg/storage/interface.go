@@ -9,6 +9,6 @@ type Interface interface {
 	AddStream(entity.StreamInterface) (stream entity.StreamInterface, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTweetStreams(tweetStreams entity.TweetStreamsInterface) (id int64, err error)
-	SignUp(email string, password string) (token string, err error)
-	Login(email string, password string) (token string, err error)
+	SignUp(email string, password string) (id *int64, err error)
+	Login(email string, password string) (id *int64, err error)
 }

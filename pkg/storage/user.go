@@ -4,24 +4,22 @@ import (
 	"errors"
 
 	"github.com/dairlair/tweetwatch/pkg/security"
-	"github.com/dchest/uniuri"
 )
 
 // SignUpHandler registers new user in system
-func (storage *Storage) SignUp(email string, password string) (token string, err error) {
+func (storage *Storage) SignUp(email string, password string) (id *int64, err error) {
 	const signUpSQL = `
 		INSERT INTO "user" (
 			email
 			, hash
-			, token
 		) VALUES (
-			$1, $2, $3
-		) RETURNING token
+			$1, $2
+		) RETURNING user_id
 	`
 
 	tx, err := storage.connPool.Begin()
 	if err != nil {
-		return "", pgError(err)
+		return nil, pgError(err)
 	}
 	defer func() {
 		if err != nil {
@@ -30,44 +28,42 @@ func (storage *Storage) SignUp(email string, password string) (token string, err
 	}()
 
 	hash := security.HashAndSalt([]byte(password))
-	token = uniuri.New()
 
+	var userId int64
 	if err := tx.QueryRow(signUpSQL,
 		email,
 		hash,
-		token,
-	).Scan(&token); err != nil {
-		return "", pgError(err)
+	).Scan(&userId); err != nil {
+		return nil, pgError(err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return "", pgError(err)
+		return nil, pgError(err)
 	}
 
-	return token, nil
+	return &userId, nil
 }
 
 // Login authenticate user, set temp token for him and returns token
-func (storage *Storage) Login(email string, password string) (token string, err error) {
+func (storage *Storage) Login(email string, password string) (id *int64, err error) {
 	const signInSQL = `
 		SELECT 
 			hash
-			, token
+			, user_id
 		FROM
 			"user"
 		WHERE LOWER(email) = $1
 	`
 
 	var storedHash string
-	var storedToken string
 
-	if err := storage.connPool.QueryRow(signInSQL, email).Scan(&storedHash, &storedToken); err != nil {
-		return "", pgError(err)
+	if err := storage.connPool.QueryRow(signInSQL, email).Scan(&storedHash, id); err != nil {
+		return nil, pgError(err)
 	}
 
 	if !security.ComparePasswords(storedHash, []byte(password)) {
-		return "", errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 
-	return storedToken, nil
+	return id, nil
 }

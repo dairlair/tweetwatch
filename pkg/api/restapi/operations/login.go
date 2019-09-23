@@ -14,16 +14,16 @@ import (
 )
 
 // LoginHandlerFunc turns a function with the right signature into a login handler
-type LoginHandlerFunc func(LoginParams, *models.User) middleware.Responder
+type LoginHandlerFunc func(LoginParams, *models.UserResponse) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn LoginHandlerFunc) Handle(params LoginParams, principal *models.User) middleware.Responder {
+func (fn LoginHandlerFunc) Handle(params LoginParams, principal *models.UserResponse) middleware.Responder {
 	return fn(params, principal)
 }
 
 // LoginHandler interface for that can handle valid login params
 type LoginHandler interface {
-	Handle(LoginParams, *models.User) middleware.Responder
+	Handle(LoginParams, *models.UserResponse) middleware.Responder
 }
 
 // NewLogin creates a new http.Handler for the login operation
@@ -56,9 +56,9 @@ func (o *Login) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal *models.User
+	var principal *models.UserResponse
 	if uprinc != nil {
-		principal = uprinc.(*models.User) // this is really a models.User, I promise
+		principal = uprinc.(*models.UserResponse) // this is really a models.UserResponse, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

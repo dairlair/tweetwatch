@@ -42,7 +42,7 @@ func init() {
           "200": {
             "description": "Returns info about current user",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/UserResponse"
             }
           }
         }
@@ -83,7 +83,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/UserRequest"
             }
           }
         ],
@@ -91,13 +91,13 @@ func init() {
           "200": {
             "description": "User created",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/UserResponse"
             }
           },
           "422": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "default": {
@@ -145,7 +145,7 @@ func init() {
         }
       }
     },
-    "User": {
+    "UserRequest": {
       "required": [
         "email",
         "password"
@@ -157,6 +157,20 @@ func init() {
         "password": {
           "type": "string",
           "format": "password"
+        }
+      }
+    },
+    "UserResponse": {
+      "required": [
+        "id",
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
         }
       }
     }
@@ -197,7 +211,7 @@ func init() {
           "200": {
             "description": "Returns info about current user",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/UserResponse"
             }
           }
         }
@@ -238,7 +252,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/UserRequest"
             }
           }
         ],
@@ -246,13 +260,13 @@ func init() {
           "200": {
             "description": "User created",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/UserResponse"
             }
           },
           "422": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/GeneralResponse"
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "default": {
@@ -300,7 +314,7 @@ func init() {
         }
       }
     },
-    "User": {
+    "UserRequest": {
       "required": [
         "email",
         "password"
@@ -312,6 +326,20 @@ func init() {
         "password": {
           "type": "string",
           "format": "password"
+        }
+      }
+    },
+    "UserResponse": {
+      "required": [
+        "id",
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
         }
       }
     }
