@@ -16,3 +16,4 @@
 
 # Local developer config file
 /twitwatch.yml
+/coverage.txt

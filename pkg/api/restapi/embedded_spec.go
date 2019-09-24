@@ -179,7 +179,8 @@ func init() {
         "id",
         "name",
         "tracks",
-        "createdAt"
+        "createdAt",
+        "isActive"
       ],
       "properties": {
         "createdAt": {
@@ -187,6 +188,9 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "isActive": {
+          "type": "boolean"
         },
         "name": {
           "type": "string"
@@ -402,7 +406,8 @@ func init() {
         "id",
         "name",
         "tracks",
-        "createdAt"
+        "createdAt",
+        "isActive"
       ],
       "properties": {
         "createdAt": {
@@ -410,6 +415,9 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "isActive": {
+          "type": "boolean"
         },
         "name": {
           "type": "string"

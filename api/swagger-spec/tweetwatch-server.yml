@@ -114,11 +114,14 @@ definitions:
           type: string
       createdAt:
         type: string
+      isActive:
+        type: boolean
     required:
       - id
       - name
       - tracks
       - createdAt
+      - isActive
   Token:
     properties:
       user:

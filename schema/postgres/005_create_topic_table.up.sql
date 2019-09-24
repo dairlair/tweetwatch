@@ -4,6 +4,8 @@ CREATE TABLE topic (
     , name TEXT NOT NULL
     , tracks TEXT[] NOT NULL
     , created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , is_active BOOLEAN DEFAULT TRUE
+    , is_deleted BOOLEAN DEFAULT FALSE
 );
 
 ALTER TABLE stream

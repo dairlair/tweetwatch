@@ -13,6 +13,7 @@ type Interface interface {
 	// Creates Twitter Streaming API client and validates credentials.
 	Start() error
 	// Add stream to watch it.
+	// @TODO @DEPRECATED @Make private and create AddStreams method with update watched streams set on the fly.
 	AddStream(entity.StreamInterface)
 	// Returns currently loaded and watched streams.
 	GetStreams() map[int64]entity.StreamInterface

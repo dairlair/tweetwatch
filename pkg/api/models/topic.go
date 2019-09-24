@@ -25,6 +25,10 @@ type Topic struct {
 	// Required: true
 	ID *int64 `json:"id"`
 
+	// is active
+	// Required: true
+	IsActive *bool `json:"isActive"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
@@ -43,6 +47,10 @@ func (m *Topic) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIsActive(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -72,6 +80,15 @@ func (m *Topic) validateCreatedAt(formats strfmt.Registry) error {
 func (m *Topic) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Topic) validateIsActive(formats strfmt.Registry) error {
+
+	if err := validate.Required("isActive", "body", m.IsActive); err != nil {
 		return err
 	}
 

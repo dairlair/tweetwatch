@@ -14,7 +14,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			, tracks
 		) VALUES (
 			$1, $2, $3
-		) RETURNING topic_id, user_id, name, tracks, created_at
+		) RETURNING topic_id, user_id, name, created_at, is_active
 	`
 	tx, err := storage.connPool.Begin()
 	if err != nil {
@@ -36,19 +36,24 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			&createdTopic.ID,
 			&createdTopic.UserID,
 			&createdTopic.Name,
-			&createdTopic.Tracks,
 			&createdTopic.CreatedAt,
+			&createdTopic.IsActive,
 		); err != nil {
 		return nil, pgError(err)
 	}
 
-	for _, track := range topic.GetTracks() {
-		stream, err := storage.addStream(tx, &entity.Stream{Track:track, TopicID: createdTopic.ID})
+	for _, stream := range topic.GetStreams() {
+		st := entity.Stream{
+			TopicID: createdTopic.ID,
+			Track:   stream.GetTrack(),
+		}
+		createdStream, err := storage.addStream(tx, &st)
 		if err != nil {
 			log.Errorf("error: %s", err)
 			return nil, err
 		}
-		log.Debugf("stream created: %v", stream)
+		log.Infof("stream created: %v", createdStream)
+		createdTopic.Streams = append(createdTopic.Streams, createdStream)
 	}
 
 	if err := tx.Commit(); err != nil {

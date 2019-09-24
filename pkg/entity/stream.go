@@ -14,13 +14,15 @@ type Stream struct {
 	Track string
 }
 
-// NewStream creates object implementing StreamInterface
-func NewStream(id int64, topicID int64, track string) StreamInterface {
-	return &Stream{
-		ID:    id,
-		TopicID: topicID,
-		Track: track,
+func NewStreams(tracks []string) []StreamInterface {
+	var streams []StreamInterface
+	for _, track := range tracks {
+		stream := Stream{
+			Track:   track,
+		}
+		streams = append(streams, &stream)
 	}
+	return streams
 }
 
 // GetID returns the Stream ID

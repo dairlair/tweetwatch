@@ -67,7 +67,7 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
 	instance.output = output
 	tracks := instance.getTracks()
-	log.Infof("Starting Stream with tracks [%v]", tracks)
+	log.Infof("Starting Stream with tracks: %v", tracks)
 
 	// Convenience Demux demultiplexed stream messages
 	demux := twitter.NewSwitchDemux()

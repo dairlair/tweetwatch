@@ -3,7 +3,7 @@ import * as supertest from 'supertest';
 
 const request = supertest('http://localhost:1308');
 
-var email: String, password: String, userId: Number;
+let email: String, password: String, userId: Number;
 
 before(async () => {  
     email = "john." + Date.now() + "@example.com";
@@ -35,4 +35,5 @@ it('Should POST /topic return 200 with valid topic request data', async function
     expect(res.body).has.property("name").eq(name);
     expect(res.body).has.property("tracks").to.eql(tracks);
     expect(res.body).has.property("createdAt").not.empty;
+    expect(res.body).has.property("isActive").eq(true);
 });
