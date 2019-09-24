@@ -2,41 +2,71 @@ package storage
 
 import (
 	"github.com/dairlair/tweetwatch/pkg/entity"
+	"github.com/jackc/pgx"
 )
 
-// AddStream inserts stream into database
-func (storage *Storage) AddStream(stream entity.StreamInterface) (result entity.StreamInterface, err error) {
+func (storage *Storage) addStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.StreamInterface, err error) {
 	const addStreamSQL = `
 		INSERT INTO stream (
-			track
+			topic_id
+			, track
 		) VALUES (
-			$1
-		) RETURNING stream_id
+			$1, $2
+		) RETURNING stream_id, topic_id, track
 	`
 
-	tx, err := storage.connPool.Begin()
-	if err != nil {
-		return nil, pgError(err)
-	}
-	defer func() {
-		if err != nil {
-			pgRollback(tx)
-		}
-	}()
-
-	var id int64
-	if err := tx.QueryRow(addStreamSQL, stream.GetTrack()).Scan(&id); err != nil {
-		return nil, pgError(err)
-	}
-
-	if err := tx.Commit(); err != nil {
+	createdStream := entity.Stream{}
+	if err := tx.QueryRow(
+			addStreamSQL,
+			stream.GetTopicID(),
+			stream.GetTrack(),
+		).Scan(
+			&createdStream.ID,
+			&createdStream.TopicID,
+			&createdStream.Track,
+		); err != nil {
 		return nil, pgError(err)
 	}
 
-	result = entity.NewStream(id, stream.GetTrack())
+	result = &createdStream
 
 	return result, nil
 }
+
+// AddStream inserts stream into database
+// @DEPRECATED
+//func (storage *Storage) AddStream(stream entity.StreamInterface) (result entity.StreamInterface, err error) {
+//	const addStreamSQL = `
+//		INSERT INTO stream (
+//			track
+//		) VALUES (
+//			$1
+//		) RETURNING stream_id
+//	`
+//
+//	tx, err := storage.connPool.Begin()
+//	if err != nil {
+//		return nil, pgError(err)
+//	}
+//	defer func() {
+//		if err != nil {
+//			pgRollback(tx)
+//		}
+//	}()
+//
+//	var id int64
+//	if err := tx.QueryRow(addStreamSQL, stream.GetTrack()).Scan(&id); err != nil {
+//		return nil, pgError(err)
+//	}
+//
+//	if err := tx.Commit(); err != nil {
+//		return nil, pgError(err)
+//	}
+//
+//	result = entity.NewStream(id, stream.GetTrack())
+//
+//	return result, nil
+//}
 
 // GetStreams returns all existing streams
 func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err error) {

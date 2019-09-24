@@ -1,12 +1,14 @@
 package entity
 
+import "time"
+
 // TopicInterface defines methods implemented by the platform's entity topic.
 type TopicInterface interface {
 	GetID() int64
 	GetUserID() int64
 	GetName() string
 	GetTracks() []string
-	GetCreatedAt() string
+	GetCreatedAt() time.Time
 }
 
 // Topic is a basic structure implementing TopicInterface
@@ -15,7 +17,7 @@ type Topic struct {
 	UserID    int64
 	Name      string
 	Tracks    []string
-	CreatedAt string
+	CreatedAt time.Time
 }
 
 // GetID returns the Topic ID from the twitwatch platform
@@ -39,6 +41,6 @@ func (t *Topic) GetTracks() []string {
 }
 
 // GetCreatedAt returns twit's full text
-func (t *Topic) GetCreatedAt() string {
+func (t *Topic) GetCreatedAt() time.Time {
 	return t.CreatedAt
 }

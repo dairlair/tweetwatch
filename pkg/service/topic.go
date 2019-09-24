@@ -32,7 +32,7 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 		ID:    swag.Int64(createdTopic.GetID()),
 		Name:  swag.String(createdTopic.GetName()),
 		Tracks: createdTopic.GetTracks(),
-		CreatedAt: swag.String(createdTopic.GetCreatedAt()),
+		CreatedAt: swag.String(createdTopic.GetCreatedAt().Format("2006-01-02T15:04:05-0700")),
 	}
 	return operations.NewCreateTopicOK().WithPayload(&payload)
 }

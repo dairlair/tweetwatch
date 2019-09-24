@@ -9,5 +9,9 @@ CREATE TABLE topic (
 ALTER TABLE stream
     ADD COLUMN topic_id BIGINT;
 
+TRUNCATE TABLE stream;
+
+ALTER TABLE stream ALTER COLUMN topic_id SET NOT NULL;
+
 ALTER TABLE stream
     ADD CONSTRAINT stream_topic_fk FOREIGN KEY (topic_id) REFERENCES topic (topic_id) ON DELETE CASCADE;
