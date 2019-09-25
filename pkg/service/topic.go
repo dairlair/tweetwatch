@@ -39,13 +39,35 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 		logrus.Errorf("twitterclient does not resume watching: %s", err)
 	}
 
-
-	payload := models.Topic{
-		ID:    swag.Int64(createdTopic.GetID()),
-		Name:  swag.String(createdTopic.GetName()),
-		Tracks: createdTopic.GetTracks(),
-		CreatedAt: swag.String(createdTopic.GetCreatedAt().Format("2006-01-02T15:04:05-0700")),
-		IsActive: swag.Bool(createdTopic.GetIsActive()),
-	}
+	payload := topicModelFromEntity(createdTopic)
 	return operations.NewCreateTopicOK().WithPayload(&payload)
+}
+
+func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsParams, user *models.UserResponse) middleware.Responder {
+	topics, err := service.storage.GetUserTopics(*user.ID)
+
+	if err != nil {
+		payload := models.ErrorResponse{Message: swag.String("Topics not retrieved with unknown reason")}
+		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
+	}
+
+	var payload []*models.Topic
+	for _, topic := range topics {
+		model := topicModelFromEntity(topic)
+		payload = append(payload, &model)
+	}
+
+	return operations.NewGetUserTopicsOK().WithPayload(payload)
+}
+
+func topicModelFromEntity(entity entity.TopicInterface) models.Topic {
+	model := models.Topic{
+		ID:    swag.Int64(entity.GetID()),
+		Name:  swag.String(entity.GetName()),
+		Tracks: entity.GetTracks(),
+		CreatedAt: swag.String(entity.GetCreatedAt().Format("2006-01-02T15:04:05-0700")),
+		IsActive: swag.Bool(entity.GetIsActive()),
+	}
+
+	return model
 }

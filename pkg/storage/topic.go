@@ -64,3 +64,11 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 
 	return result, nil
 }
+
+func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {
+	const sql = `
+	`
+	var topics []entity.TopicInterface
+
+	return topics, nil
+}

@@ -19,14 +19,14 @@ before(async () => {
 
 /**
  * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
- * http POST :1308/topic "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
+ * http POST :1308/topics "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
  */
-it('Should POST /topic return 200 with valid topic request data', async function () {   
+it('Should POST /topics return 200 with valid topic request data', async function () {   
     const name = 'Tesla, Inc.';
     const tracks = ['Tesla', 'Elon Musk'];
     const buffer = Buffer.from(`${email}:${password}`)
     const res = await request
-        .post('/topic')
+        .post('/topics')
         .set('Authorization', 'Basic ' + buffer.toString('base64'))
         .send({name: name, tracks: tracks})
         .expect(200);
@@ -36,4 +36,16 @@ it('Should POST /topic return 200 with valid topic request data', async function
     expect(res.body).has.property("tracks").to.eql(tracks);
     expect(res.body).has.property("createdAt").not.empty;
     expect(res.body).has.property("isActive").eq(true);
+});
+
+/**
+ * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
+ * http :1308/topics "Authorization:Basic ${basic}"
+ */
+it('Should GET /topics return 200 with valid topics', async function () {   
+    const buffer = Buffer.from(`${email}:${password}`)
+    const res = await request
+        .get('/topics')
+        .set('Authorization', 'Basic ' + buffer.toString('base64'))
+        .expect(200);
 });

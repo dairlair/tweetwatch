@@ -91,7 +91,21 @@ func init() {
         }
       }
     },
-    "/topic": {
+    "/topics": {
+      "get": {
+        "operationId": "getUserTopics",
+        "responses": {
+          "200": {
+            "description": "Returns topics list of current user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Topic"
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "createTopic",
         "parameters": [
@@ -318,7 +332,21 @@ func init() {
         }
       }
     },
-    "/topic": {
+    "/topics": {
+      "get": {
+        "operationId": "getUserTopics",
+        "responses": {
+          "200": {
+            "description": "Returns topics list of current user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Topic"
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "createTopic",
         "parameters": [

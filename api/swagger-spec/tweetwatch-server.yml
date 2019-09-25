@@ -52,7 +52,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /topic:
+  /topics:
     post:
       operationId: createTopic
       parameters:
@@ -71,6 +71,15 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    get:
+      operationId: getUserTopics
+      responses:
+        "200":
+          description: Returns topics list of current user
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Topic"
 definitions:
   UserResponse:
     properties:

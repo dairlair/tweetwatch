@@ -42,6 +42,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
 		}),
+		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation GetUserTopics has not yet been implemented")
+		}),
 		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation Login has not yet been implemented")
 		}),
@@ -96,6 +99,8 @@ type TweetwatchAPI struct {
 
 	// CreateTopicHandler sets the operation handler for the create topic operation
 	CreateTopicHandler CreateTopicHandler
+	// GetUserTopicsHandler sets the operation handler for the get user topics operation
+	GetUserTopicsHandler GetUserTopicsHandler
 	// LoginHandler sets the operation handler for the login operation
 	LoginHandler LoginHandler
 	// SignupHandler sets the operation handler for the signup operation
@@ -169,6 +174,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.CreateTopicHandler == nil {
 		unregistered = append(unregistered, "CreateTopicHandler")
+	}
+
+	if o.GetUserTopicsHandler == nil {
+		unregistered = append(unregistered, "GetUserTopicsHandler")
 	}
 
 	if o.LoginHandler == nil {
@@ -291,7 +300,12 @@ func (o *TweetwatchAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/topic"] = NewCreateTopic(o.context, o.CreateTopicHandler)
+	o.handlers["POST"]["/topics"] = NewCreateTopic(o.context, o.CreateTopicHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/topics"] = NewGetUserTopics(o.context, o.GetUserTopicsHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

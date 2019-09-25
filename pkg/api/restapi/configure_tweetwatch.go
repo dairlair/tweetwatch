@@ -50,6 +50,11 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 			return middleware.NotImplemented("operation .CreateTopic has not yet been implemented")
 		})
 	}
+	if api.GetUserTopicsHandler == nil {
+		api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(func(params operations.GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation .GetUserTopics has not yet been implemented")
+		})
+	}
 	if api.LoginHandler == nil {
 		api.LoginHandler = operations.LoginHandlerFunc(func(params operations.LoginParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation .Login has not yet been implemented")

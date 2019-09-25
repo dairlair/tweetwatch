@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function migration() {
-  migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" $1
+  migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" "$1"
 }
 
 function run_unit_tests() {
@@ -9,7 +9,7 @@ function run_unit_tests() {
 }
 
 function run_e2e_tests() {
-  cd tests/e2e
+  cd tests/e2e || return
   yarn
   yarn test
 }
@@ -39,7 +39,7 @@ case "${option}" in
       migration up
     ;;
     *)
-      echo "`basename ${0}`:usage: migrate | remigrate | unit | e2e | swagger"
+      echo "$(basename "${0}"):usage: migrate | remigrate | unit | e2e | swagger"
       exit 1
     ;;
 esac

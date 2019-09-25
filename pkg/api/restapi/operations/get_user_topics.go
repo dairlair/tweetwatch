@@ -13,40 +13,40 @@ import (
 	models "github.com/dairlair/tweetwatch/pkg/api/models"
 )
 
-// CreateTopicHandlerFunc turns a function with the right signature into a create topic handler
-type CreateTopicHandlerFunc func(CreateTopicParams, *models.UserResponse) middleware.Responder
+// GetUserTopicsHandlerFunc turns a function with the right signature into a get user topics handler
+type GetUserTopicsHandlerFunc func(GetUserTopicsParams, *models.UserResponse) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn CreateTopicHandlerFunc) Handle(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+func (fn GetUserTopicsHandlerFunc) Handle(params GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
 	return fn(params, principal)
 }
 
-// CreateTopicHandler interface for that can handle valid create topic params
-type CreateTopicHandler interface {
-	Handle(CreateTopicParams, *models.UserResponse) middleware.Responder
+// GetUserTopicsHandler interface for that can handle valid get user topics params
+type GetUserTopicsHandler interface {
+	Handle(GetUserTopicsParams, *models.UserResponse) middleware.Responder
 }
 
-// NewCreateTopic creates a new http.Handler for the create topic operation
-func NewCreateTopic(ctx *middleware.Context, handler CreateTopicHandler) *CreateTopic {
-	return &CreateTopic{Context: ctx, Handler: handler}
+// NewGetUserTopics creates a new http.Handler for the get user topics operation
+func NewGetUserTopics(ctx *middleware.Context, handler GetUserTopicsHandler) *GetUserTopics {
+	return &GetUserTopics{Context: ctx, Handler: handler}
 }
 
-/*CreateTopic swagger:route POST /topics createTopic
+/*GetUserTopics swagger:route GET /topics getUserTopics
 
-CreateTopic create topic API
+GetUserTopics get user topics API
 
 */
-type CreateTopic struct {
+type GetUserTopics struct {
 	Context *middleware.Context
-	Handler CreateTopicHandler
+	Handler GetUserTopicsHandler
 }
 
-func (o *CreateTopic) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (o *GetUserTopics) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
 		r = rCtx
 	}
-	var Params = NewCreateTopicParams()
+	var Params = NewGetUserTopicsParams()
 
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {

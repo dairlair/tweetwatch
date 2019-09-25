@@ -11,15 +11,15 @@ import (
 	golangswaggerpaths "path"
 )
 
-// CreateTopicURL generates an URL for the create topic operation
-type CreateTopicURL struct {
+// GetUserTopicsURL generates an URL for the get user topics operation
+type GetUserTopicsURL struct {
 	_basePath string
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *CreateTopicURL) WithBasePath(bp string) *CreateTopicURL {
+func (o *GetUserTopicsURL) WithBasePath(bp string) *GetUserTopicsURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -27,12 +27,12 @@ func (o *CreateTopicURL) WithBasePath(bp string) *CreateTopicURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *CreateTopicURL) SetBasePath(bp string) {
+func (o *GetUserTopicsURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *CreateTopicURL) Build() (*url.URL, error) {
+func (o *GetUserTopicsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
 	var _path = "/topics"
@@ -44,7 +44,7 @@ func (o *CreateTopicURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *CreateTopicURL) Must(u *url.URL, err error) *url.URL {
+func (o *GetUserTopicsURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -55,17 +55,17 @@ func (o *CreateTopicURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *CreateTopicURL) String() string {
+func (o *GetUserTopicsURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *CreateTopicURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *GetUserTopicsURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on CreateTopicURL")
+		return nil, errors.New("scheme is required for a full url on GetUserTopicsURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on CreateTopicURL")
+		return nil, errors.New("host is required for a full url on GetUserTopicsURL")
 	}
 
 	base, err := o.Build()
@@ -79,6 +79,6 @@ func (o *CreateTopicURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *CreateTopicURL) StringFull(scheme, host string) string {
+func (o *GetUserTopicsURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }
