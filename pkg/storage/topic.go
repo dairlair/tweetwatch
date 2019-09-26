@@ -14,7 +14,13 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			, tracks
 		) VALUES (
 			$1, $2, $3
-		) RETURNING topic_id, user_id, name, created_at, is_active
+		) RETURNING 
+			topic_id
+			, user_id
+			, name
+			, tracks
+			, created_at
+			, is_active
 	`
 	tx, err := storage.connPool.Begin()
 	if err != nil {
@@ -36,6 +42,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			&createdTopic.ID,
 			&createdTopic.UserID,
 			&createdTopic.Name,
+			&createdTopic.Tracks,
 			&createdTopic.CreatedAt,
 			&createdTopic.IsActive,
 		); err != nil {
@@ -67,8 +74,44 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 
 func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {
 	const sql = `
+		SELECT
+			topic_id
+			, user_id
+			, name
+			, tracks
+			, created_at
+			, is_active
+		FROM topic 
+		WHERE 
+			user_id = $1 
+			AND is_deleted = FALSE
 	`
 	var topics []entity.TopicInterface
+
+	rows, err := storage.connPool.Query(sql, userId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		topic := entity.Topic{}
+		err := rows.Scan(
+			&topic.ID,
+			&topic.UserID,
+			&topic.Name,
+			&topic.Tracks,
+			&topic.CreatedAt,
+			&topic.IsActive,
+		)
+		if err != nil {
+			return nil, err
+		}
+		topics = append(topics, &topic)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
 
 	return topics, nil
 }

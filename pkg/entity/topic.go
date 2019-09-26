@@ -18,6 +18,7 @@ type Topic struct {
 	ID        int64
 	UserID    int64
 	Name      string
+	Tracks    []string
 	Streams   []StreamInterface
 	CreatedAt time.Time
 	IsActive bool
@@ -40,11 +41,7 @@ func (t *Topic) GetName() string {
 
 // GetTrack returns the topic's track
 func (t *Topic) GetTracks() []string {
-	var tracks []string
-	for _, stream := range t.GetStreams() {
-		tracks = append(tracks, stream.GetTrack())
-	}
-	return tracks
+	return t.Tracks
 }
 
 // GetCreatedAt returns twit's full text

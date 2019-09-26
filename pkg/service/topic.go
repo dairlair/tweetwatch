@@ -16,6 +16,7 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 		UserID:    *user.ID,
 		Name:      *params.Topic.Name,
 		Streams:   entity.NewStreams(params.Topic.Tracks),
+		Tracks: params.Topic.Tracks,
 	}
 
 	createdTopic, err := service.storage.AddTopic(&topic)
