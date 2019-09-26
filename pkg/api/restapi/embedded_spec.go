@@ -134,6 +134,44 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}": {
+      "put": {
+        "summary": "Update desired topic by Topic ID",
+        "operationId": "updateTopic",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated topic data",
+            "name": "topic",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTopicRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic updated",
+            "schema": {
+              "$ref": "#/definitions/Topic"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -363,6 +401,44 @@ func init() {
         "responses": {
           "200": {
             "description": "Topic created",
+            "schema": {
+              "$ref": "#/definitions/Topic"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/topics/{topicId}": {
+      "put": {
+        "summary": "Update desired topic by Topic ID",
+        "operationId": "updateTopic",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated topic data",
+            "name": "topic",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTopicRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic updated",
             "schema": {
               "$ref": "#/definitions/Topic"
             }

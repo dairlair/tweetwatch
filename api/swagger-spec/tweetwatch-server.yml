@@ -80,6 +80,31 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Topic"
+  /topics/{topicId}:
+    put:
+      summary: Update desired topic by Topic ID
+      operationId: updateTopic
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to update
+        - name: topic
+          in: body
+          description: Updated topic data
+          required: true
+          schema:
+            $ref: '#/definitions/CreateTopicRequest'
+      responses:
+        "200":
+          description: Topic updated
+          schema:
+            $ref: "#/definitions/Topic"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 definitions:
   UserResponse:
     properties:

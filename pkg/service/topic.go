@@ -61,6 +61,10 @@ func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsPara
 	return operations.NewGetUserTopicsOK().WithPayload(payload)
 }
 
+func (service *Service) UpdateTopicHandler() {
+	
+}
+
 func topicModelFromEntity(entity entity.TopicInterface) models.Topic {
 	model := models.Topic{
 		ID:    swag.Int64(entity.GetID()),

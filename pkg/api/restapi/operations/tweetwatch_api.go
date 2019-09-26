@@ -51,6 +51,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
 			return middleware.NotImplemented("operation Signup has not yet been implemented")
 		}),
+		UpdateTopicHandler: UpdateTopicHandlerFunc(func(params UpdateTopicParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation UpdateTopic has not yet been implemented")
+		}),
 
 		// Applies when the Authorization header is set with the Basic scheme
 		IsRegisteredAuth: func(user string, pass string) (*models.UserResponse, error) {
@@ -105,6 +108,8 @@ type TweetwatchAPI struct {
 	LoginHandler LoginHandler
 	// SignupHandler sets the operation handler for the signup operation
 	SignupHandler SignupHandler
+	// UpdateTopicHandler sets the operation handler for the update topic operation
+	UpdateTopicHandler UpdateTopicHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -186,6 +191,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.SignupHandler == nil {
 		unregistered = append(unregistered, "SignupHandler")
+	}
+
+	if o.UpdateTopicHandler == nil {
+		unregistered = append(unregistered, "UpdateTopicHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -316,6 +325,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/signup"] = NewSignup(o.context, o.SignupHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/topics/{topicId}"] = NewUpdateTopic(o.context, o.UpdateTopicHandler)
 
 }
 
