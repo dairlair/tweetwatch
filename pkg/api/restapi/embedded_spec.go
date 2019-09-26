@@ -42,7 +42,7 @@ func init() {
           "200": {
             "description": "Log In",
             "schema": {
-              "$ref": "#/definitions/Token"
+              "$ref": "#/definitions/UserResponse"
             }
           },
           "default": {
@@ -321,7 +321,7 @@ func init() {
           "200": {
             "description": "Log In",
             "schema": {
-              "$ref": "#/definitions/Token"
+              "$ref": "#/definitions/UserResponse"
             }
           },
           "default": {

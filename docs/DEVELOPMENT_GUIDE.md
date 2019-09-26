@@ -6,9 +6,13 @@
 go run ./cmd/server/server.go
 # Run some command after start
 http post :1308/signup email=john@example.com password=secret
+# Validate your creds via
+basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i-`
+http post :1308/login "Authorization:Basic ${basic}"
 # And create your first topic
 basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i-`
 http POST :1308/topics "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
+http POST :1308/topics "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Trump"]'
 http POST :1308/topics "Authorization:Basic ${basic}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]'
 # Get topics list after that
 http :1308/topics "Authorization:Basic ${basic}"

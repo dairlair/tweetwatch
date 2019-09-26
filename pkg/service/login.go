@@ -4,7 +4,6 @@ import (
 	"github.com/dairlair/tweetwatch/pkg/api/models"
 	"github.com/dairlair/tweetwatch/pkg/api/restapi/operations"
 	"github.com/go-openapi/runtime/middleware"
-	log "github.com/sirupsen/logrus"
 )
 
 func (service *Service) isRegisteredAuth(user string, pass string) (*models.UserResponse, error) {
@@ -19,13 +18,10 @@ func (service *Service) isRegisteredAuth(user string, pass string) (*models.User
 	}, nil
 }
 
-func (service *Service) LoginHandler(params operations.LoginParams, user *models.UserResponse) middleware.Responder {
-	log.Infof("LoginHandler with data %v, %v", params, user)
-	token := "Some custom JWT token"
-	id := "qwerty"
-	payload := models.Token{
-		Token: &token,
-		User:  &id,
+func (service *Service) LoginHandler(_ operations.LoginParams, user *models.UserResponse) middleware.Responder {
+	payload := models.UserResponse{
+		Email: user.Email,
+		ID:    user.ID,
 	}
 	return operations.NewLoginOK().WithPayload(&payload)
 }
