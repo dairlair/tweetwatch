@@ -6,10 +6,10 @@ require (
 	github.com/bxcodec/faker/v3 v3.1.0
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/cockroachdb/apd v1.1.0 // indirect
-	github.com/dchest/uniuri v0.0.0-20160212164326-8902c56451e9
 	github.com/dghubble/go-twitter v0.0.0-20190512073027-53f972dc4b06
 	github.com/dghubble/oauth1 v0.5.0
 	github.com/dghubble/sling v1.2.0 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-openapi/errors v0.19.2
 	github.com/go-openapi/loads v0.19.3
 	github.com/go-openapi/runtime v0.19.6

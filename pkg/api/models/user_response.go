@@ -24,6 +24,10 @@ type UserResponse struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+
+	// token
+	// Required: true
+	Token *string `json:"token"`
 }
 
 // Validate validates this user response
@@ -35,6 +39,10 @@ func (m *UserResponse) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateToken(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -56,6 +64,15 @@ func (m *UserResponse) validateEmail(formats strfmt.Registry) error {
 func (m *UserResponse) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *UserResponse) validateToken(formats strfmt.Registry) error {
+
+	if err := validate.Required("token", "body", m.Token); err != nil {
 		return err
 	}
 

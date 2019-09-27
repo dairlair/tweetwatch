@@ -35,9 +35,9 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	// Applies when the Authorization header is set with the Basic scheme
-	api.IsRegisteredAuth = func(user string, pass string) (*models.UserResponse, error) {
-		return nil, errors.NotImplemented("basic auth  (isRegistered) has not yet been implemented")
+	// Applies when the "Authorization" header is set
+	api.JWTAuth = func(token string) (*models.UserResponse, error) {
+		return nil, errors.NotImplemented("api key auth (JWT) Authorization from header param [Authorization] has not yet been implemented")
 	}
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()

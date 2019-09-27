@@ -32,11 +32,6 @@ func init() {
   "paths": {
     "/login": {
       "post": {
-        "security": [
-          {
-            "isRegistered": []
-          }
-        ],
         "operationId": "login",
         "responses": {
           "200": {
@@ -202,30 +197,6 @@ func init() {
         }
       }
     },
-    "GeneralResponse": {
-      "required": [
-        "message"
-      ],
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "Token": {
-      "required": [
-        "user",
-        "token"
-      ],
-      "properties": {
-        "token": {
-          "type": "string"
-        },
-        "user": {
-          "type": "string"
-        }
-      }
-    },
     "Topic": {
       "required": [
         "id",
@@ -273,7 +244,8 @@ func init() {
     "UserResponse": {
       "required": [
         "id",
-        "email"
+        "email",
+        "token"
       ],
       "properties": {
         "email": {
@@ -281,18 +253,26 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "token": {
+          "type": "string"
         }
       }
     }
   },
   "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    },
     "isRegistered": {
       "type": "basic"
     }
   },
   "security": [
     {
-      "isRegistered": []
+      "JWT": []
     }
   ]
 }`))
@@ -311,11 +291,6 @@ func init() {
   "paths": {
     "/login": {
       "post": {
-        "security": [
-          {
-            "isRegistered": []
-          }
-        ],
         "operationId": "login",
         "responses": {
           "200": {
@@ -481,30 +456,6 @@ func init() {
         }
       }
     },
-    "GeneralResponse": {
-      "required": [
-        "message"
-      ],
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "Token": {
-      "required": [
-        "user",
-        "token"
-      ],
-      "properties": {
-        "token": {
-          "type": "string"
-        },
-        "user": {
-          "type": "string"
-        }
-      }
-    },
     "Topic": {
       "required": [
         "id",
@@ -552,7 +503,8 @@ func init() {
     "UserResponse": {
       "required": [
         "id",
-        "email"
+        "email",
+        "token"
       ],
       "properties": {
         "email": {
@@ -560,18 +512,26 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "token": {
+          "type": "string"
         }
       }
     }
   },
   "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    },
     "isRegistered": {
       "type": "basic"
     }
   },
   "security": [
     {
-      "isRegistered": []
+      "JWT": []
     }
   ]
 }`))

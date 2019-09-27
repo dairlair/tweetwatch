@@ -40,8 +40,6 @@ paths:
   /login:
     post:
       operationId: login
-      security:
-        - isRegistered: []
       responses:
         "200":
           description: Log In
@@ -112,9 +110,12 @@ definitions:
         type: integer
       email:
         type: string
+      token:
+        type: string
     required:
       - id
       - email
+      - token
   UserRequest:
     properties:
       email:
@@ -156,21 +157,6 @@ definitions:
       - tracks
       - createdAt
       - isActive
-  Token:
-    properties:
-      user:
-        type: string
-      token:
-        type: string
-    required:
-      - user
-      - token
-  GeneralResponse:
-    properties:
-      message:
-        type: string
-    required:
-      - message
   ErrorResponse:
     properties:
       message:
@@ -179,13 +165,13 @@ definitions:
       - message
 # Default Security requirements for all operations
 security:
-  - isRegistered: []
+  - JWT: []
 securityDefinitions:
   isRegistered:
     # This scheme uses the header: "Authorization: Basic {base64 encoded string defined by username:password}"
     # Scopes are not supported with this type of authorization.
     type: basic
-#  JWT:
-#    type: apiKey
-#    name: Authorization
-#    in: header
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header

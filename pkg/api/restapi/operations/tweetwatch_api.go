@@ -55,9 +55,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 			return middleware.NotImplemented("operation UpdateTopic has not yet been implemented")
 		}),
 
-		// Applies when the Authorization header is set with the Basic scheme
-		IsRegisteredAuth: func(user string, pass string) (*models.UserResponse, error) {
-			return nil, errors.NotImplemented("basic auth  (isRegistered) has not yet been implemented")
+		// Applies when the "Authorization" header is set
+		JWTAuth: func(token string) (*models.UserResponse, error) {
+			return nil, errors.NotImplemented("api key auth (JWT) Authorization from header param [Authorization] has not yet been implemented")
 		},
 
 		// default authorizer is authorized meaning no requests are blocked
@@ -93,9 +93,9 @@ type TweetwatchAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
-	// IsRegisteredAuth registers a function that takes username and password and returns a principal
-	// it performs authentication with basic auth
-	IsRegisteredAuth func(string, string) (*models.UserResponse, error)
+	// JWTAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key Authorization provided in the header
+	JWTAuth func(string) (*models.UserResponse, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
@@ -173,8 +173,8 @@ func (o *TweetwatchAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.IsRegisteredAuth == nil {
-		unregistered = append(unregistered, "IsRegisteredAuth")
+	if o.JWTAuth == nil {
+		unregistered = append(unregistered, "AuthorizationAuth")
 	}
 
 	if o.CreateTopicHandler == nil {
@@ -216,9 +216,11 @@ func (o *TweetwatchAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme
 	for name := range schemes {
 		switch name {
 
-		case "isRegistered":
-			result[name] = o.BasicAuthenticator(func(username, password string) (interface{}, error) {
-				return o.IsRegisteredAuth(username, password)
+		case "JWT":
+
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
+				return o.JWTAuth(token)
 			})
 
 		}

@@ -15,6 +15,7 @@ type Service struct {
 	storage storage.Interface
 	twitterclient twitterclient.Interface
 	tweetStreamsChannel chan entity.TweetStreamsInterface
+	jwtKey []byte
 }
 
 func NewService(s storage.Interface, t twitterclient.Interface) Service {
@@ -22,6 +23,7 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 		storage:s,
 		twitterclient: t,
 		tweetStreamsChannel: make(chan entity.TweetStreamsInterface, 100),
+		jwtKey: []byte("something"),
 	}
 	// load embedded swagger file
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
@@ -33,7 +35,8 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 
 	// set handlers
 	api.Logger = log.Printf
-	api.IsRegisteredAuth = service.isRegisteredAuth
+	//api.IsRegisteredAuth = service.isRegisteredAuth
+	api.JWTAuth = service.JWTAuth
 	api.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
 	api.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
 	api.CreateTopicHandler = operations.CreateTopicHandlerFunc(service.CreateTopicHandler)
