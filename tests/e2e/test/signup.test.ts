@@ -3,14 +3,14 @@ import * as supertest from 'supertest';
 
 const request = supertest('http://localhost:1308');
 
-var email: String, password: String;
+let email: String, password: String;
 
 before(async () => {  
-    email = "john." + Date.now() + "@example.com";
+    email = "alice." + Date.now() + "@example.com";
     password = "secret";
 })
 
-it('Should POST /signup return 2000 and id and email with valid credentials', async function () {
+it('Should POST /signup return 200 and id and email with valid credentials', async function () {
     const res = await request
         .post('/signup')
         .send({email: email, password: password});

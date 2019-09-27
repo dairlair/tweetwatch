@@ -40,11 +40,23 @@ paths:
   /login:
     post:
       operationId: login
+      security: []
+      parameters:
+        - name: user
+          in: body
+          description: New User
+          required: true
+          schema:
+            $ref: '#/definitions/UserRequest'
       responses:
         "200":
-          description: Log In
+          description: Logged in successfully
           schema:
             $ref: "#/definitions/UserResponse"
+        "422":
+          description: Invalid credentials
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         # responses may fall through to errors
         default:
           description: Error

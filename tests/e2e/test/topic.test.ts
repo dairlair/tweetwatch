@@ -1,32 +1,24 @@
 import {expect} from 'chai';
 import * as supertest from 'supertest';
+import {CreatedNewUserData, signupNewUser} from "../utlis/auth";
 
 const request = supertest('http://localhost:1308');
 
-let email: String, password: String, userId: Number;
-let topicRequestData: {name: String, tracks: Array<String>} = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk']};
+let newUserData: CreatedNewUserData;
+let topicRequestData: {name: string, tracks: Array<string>} = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk']};
 
 before(async () => {  
-    email = "john." + Date.now() + "@example.com";
-    password = "secret";
-    const res = await request
-        .post('/signup')
-        .send({email: email, password: password});
-
-    expect(res.body).has.property("id").greaterThan(0);
-    expect(res.body).has.property("email").eq(email);
-    userId = res.body.id;
+    newUserData = await signupNewUser()
 });
 
 /**
  * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
  * http POST :1308/topics "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
  */
-it('Should POST /topics return 200 with valid topic request data', async function () {   
-    const buffer = Buffer.from(`${email}:${password}`)
+it('Should POST /topics return 200 with valid topic request data', async function () {
     const res = await request
         .post('/topics')
-        .set('Authorization', 'Basic ' + buffer.toString('base64'))
+        .set('Authorization', newUserData.jwtToken)
         .send(topicRequestData)
         .expect(200);
 
@@ -38,10 +30,9 @@ it('Should POST /topics return 200 with valid topic request data', async functio
  * http :1308/topics "Authorization:Basic ${basic}"
  */
 it('Should GET /topics return 200 with valid topics', async function () {
-    const buffer = Buffer.from(`${email}:${password}`)
     const res = await request
         .get('/topics')
-        .set('Authorization', 'Basic ' + buffer.toString('base64'))
+        .set('Authorization', newUserData.jwtToken)
         .expect(200);
 
     validateTopic(res.body[0]);

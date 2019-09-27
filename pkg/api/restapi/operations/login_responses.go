@@ -16,7 +16,7 @@ import (
 // LoginOKCode is the HTTP code returned for type LoginOK
 const LoginOKCode int = 200
 
-/*LoginOK Log In
+/*LoginOK Logged in successfully
 
 swagger:response loginOK
 */
@@ -49,6 +49,50 @@ func (o *LoginOK) SetPayload(payload *models.UserResponse) {
 func (o *LoginOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// LoginUnprocessableEntityCode is the HTTP code returned for type LoginUnprocessableEntity
+const LoginUnprocessableEntityCode int = 422
+
+/*LoginUnprocessableEntity Invalid credentials
+
+swagger:response loginUnprocessableEntity
+*/
+type LoginUnprocessableEntity struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorResponse `json:"body,omitempty"`
+}
+
+// NewLoginUnprocessableEntity creates LoginUnprocessableEntity with default headers values
+func NewLoginUnprocessableEntity() *LoginUnprocessableEntity {
+
+	return &LoginUnprocessableEntity{}
+}
+
+// WithPayload adds the payload to the login unprocessable entity response
+func (o *LoginUnprocessableEntity) WithPayload(payload *models.ErrorResponse) *LoginUnprocessableEntity {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the login unprocessable entity response
+func (o *LoginUnprocessableEntity) SetPayload(payload *models.ErrorResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *LoginUnprocessableEntity) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(422)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

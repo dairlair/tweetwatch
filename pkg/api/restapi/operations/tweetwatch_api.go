@@ -45,7 +45,7 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
 			return middleware.NotImplemented("operation GetUserTopics has not yet been implemented")
 		}),
-		LoginHandler: LoginHandlerFunc(func(params LoginParams, principal *models.UserResponse) middleware.Responder {
+		LoginHandler: LoginHandlerFunc(func(params LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation Login has not yet been implemented")
 		}),
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {

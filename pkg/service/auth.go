@@ -17,21 +17,6 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-/**
- * @DEPRECATED @TODO remove
- */
-func (service *Service) isRegisteredAuth(user string, pass string) (*models.UserResponse, error) {
-	id, err := service.storage.Login(user, pass)
-	if err != nil {
-		return nil, err
-	}
-	email := "email"
-	return &models.UserResponse{
-		ID:    id,
-		Email: &email,
-	}, nil
-}
-
 func (service *Service) JWTAuth(token string) (*models.UserResponse, error) {
 	log.Infof("JWTAuth with token: %s", token)
 	claims := &Claims{}
@@ -61,10 +46,23 @@ func (service *Service) JWTAuth(token string) (*models.UserResponse, error) {
 	}, nil
 }
 
-func (service *Service) LoginHandler(_ operations.LoginParams, user *models.UserResponse) middleware.Responder {
+func (service *Service) LoginHandler(params operations.LoginParams) middleware.Responder {
+	id, err := service.storage.Login(*params.User.Email, params.User.Password.String())
+	if err != nil {
+		payload := models.ErrorResponse{Message: swag.String("Invalid credentials")}
+		return operations.NewLoginDefault(422).WithPayload(&payload)
+	}
+
+	token, err := service.createJwtToken(*id)
+	if err != nil {
+		payload := models.ErrorResponse{Message: swag.String("JWT Token not created")}
+		return operations.NewLoginDefault(500).WithPayload(&payload)
+	}
+
 	payload := models.UserResponse{
-		Email: user.Email,
-		ID:    user.ID,
+		ID: id,
+		Email: params.User.Email,
+		Token: token,
 	}
 	return operations.NewLoginOK().WithPayload(&payload)
 }
@@ -72,7 +70,6 @@ func (service *Service) LoginHandler(_ operations.LoginParams, user *models.User
 func (service *Service) SignUpHandler(params operations.SignupParams) middleware.Responder {
 
 	id, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
-
 	if err != nil {
 		payload := models.ErrorResponse{Message: swag.String("Email already taken")}
 		return operations.NewSignupDefault(422).WithPayload(&payload)
@@ -84,7 +81,6 @@ func (service *Service) SignUpHandler(params operations.SignupParams) middleware
 		return operations.NewSignupDefault(500).WithPayload(&payload)
 	}
 
-	// message := fmt.Sprintf("User [%s] registered with token [%s]", *params.User.Email, token)
 	payload := models.UserResponse{
 		ID: id,
 		Email: params.User.Email,

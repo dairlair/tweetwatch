@@ -32,12 +32,30 @@ func init() {
   "paths": {
     "/login": {
       "post": {
+        "security": [],
         "operationId": "login",
+        "parameters": [
+          {
+            "description": "New User",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Log In",
+            "description": "Logged in successfully",
             "schema": {
               "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "422": {
+            "description": "Invalid credentials",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "default": {
@@ -291,12 +309,30 @@ func init() {
   "paths": {
     "/login": {
       "post": {
+        "security": [],
         "operationId": "login",
+        "parameters": [
+          {
+            "description": "New User",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Log In",
+            "description": "Logged in successfully",
             "schema": {
               "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "422": {
+            "description": "Invalid credentials",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "default": {

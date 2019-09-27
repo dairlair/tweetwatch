@@ -35,7 +35,6 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 
 	// set handlers
 	api.Logger = log.Printf
-	//api.IsRegisteredAuth = service.isRegisteredAuth
 	api.JWTAuth = service.JWTAuth
 	api.SignupHandler = operations.SignupHandlerFunc(service.SignUpHandler)
 	api.LoginHandler = operations.LoginHandlerFunc(service.LoginHandler)
