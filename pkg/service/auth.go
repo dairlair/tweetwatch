@@ -1,3 +1,4 @@
+// See https://www.sohamkamani.com/blog/golang/2019-01-01-jwt-authentication/
 package service
 
 import (
