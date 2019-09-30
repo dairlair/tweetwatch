@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// AddStream inserts stream into database
+// AddTopic inserts topic into database
 func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
 	const addTopicSQL = `
 		INSERT INTO topic (
@@ -70,6 +70,41 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 	result = &createdTopic
 
 	return result, nil
+}
+
+func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterface, err error) {
+	const sql = `
+		SELECT
+			topic_id
+			, user_id
+			, name
+			, tracks
+			, created_at
+			, is_active
+		FROM topic 
+		WHERE 
+			topic_id = $1 
+			AND is_deleted = FALSE
+	`
+	row := storage.connPool.QueryRow(sql, topicID)
+	topic := entity.Topic{}
+	err = row.Scan(
+		&topic.ID,
+		&topic.UserID,
+		&topic.Name,
+		&topic.Tracks,
+		&topic.CreatedAt,
+		&topic.IsActive,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &topic, nil
+}
+
+// AddTopic inserts topic into database
+func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
+	return storage.GetTopicByID(topic.GetID())
 }
 
 func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {

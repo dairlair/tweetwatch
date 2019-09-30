@@ -11,13 +11,7 @@ import (
 )
 
 func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, user *models.UserResponse) middleware.Responder {
-
-	topic := entity.Topic{
-		UserID:    *user.ID,
-		Name:      *params.Topic.Name,
-		Streams:   entity.NewStreams(params.Topic.Tracks),
-		Tracks: params.Topic.Tracks,
-	}
+	topic := topicEntityFromModel(params.Topic, user)
 
 	createdTopic, err := service.storage.AddTopic(&topic)
 	if err != nil {
@@ -61,8 +55,30 @@ func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsPara
 	return operations.NewGetUserTopicsOK().WithPayload(payload)
 }
 
-func (service *Service) UpdateTopicHandler() {
-	
+func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, user *models.UserResponse) middleware.Responder {
+	topic := topicEntityFromModel(params.Topic, user)
+
+	// Run update topic in storage
+	updatedTopic, err := service.storage.UpdateTopic(&topic)
+	if err != nil {
+		payload := models.ErrorResponse{Message: swag.String("Topics not retrieved with unknown reason")}
+		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
+	}
+
+	// Update twitterclient to unwatch old streams and watch new streams
+	payload := topicModelFromEntity(updatedTopic)
+
+	return operations.NewUpdateTopicOK().WithPayload(&payload)
+}
+
+func topicEntityFromModel(model *models.CreateTopicRequest, user *models.UserResponse) entity.Topic {
+	topic := entity.Topic{
+		UserID:    *user.ID,
+		Name:      *model.Name,
+		Streams:   entity.NewStreams(model.Tracks),
+		Tracks: model.Tracks,
+	}
+	return topic
 }
 
 func topicModelFromEntity(entity entity.TopicInterface) models.Topic {

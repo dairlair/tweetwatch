@@ -4,8 +4,10 @@
 
 ```shell
 go run ./cmd/server/server.go
-# Run some command after start
+# Signup after start
 http post :1308/signup email=john@example.com password=secret
+# Or login
+http post :1308/login email=john@example.com password=secret
 # Grab the token and get a topics list with JWT authorization
 http :1308/topics "Authorization:${jwt}"
 # Validate your creds via
@@ -15,7 +17,9 @@ http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Tesla
 http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Trump"]'
 http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]'
 # Get topics list after that
-http :1308/topics "Authorization:Basic ${basic}"
+http :1308/topics "Authorization:${jwt}"
+# Update created topic
+http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]'
 ```
 
 # Swagger stubs regenerate
