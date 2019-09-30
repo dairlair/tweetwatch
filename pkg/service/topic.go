@@ -57,11 +57,12 @@ func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsPara
 
 func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, user *models.UserResponse) middleware.Responder {
 	topic := topicEntityFromModel(params.Topic, user)
+	topic.ID = params.TopicID
 
 	// Run update topic in storage
 	updatedTopic, err := service.storage.UpdateTopic(&topic)
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("Topics not retrieved with unknown reason")}
+		payload := models.ErrorResponse{Message: swag.String(fmt.Sprintf("Topic not updated: %s", err))}
 		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
 	}
 

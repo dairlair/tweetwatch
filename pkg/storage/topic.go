@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	log "github.com/sirupsen/logrus"
 )
@@ -73,6 +74,9 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 }
 
 func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterface, err error) {
+	if topicID < 1 {
+		return nil, errors.New("the topic ID is required")
+	}
 	const sql = `
 		SELECT
 			topic_id
@@ -104,6 +108,28 @@ func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterfac
 
 // AddTopic inserts topic into database
 func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
+	_, err = storage.GetTopicByID(topic.GetID())
+	if err != nil {
+		return nil, err
+	}
+	const sql = `
+		UPDATE topic SET
+			name = $2
+			, tracks = $3
+			, is_active = $4
+		WHERE topic_id = $1
+	`
+	_, err = storage.connPool.Exec(
+		sql,
+		topic.GetID(),
+		topic.GetName(),
+		topic.GetTracks(),
+		topic.GetIsActive(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	return storage.GetTopicByID(topic.GetID())
 }
 
