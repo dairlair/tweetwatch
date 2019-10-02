@@ -3,7 +3,7 @@ package storage
 import (
 	"errors"
 	"github.com/dairlair/tweetwatch/pkg/entity"
-	log "github.com/sirupsen/logrus"
+	"github.com/jackc/pgx"
 )
 
 // AddTopic inserts topic into database
@@ -50,19 +50,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 		return nil, pgError(err)
 	}
 
-	for _, stream := range topic.GetStreams() {
-		st := entity.Stream{
-			TopicID: createdTopic.ID,
-			Track:   stream.GetTrack(),
-		}
-		createdStream, err := storage.addStream(tx, &st)
-		if err != nil {
-			log.Errorf("error: %s", err)
-			return nil, err
-		}
-		log.Infof("stream created: %v", createdStream)
-		createdTopic.Streams = append(createdTopic.Streams, createdStream)
-	}
+	createdTopic.Streams, err = txInsertTopicStreams(tx, topic.GetID(), topic.GetStreams())
 
 	if err := tx.Commit(); err != nil {
 		return nil, pgError(err)
@@ -73,7 +61,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 	return result, nil
 }
 
-func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterface, err error) {
+func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err error) {
 	if topicID < 1 {
 		return nil, errors.New("the topic ID is required")
 	}
@@ -90,7 +78,7 @@ func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterfac
 			topic_id = $1 
 			AND is_deleted = FALSE
 	`
-	row := storage.connPool.QueryRow(sql, topicID)
+	row := tx.QueryRow(sql, topicID)
 	topic := entity.Topic{}
 	err = row.Scan(
 		&topic.ID,
@@ -107,11 +95,23 @@ func (storage *Storage) GetTopicByID(topicID int64) (result entity.TopicInterfac
 }
 
 // AddTopic inserts topic into database
-func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
-	_, err = storage.GetTopicByID(topic.GetID())
+func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreamIDs []int64, err error) {
+	tx, err := storage.connPool.Begin()
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, pgError(err)
 	}
+	defer func() {
+		if err != nil {
+			pgRollback(tx)
+		}
+	}()
+
+	_, err = getTopicByID(tx, topic.GetID())
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	// Update the main topic record
 	const sql = `
 		UPDATE topic SET
 			name = $2
@@ -119,7 +119,7 @@ func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.
 			, is_active = $4
 		WHERE topic_id = $1
 	`
-	_, err = storage.connPool.Exec(
+	_, err = tx.Exec(
 		sql,
 		topic.GetID(),
 		topic.GetName(),
@@ -127,10 +127,33 @@ func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.
 		topic.GetIsActive(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 
-	return storage.GetTopicByID(topic.GetID())
+	// Delete all previous streams
+	deletedStreamIDs, err = txDeleteTopicStreams(tx, topic.GetID())
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	// Insert new streams
+	insertedStreams, err := txInsertTopicStreams(tx, topic.GetID(), entity.NewStreams(topic.GetTracks()))
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	insertedStreamIDs = entity.GetStreamIDs(insertedStreams)
+
+	// Read saved topic
+	savedTopic, err := getTopicByID(tx, topic.GetID())
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, nil, nil, pgError(err)
+	}
+
+	return savedTopic, deletedStreamIDs, insertedStreamIDs, err
 }
 
 func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {

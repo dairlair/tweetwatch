@@ -39,3 +39,10 @@ func (s *Stream) GetTopicID() int64 {
 func (s *Stream) GetTrack() string {
 	return s.Track
 }
+
+func GetStreamIDs(streams []StreamInterface) (IDs []int64) {
+	for _, stream := range streams {
+		IDs = append(IDs, stream.GetID())
+	}
+	return IDs
+}

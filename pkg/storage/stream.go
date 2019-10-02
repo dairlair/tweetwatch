@@ -5,7 +5,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func (storage *Storage) addStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.StreamInterface, err error) {
+func txAddStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.StreamInterface, err error) {
 	const addStreamSQL = `
 		INSERT INTO stream (
 			topic_id
@@ -31,6 +31,44 @@ func (storage *Storage) addStream(tx *pgx.Tx, stream entity.StreamInterface) (re
 	result = &createdStream
 
 	return result, nil
+}
+
+func txDeleteTopicStreams(tx *pgx.Tx, topicID int64) (streamIDs []int64, err error) {
+	const sql = `DELETE FROM stream WHERE topic_id = $1 RETURNING stream_id`
+	rows, err := tx.Query(sql, topicID)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var topicID int64
+		err := rows.Scan(&topicID)
+		if err != nil {
+			return nil, err
+		}
+		streamIDs = append(streamIDs, topicID)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return streamIDs, err
+}
+
+func txInsertTopicStreams(tx *pgx.Tx, topicID int64, streams []entity.StreamInterface) ([]entity.StreamInterface, error) {
+	var createdStreams []entity.StreamInterface
+	for _, stream := range streams {
+		st := entity.Stream{
+			TopicID: topicID,
+			Track:   stream.GetTrack(),
+		}
+		createdStream, err := txAddStream(tx, &st)
+		if err != nil {
+			return nil, err
+		}
+		createdStreams = append(createdStreams, createdStream)
+	}
+
+	return createdStreams, nil
 }
 
 // AddStream inserts stream into database

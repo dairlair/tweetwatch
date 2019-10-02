@@ -60,7 +60,7 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 	topic.ID = params.TopicID
 
 	// Run update topic in storage
-	updatedTopic, err := service.storage.UpdateTopic(&topic)
+	updatedTopic, _, _, err := service.storage.UpdateTopic(&topic)
 	if err != nil {
 		payload := models.ErrorResponse{Message: swag.String(fmt.Sprintf("Topic not updated: %s", err))}
 		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
