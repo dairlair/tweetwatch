@@ -68,13 +68,27 @@ func (service *Service) up() {
 		log.Fatalf("failed to restore streams: %s\n", err)
 	}
 
-	for _, stream := range streams {
-		service.twitterclient.AddStream(stream)
-	}
+	service.twitterclient.AddStreams(streams)
 
 	err = service.twitterclient.Start()
 	if err != nil {
 		log.Fatalf("twitterclient error: %s\n", err)
 	}
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
+}
+
+func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
+	service.twitterclient.Unwatch()
+	service.twitterclient.AddStreams(streams)
+	if err := service.twitterclient.Watch(service.tweetStreamsChannel); err != nil {
+		log.Errorf("twitterclient does not resume watching: %s", err)
+	}
+}
+
+func (service *Service) deleteStreamsFromWatching(streamIDs []int64) {
+	service.twitterclient.Unwatch()
+	service.twitterclient.DeleteStreams(streamIDs)
+	if err := service.twitterclient.Watch(service.tweetStreamsChannel); err != nil {
+		log.Errorf("twitterclient does not resume watching: %s", err)
+	}
 }

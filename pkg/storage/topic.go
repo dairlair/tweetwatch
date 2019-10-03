@@ -95,7 +95,7 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 }
 
 // AddTopic inserts topic into database
-func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreamIDs []int64, err error) {
+func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreams []entity.StreamInterface, err error) {
 	tx, err := storage.connPool.Begin()
 	if err != nil {
 		return nil, nil, nil, pgError(err)
@@ -137,11 +137,10 @@ func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.
 	}
 
 	// Insert new streams
-	insertedStreams, err := txInsertTopicStreams(tx, topic.GetID(), entity.NewStreams(topic.GetTracks()))
+	insertedStreams, err = txInsertTopicStreams(tx, topic.GetID(), entity.NewStreams(topic.GetTracks()))
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	insertedStreamIDs = entity.GetStreamIDs(insertedStreams)
 
 	// Read saved topic
 	savedTopic, err := getTopicByID(tx, topic.GetID())
@@ -153,7 +152,7 @@ func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.
 		return nil, nil, nil, pgError(err)
 	}
 
-	return savedTopic, deletedStreamIDs, insertedStreamIDs, err
+	return savedTopic, deletedStreamIDs, insertedStreams, err
 }
 
 func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {

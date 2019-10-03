@@ -50,12 +50,35 @@ func (instance *Instance) Start() error {
 }
 
 // AddStream adds desired stream to the current instance of twitterclient
-func (instance *Instance) AddStream(stream entity.StreamInterface) {
+func (instance *Instance) addStream(stream entity.StreamInterface) {
 	if stream.GetID() < 1 {
 		log.Errorf("stream without id can not be added")
 		return
 	}
 	instance.streams[stream.GetID()] = stream
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) deleteStream(streamID int64) {
+	if streamID < 1 {
+		log.Errorf("stream without id can not be deleted")
+		return
+	}
+	delete(instance.streams, streamID)
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) AddStreams(streams []entity.StreamInterface) {
+	for _, stream := range streams {
+		instance.addStream(stream)
+	}
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) DeleteStreams(streamIDs []int64) {
+	for _, streamID := range streamIDs {
+		instance.deleteStream(streamID)
+	}
 }
 
 // GetStreams returns all the streams from the current instance of twitterclient

@@ -25,8 +25,17 @@ func (instance *Instance) Start() error {
 }
 
 // AddStream adds desired stream to the current instance of twitterclient
-func (instance *Instance) AddStream(stream entity.StreamInterface) {
+func (instance *Instance) addStream(stream entity.StreamInterface) {
 }
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) AddStreams(streams []entity.StreamInterface) {
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) DeleteStreams([]int64) {
+}
+
 
 // GetStreams returns all the streams from the current instance of twitterclient
 func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
