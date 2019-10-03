@@ -1295,6 +1295,11 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
+leche@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/leche/-/leche-2.3.0.tgz#a25d01776dfff838e4ca83985f61cc3fe852a15f"
+  integrity sha512-Phl6cy83b17ZxHZXZgkf0FIAZ/NWKxfOd6B1Q78OMO9o9HwVu5CigQcQ0+cZhpCtbcmLzkkBS6t+E9jXuZ6ziA==
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"

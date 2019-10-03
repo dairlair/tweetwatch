@@ -12,6 +12,7 @@
     "@types/node": "^12.7.5",
     "@types/supertest": "^2.0.8",
     "chai": "^4.2.0",
+    "leche": "^2.3.0",
     "mocha": "^6.2.0",
     "nodemon": "^1.19.2",
     "supertest": "^4.0.2",

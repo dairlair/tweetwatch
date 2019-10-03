@@ -1,20 +1,19 @@
 import {expect} from 'chai';
 import * as supertest from 'supertest';
 import {CreatedNewUserData, signupNewUser} from "../utlis/auth";
+import { withData } from 'leche';
 
 const request = supertest('http://localhost:1308');
 
+type TopicRequest = {name: string, tracks: Array<string>, isActive: boolean};
 let newUserData: CreatedNewUserData;
-let topicRequestData: {name: string, tracks: Array<string>, isActive: boolean} = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
+let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
+let createdTopicId: bigint;
 
 before(async () => {  
     newUserData = await signupNewUser()
 });
 
-/**
- * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
- * http POST :1308/topics "Authorization:Basic ${basic}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
- */
 it('Should POST /topics return 200 with valid topic request data', async function () {
     const res = await request
         .post('/topics')
@@ -22,7 +21,7 @@ it('Should POST /topics return 200 with valid topic request data', async functio
         .send(topicRequestData)
         .expect(200);
 
-    validateTopic(res.body);
+    validateTopic(res.body, topicRequestData);
 });
 
 /**
@@ -35,13 +34,35 @@ it('Should GET /topics return 200 with valid topics', async function () {
         .set('Authorization', newUserData.jwtToken)
         .expect(200);
 
-    validateTopic(res.body[0]);
+    validateTopic(res.body[0], topicRequestData);
 });
 
-function validateTopic(topic: object) {
+
+describe('Should topics update endpoint works fine', function() {
+    before(function () {
+        // @TODO Create initial topic here
+    });
+    withData({
+        defaultTopic: topicRequestData,
+        emptyTopic: {name: '', tracks: [], isActive: false},
+    }, function(topicRequest: TopicRequest) {
+        it('Should PUT /topics/:id 200 with valid topic request data', async function() {
+            // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
+            const res = await request
+                .put('/topics/' + createdTopicId)
+                .set('Authorization', newUserData.jwtToken)
+                .send(topicRequest)
+                .expect(200);
+            validateTopic(res.body, topicRequest);
+        });
+    });
+});
+
+function validateTopic(topic: {id: bigint}, expected: TopicRequest) {
     expect(topic).has.property("id").greaterThan(0);
-    expect(topic).has.property("name").eq(topicRequestData.name);
-    expect(topic).has.property("tracks").to.eql(topicRequestData.tracks);
+    expect(topic).has.property("name").eq(expected.name);
+    expect(topic).has.property("tracks").to.eql(expected.tracks);
     expect(topic).has.property("createdAt").not.empty;
-    expect(topic).has.property("isActive").eq(topicRequestData.isActive);
+    expect(topic).has.property("isActive").eq(expected.isActive);
+    createdTopicId = topic.id;
 }
