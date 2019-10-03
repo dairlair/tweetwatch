@@ -16,7 +16,7 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    # We don't need download dependencies because use mov='vendor'.
+    # We don't need download dependencies because use mod='vendor'.
     # Vendor directory is under git as well. 
     # So, lets build
     - name: Build
