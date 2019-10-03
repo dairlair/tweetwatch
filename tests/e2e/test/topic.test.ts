@@ -5,7 +5,7 @@ import {CreatedNewUserData, signupNewUser} from "../utlis/auth";
 const request = supertest('http://localhost:1308');
 
 let newUserData: CreatedNewUserData;
-let topicRequestData: {name: string, tracks: Array<string>} = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk']};
+let topicRequestData: {name: string, tracks: Array<string>, isActive: boolean} = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
 
 before(async () => {  
     newUserData = await signupNewUser()
@@ -43,5 +43,5 @@ function validateTopic(topic: object) {
     expect(topic).has.property("name").eq(topicRequestData.name);
     expect(topic).has.property("tracks").to.eql(topicRequestData.tracks);
     expect(topic).has.property("createdAt").not.empty;
-    expect(topic).has.property("isActive").eq(true);
+    expect(topic).has.property("isActive").eq(topicRequestData.isActive);
 }

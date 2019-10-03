@@ -19,7 +19,7 @@ http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mo
 # Get topics list after that
 http :1308/topics "Authorization:${jwt}"
 # Update created topic
-http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]'
+http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]' isActive:=true
 ```
 
 # Swagger stubs regenerate

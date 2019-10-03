@@ -146,9 +146,12 @@ definitions:
         type: array
         items:
           type: string
+      isActive:
+        type: boolean
     required:
       - name
       - tracks
+      - isActive
   Topic:
     properties:
       id:

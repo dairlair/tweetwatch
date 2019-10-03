@@ -72,6 +72,7 @@ func topicEntityFromModel(model *models.CreateTopicRequest, user *models.UserRes
 		Name:    *model.Name,
 		Streams: entity.NewStreams(model.Tracks),
 		Tracks:  model.Tracks,
+		IsActive: *model.IsActive,
 	}
 	return topic
 }

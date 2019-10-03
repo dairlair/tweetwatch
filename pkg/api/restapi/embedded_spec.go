@@ -191,9 +191,13 @@ func init() {
     "CreateTopicRequest": {
       "required": [
         "name",
-        "tracks"
+        "tracks",
+        "isActive"
       ],
       "properties": {
+        "isActive": {
+          "type": "boolean"
+        },
         "name": {
           "type": "string"
         },
@@ -468,9 +472,13 @@ func init() {
     "CreateTopicRequest": {
       "required": [
         "name",
-        "tracks"
+        "tracks",
+        "isActive"
       ],
       "properties": {
+        "isActive": {
+          "type": "boolean"
+        },
         "name": {
           "type": "string"
         },

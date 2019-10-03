@@ -17,6 +17,10 @@ import (
 // swagger:model CreateTopicRequest
 type CreateTopicRequest struct {
 
+	// is active
+	// Required: true
+	IsActive *bool `json:"isActive"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
@@ -30,6 +34,10 @@ type CreateTopicRequest struct {
 func (m *CreateTopicRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateIsActive(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -41,6 +49,15 @@ func (m *CreateTopicRequest) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *CreateTopicRequest) validateIsActive(formats strfmt.Registry) error {
+
+	if err := validate.Required("isActive", "body", m.IsActive); err != nil {
+		return err
+	}
+
 	return nil
 }
 
