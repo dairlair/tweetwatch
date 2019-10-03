@@ -50,7 +50,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 		return nil, pgError(err)
 	}
 
-	createdTopic.Streams, err = txInsertTopicStreams(tx, topic.GetID(), topic.GetStreams())
+	createdTopic.Streams, err = txInsertTopicStreams(tx, createdTopic.GetID(), topic.GetStreams())
 
 	if err := tx.Commit(); err != nil {
 		return nil, pgError(err)

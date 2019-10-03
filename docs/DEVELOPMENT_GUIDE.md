@@ -13,9 +13,9 @@ http :1308/topics "Authorization:${jwt}"
 # Validate your creds via
 http post :1308/login "Authorization:${jwt}"
 # And create your first topic
-http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]'
-http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Trump"]'
-http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]'
+http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]' isActive:=true
+http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Trump"]' isActive:=true
+http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]' isActive:=true
 # Get topics list after that
 http :1308/topics "Authorization:${jwt}"
 # Update created topic
