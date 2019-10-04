@@ -24,7 +24,9 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 	}
 
 	// Start watching created streams
-	service.addStreamsToWatching(createdTopic.GetStreams())
+	if createdTopic.GetIsActive() {
+		service.addStreamsToWatching(createdTopic.GetStreams())
+	}
 
 	payload := topicModelFromEntity(createdTopic)
 	return operations.NewCreateTopicOK().WithPayload(&payload)
@@ -59,8 +61,10 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 	}
 
 	// Update twitterclient to unwatch old streams and watch new streams
-	service.addStreamsToWatching(createdStreams)
 	service.deleteStreamsFromWatching(deletedStreamIds)
+	if updatedTopic.GetIsActive() {
+		service.addStreamsToWatching(createdStreams)
+	}
 
 	payload := topicModelFromEntity(updatedTopic)
 	return operations.NewUpdateTopicOK().WithPayload(&payload)
