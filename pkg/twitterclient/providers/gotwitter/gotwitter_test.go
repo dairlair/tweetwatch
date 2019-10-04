@@ -49,8 +49,8 @@ func TestStart_AuthFailed(t *testing.T) {
 func TestAddStream_Successful(t *testing.T) {
 	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
-	stream := entity.Stream{}
-	instance.AddStream(&stream)
+	streams := []entity.StreamInterface{&entity.Stream{}}
+	instance.AddStreams(streams)
 }
 
 func TestGetStreams_Successful(t *testing.T) {
@@ -65,7 +65,7 @@ func TestGetStreams_Successful(t *testing.T) {
 
 	assert.Equal(t, len(streams), len(instance.GetStreams()))
 	for _, stream := range instance.GetStreams() {
-		assert.EqualValues(t, streams[stream.GetID()].ID, stream.GetID())
-		assert.EqualValues(t, streams[stream.GetID()].Track, stream.GetTrack())
+		assert.EqualValues(t, streams[stream.GetID()].GetID(), stream.GetID())
+		assert.EqualValues(t, streams[stream.GetID()].GetTrack(), stream.GetTrack())
 	}
 }
