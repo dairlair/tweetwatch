@@ -49,8 +49,8 @@ before_script:
 
 jobs:
   include:
-#    - stage: test
-#      script: go test $CUSTOM_GOFLAGS -race -coverprofile=coverage.txt -covermode=atomic ./...
+    - stage: test
+      script: go test $CUSTOM_GOFLAGS -race -coverprofile=coverage.txt -covermode=atomic ./...
 
     - stage: e2e
       script:
