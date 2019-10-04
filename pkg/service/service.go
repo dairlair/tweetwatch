@@ -23,6 +23,7 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 		storage:s,
 		twitterclient: t,
 		tweetStreamsChannel: make(chan entity.TweetStreamsInterface, 100),
+		// @TODO take jwt key from config
 		jwtKey: []byte("something"),
 	}
 	// load embedded swagger file

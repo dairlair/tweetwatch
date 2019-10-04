@@ -12,9 +12,14 @@ type Interface struct {
 	mock.Mock
 }
 
-// AddStream provides a mock function with given fields: _a0
-func (_m *Interface) AddStream(_a0 entity.StreamInterface) {
+// AddStreams provides a mock function with given fields: _a0
+func (_m *Interface) AddStreams(_a0 []entity.StreamInterface) {
 	_m.Called(_a0)
+}
+
+// DeleteStreams provides a mock function with given fields: streamIDs
+func (_m *Interface) DeleteStreams(streamIDs []int64) {
+	_m.Called(streamIDs)
 }
 
 // GetStreams provides a mock function with given fields:

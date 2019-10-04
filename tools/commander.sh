@@ -20,6 +20,12 @@ function regenerate_swagger_data() {
   swagger generate server -t pkg/api -f ./api/swagger-spec/tweetwatch-server.yml --exclude-main -A tweetwatch -P models.UserResponse
 }
 
+function regenerate_mocks() {
+  echo "Regenerate all mocks..."
+  mockery -name Interface -dir "./pkg/storage" -output "./pkg/storage/mocks";
+  mockery -name Interface -dir "./pkg/twitterclient" -output "./pkg/twitterclient/mocks";
+}
+
 option="${1}"
 case "${option}" in
     unit)
@@ -37,6 +43,9 @@ case "${option}" in
     remigrate)
       migration down
       migration up
+    ;;
+    mocks)
+      regenerate_mocks
     ;;
     *)
       echo "$(basename "${0}"):usage: migrate | remigrate | unit | e2e | swagger"
