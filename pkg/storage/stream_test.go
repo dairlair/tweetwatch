@@ -5,11 +5,17 @@ import (
 )
 
 func (suite StorageSuite) TestAddStream_Successful() {
-	id, err := suite.storage.AddTweetStreams(NewTweetStreams(&Tweet{}, []StreamInterface{&Stream{
+	id, err := suite.storage.AddTweetStreams(NewTweetStreams(&Tweet{
+		ID:            1,
+		TwitterID:     2,
+		TwitterUserID: 3,
+		FullText:      "Something...",
+		CreatedAt:     "2019-02-03 12:12:12",
+	}, []StreamInterface{&Stream{
 		ID:      1,
 		TopicID: 2,
 		Track:   "Test",
 	}}))
 	suite.NotNil(id)
-	suite.Equal(err, nil)
+	suite.Equal(nil, err)
 }
