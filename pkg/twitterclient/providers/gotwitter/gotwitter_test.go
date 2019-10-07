@@ -61,11 +61,16 @@ func TestGetStreams_Successful(t *testing.T) {
 	streams = append(streams, &entity.Stream{ID: 1, Track: "Tesla"})
 	streams = append(streams, &entity.Stream{ID: 2, Track: "BFR"})
 
+	streamsMap := make(map[int64]entity.StreamInterface)
+	for _, stream := range streams {
+		streamsMap[stream.GetID()] = stream
+	}
+
 	instance.AddStreams(streams)
 
 	assert.Equal(t, len(streams), len(instance.GetStreams()))
 	for _, stream := range instance.GetStreams() {
-		assert.EqualValues(t, streams[stream.GetID()].GetID(), stream.GetID())
-		assert.EqualValues(t, streams[stream.GetID()].GetTrack(), stream.GetTrack())
+		assert.EqualValues(t, streamsMap[stream.GetID()].GetID(), stream.GetID())
+		assert.EqualValues(t, streamsMap[stream.GetID()].GetTrack(), stream.GetTrack())
 	}
 }
