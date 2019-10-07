@@ -16,7 +16,6 @@ func NewInstance() splitter.Interface {
 }
 
 func (instance *instance) Split(tweet TweetInterface, streams []StreamInterface) TweetStreamsInterface {
-	log.Infof("Trying to split tweet...\n")
 	var matchedStreams []StreamInterface
 	for _, stream := range streams {
 
@@ -26,10 +25,8 @@ func (instance *instance) Split(tweet TweetInterface, streams []StreamInterface)
 	}
 
 	if len(matchedStreams) == 0 {
-		log.Warnf("Not matched [%s] with any stream", tweet.GetFullText())
-	}
-
-	if len(matchedStreams) > 1 {
+		log.Warnf("Not matched [%d] [%s] with any stream", tweet.GetTwitterID(), tweet.GetFullText())
+	} else if len(matchedStreams) > 1 {
 		log.Warnf("Matched [%s] with multiple streams", tweet.GetFullText())
 	}
 

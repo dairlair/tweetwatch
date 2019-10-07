@@ -6,9 +6,11 @@ import (
 
 // Interface must be implemented by postgres based storage or something else.
 type Interface interface {
-	AddStream(entity.StreamInterface) (stream entity.StreamInterface, err error)
+	AddTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
+	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreams []entity.StreamInterface, err error)
+	GetUserTopics(userId int64) (result []entity.TopicInterface, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	AddTweetStreams(tweetStreams entity.TweetStreamsInterface) (id int64, err error)
-	SignUp(email string, password string) (token string, err error)
-	SignIn(email string, password string) (token string, err error)
+	SignUp(email string, password string) (id *int64, err error)
+	Login(email string, password string) (id *int64, err error)
 }

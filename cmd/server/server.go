@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/dairlair/tweetwatch/pkg/cmd/server"
-	grpcServer "github.com/dairlair/tweetwatch/pkg/protocol/grpc"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient/providers/gotwitter"
@@ -28,10 +27,7 @@ func main() {
 	setLogLevel(config.LogLevel)
 	log.Infof("config: %v\n", config)
 	srv := server.NewInstance(&config, providers)
-	err = srv.Start()
-	if err != nil {
-		log.Errorf("tweetwatch start failed: %s", err)
-	}
+	srv.Start()
 }
 
 func setLogLevel(logLevel string) {
@@ -66,9 +62,7 @@ func readConfig() (server.Config, server.Providers, error) {
 		Postgres: storage.PostgresConfig{
 			DSN: viper.GetString("postgres.dsn"),
 		},
-		GRPC: grpcServer.Config{
-			ListenAddress: viper.GetString("grpc.listen"),
-		},
+		RESTListen: viper.GetInt("rest.port"),
 		Twitterclient: twitterclient.Config{
 			TwitterConsumerKey:    viper.GetString("twitter.consumerKey"),
 			TwitterConsumerSecret: viper.GetString("twitter.consumerSecret"),
@@ -86,7 +80,7 @@ func configureViper() {
 	viper.AddConfigPath("$HOME/.twitwatch")
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.SetDefault("grpc.listen", ":1308")
+	viper.SetDefault("rest.post", "1308")
 	viper.SetDefault("twitter.provider", "go-twitter")
 	viper.SetDefault("server.logLevel", "warning")
 }

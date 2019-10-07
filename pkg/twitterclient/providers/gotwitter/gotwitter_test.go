@@ -49,27 +49,28 @@ func TestStart_AuthFailed(t *testing.T) {
 func TestAddStream_Successful(t *testing.T) {
 	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
-	stream := entity.Stream{}
-	instance.AddStream(&stream)
+	streams := []entity.StreamInterface{&entity.Stream{}}
+	instance.AddStreams(streams)
 }
 
 func TestGetStreams_Successful(t *testing.T) {
 	cfg := twitterclient.Config{}
 	instance := NewInstance(cfg)
 
-	streams := map[int64]entity.Stream{
-		1: {ID: 1, Track: "Tesla"},
-		2: {ID: 2, Track: "Apple"},
-		3: {ID: 3, Track: "Microsoft"},
+	var streams []entity.StreamInterface
+	streams = append(streams, &entity.Stream{ID: 1, Track: "Tesla"})
+	streams = append(streams, &entity.Stream{ID: 2, Track: "BFR"})
+
+	streamsMap := make(map[int64]entity.StreamInterface)
+	for _, stream := range streams {
+		streamsMap[stream.GetID()] = stream
 	}
 
-	for _, stream := range streams {
-		instance.AddStream(&stream)
-	}
+	instance.AddStreams(streams)
 
 	assert.Equal(t, len(streams), len(instance.GetStreams()))
 	for _, stream := range instance.GetStreams() {
-		assert.EqualValues(t, streams[stream.GetID()].ID, stream.GetID())
-		assert.EqualValues(t, streams[stream.GetID()].Track, stream.GetTrack())
+		assert.EqualValues(t, streamsMap[stream.GetID()].GetID(), stream.GetID())
+		assert.EqualValues(t, streamsMap[stream.GetID()].GetTrack(), stream.GetTrack())
 	}
 }

@@ -50,12 +50,35 @@ func (instance *Instance) Start() error {
 }
 
 // AddStream adds desired stream to the current instance of twitterclient
-func (instance *Instance) AddStream(stream entity.StreamInterface) {
+func (instance *Instance) addStream(stream entity.StreamInterface) {
 	if stream.GetID() < 1 {
 		log.Errorf("stream without id can not be added")
 		return
 	}
 	instance.streams[stream.GetID()] = stream
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) deleteStream(streamID int64) {
+	if streamID < 1 {
+		log.Errorf("stream without id can not be deleted")
+		return
+	}
+	delete(instance.streams, streamID)
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) AddStreams(streams []entity.StreamInterface) {
+	for _, stream := range streams {
+		instance.addStream(stream)
+	}
+}
+
+// AddStream adds desired stream to the current instance of twitterclient
+func (instance *Instance) DeleteStreams(streamIDs []int64) {
+	for _, streamID := range streamIDs {
+		instance.deleteStream(streamID)
+	}
 }
 
 // GetStreams returns all the streams from the current instance of twitterclient
@@ -67,7 +90,7 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
 	instance.output = output
 	tracks := instance.getTracks()
-	log.Infof("Starting Stream with tracks [%v]", tracks)
+	log.Infof("Starting Stream with tracks: %v", tracks)
 
 	// Convenience Demux demultiplexed stream messages
 	demux := twitter.NewSwitchDemux()
@@ -115,19 +138,26 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 
 
 func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
+	return &entity.Tweet{
+		ID:            tweet.ID,
+		TwitterID:     tweet.ID,
+		TwitterUserID: tweet.User.ID,
+		FullText:      getFullText(tweet),
+		CreatedAt:     tweet.CreatedAt,
+	}
+}
+
+func getFullText(tweet *twitter.Tweet) string {
+	if tweet.RetweetedStatus != nil {
+		return getFullText(tweet.RetweetedStatus)
+	}
 	var fullText string
 	if tweet.ExtendedTweet != nil {
 		fullText = tweet.ExtendedTweet.FullText
 	} else {
 		fullText = tweet.Text
 	}
-	return &entity.Tweet{
-		ID:            tweet.ID,
-		TwitterID:     tweet.ID,
-		TwitterUserID: tweet.User.ID,
-		FullText:      fullText,
-		CreatedAt:     tweet.CreatedAt,
-	}
+	return fullText
 }
 
 func createTwitterClient(config twitterclient.Config) (*twitter.Client, error) {

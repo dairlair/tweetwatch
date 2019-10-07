@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/bxcodec/faker/v3"
 	"os"
 	"testing"
 
+	"github.com/bxcodec/faker/v3"
 	"github.com/stretchr/testify/assert"
 )
 

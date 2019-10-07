@@ -12,8 +12,10 @@ import (
 type Interface interface {
 	// Creates Twitter Streaming API client and validates credentials.
 	Start() error
-	// Add stream to watch it.
-	AddStream(entity.StreamInterface)
+	// Add streams to watch it.
+	AddStreams([]entity.StreamInterface)
+	// DeleteStreams deletes streams from watching
+	DeleteStreams(streamIDs []int64)
 	// Returns currently loaded and watched streams.
 	GetStreams() map[int64]entity.StreamInterface
 	// Runs watching for twits according to specified streams.

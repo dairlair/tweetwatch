@@ -1,0 +1,19 @@
+CREATE TABLE topic (
+    topic_id BIGSERIAL PRIMARY KEY
+    , user_id BIGINT REFERENCES "user"(user_id) ON DELETE CASCADE
+    , name TEXT NOT NULL
+    , tracks TEXT[] NOT NULL
+    , created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , is_active BOOLEAN DEFAULT TRUE
+    , is_deleted BOOLEAN DEFAULT FALSE
+);
+
+ALTER TABLE stream
+    ADD COLUMN topic_id BIGINT;
+
+TRUNCATE TABLE stream;
+
+ALTER TABLE stream ALTER COLUMN topic_id SET NOT NULL;
+
+ALTER TABLE stream
+    ADD CONSTRAINT stream_topic_fk FOREIGN KEY (topic_id) REFERENCES topic (topic_id) ON DELETE CASCADE;

@@ -35,6 +35,9 @@ func TestStorageSuite(t *testing.T) {
 	cfg := PostgresConfig{
 		DSN: os.Getenv("TWEETWATCH_TEST_POSTGRES_DSN"),
 	}
+	if cfg.DSN == "" {
+		t.Error("Environment variable TWEETWATCH_TEST_POSTGRES_DSN must be set")
+	}
 	storageSuite := NewStorageSuite(cfg)
 	suite.Run(t, &storageSuite)
 }

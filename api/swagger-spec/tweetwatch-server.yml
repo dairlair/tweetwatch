@@ -1,0 +1,192 @@
+---
+# See https://goswagger.io/tutorial/custom-server.html
+# See https://github.com/go-swagger/go-swagger/blob/master/examples/composed-auth/swagger.yml
+# See https://mean-dev.info/authentication-rest-api-swagger/
+# See https://habr.com/ru/company/lamoda/blog/463301/
+swagger: '2.0'
+info:
+  version: '0.0.1'
+  title: Tweetwatch Server  
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /signup:
+    post:
+      operationId: signup
+      security: []
+      parameters:
+        - name: user
+          in: body
+          description: New User
+          required: true
+          schema:
+            $ref: '#/definitions/UserRequest'
+      responses:
+        "200":
+          description: User created
+          schema:
+            $ref: "#/definitions/UserResponse"
+        "422":
+          description: Email already taken
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /login:
+    post:
+      operationId: login
+      security: []
+      parameters:
+        - name: user
+          in: body
+          description: New User
+          required: true
+          schema:
+            $ref: '#/definitions/UserRequest'
+      responses:
+        "200":
+          description: Logged in successfully
+          schema:
+            $ref: "#/definitions/UserResponse"
+        "422":
+          description: Invalid credentials
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /topics:
+    post:
+      operationId: createTopic
+      parameters:
+        - name: topic
+          in: body
+          description: New Topic
+          required: true
+          schema:
+            $ref: '#/definitions/CreateTopicRequest'
+      responses:
+        "200":
+          description: Topic created
+          schema:
+            $ref: "#/definitions/Topic"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      operationId: getUserTopics
+      responses:
+        "200":
+          description: Returns topics list of current user
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Topic"
+  /topics/{topicId}:
+    put:
+      summary: Update desired topic by Topic ID
+      operationId: updateTopic
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to update
+        - name: topic
+          in: body
+          description: Updated topic data
+          required: true
+          schema:
+            $ref: '#/definitions/CreateTopicRequest'
+      responses:
+        "200":
+          description: Topic updated
+          schema:
+            $ref: "#/definitions/Topic"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  UserResponse:
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      token:
+        type: string
+    required:
+      - id
+      - email
+      - token
+  UserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+        format: password
+    required:
+      - email
+      - password
+  CreateTopicRequest:
+    properties:
+      name:
+        type: string
+      tracks:
+        type: array
+        items:
+          type: string
+      isActive:
+        type: boolean
+    required:
+      - name
+      - tracks
+      - isActive
+  Topic:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      tracks:
+        type: array
+        items:
+          type: string
+      createdAt:
+        type: string
+      isActive:
+        type: boolean
+    required:
+      - id
+      - name
+      - tracks
+      - createdAt
+      - isActive
+  ErrorResponse:
+    properties:
+      message:
+        type: string
+    required:
+      - message
+# Default Security requirements for all operations
+security:
+  - JWT: []
+securityDefinitions:
+  isRegistered:
+    # This scheme uses the header: "Authorization: Basic {base64 encoded string defined by username:password}"
+    # Scopes are not supported with this type of authorization.
+    type: basic
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header

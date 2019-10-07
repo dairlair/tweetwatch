@@ -1,49 +1,39 @@
 # Developers guide
 
-### gRPC proto updates
-To regenerate gRPC service from updated proto files (located in /api/proto) run this command:
+## Run server locally
+
 ```shell
-./third_party/protoc-gen.sh
+go run ./cmd/server/server.go
+# Signup after start
+http post :1308/signup email=john@example.com password=secret
+# Or login
+http post :1308/login email=john@example.com password=secret
+# Grab the token and get a topics list with JWT authorization
+http :1308/topics "Authorization:${jwt}"
+# Validate your creds via
+http post :1308/login "Authorization:${jwt}"
+# And create your first topic
+http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Tesla","Elon Musk"]' isActive:=true
+http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Trump"]' isActive:=true
+http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]' isActive:=true
+# Get topics list after that
+http :1308/topics "Authorization:${jwt}"
+# Update created topic
+http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]' isActive:=true
 ```
 
-For more information see https://github.com/golang/protobuf#installation
+# Swagger stubs regenerate
+
+To regenerate swagger stubs run this command:
+
+```shell
+./tools/swagger.sh
+```
 
 ### Mockery mocks
 
-To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:
+To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:./c
 
 ```shell
 ./tools/regenerate-mocks.sh
-```
-
-#### Dial server though grpcurl
-
-List of services
-```shell
-grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1308 list
-```
-
-List of service methods
-```shell
-grpcurl -proto api/proto/v1/twitwatch-service.proto localhost:1308 list v1.TwitwatchService
-```
-
-Create stream
-```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "stream": {"track": "Tesla"}}' localhost:1308 v1.TwitwatchService.CreateStream
-```
-
-Get streams
-```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1"}' localhost:1308 v1.TwitwatchService.GetStreams
-```
-
-Sign up
-```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1308 v1.TwitwatchService.SignUp
-```
-
-Sign in
-```shell
-grpcurl -plaintext -proto api/proto/v1/twitwatch-service.proto -d '{"api": "v1", "email": "john.doe@example.com", "password": "secret"}' localhost:1308 v1.TwitwatchService.SignIn
 ```

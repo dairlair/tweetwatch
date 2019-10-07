@@ -1,8 +1,8 @@
 package server
 
 import (
-	grpcServer "github.com/dairlair/tweetwatch/pkg/protocol/grpc"
-	serviceV1 "github.com/dairlair/tweetwatch/pkg/service/v1"
+	"github.com/dairlair/tweetwatch/pkg/api/restapi"
+	"github.com/dairlair/tweetwatch/pkg/service"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	"google.golang.org/grpc"
@@ -12,9 +12,9 @@ import (
 
 // Config is configuration for the Server
 type Config struct {
-	LogLevel string
+	LogLevel      string
 	Postgres      storage.PostgresConfig
-	GRPC          grpcServer.Config
+	RESTListen    int
 	Twitterclient twitterclient.Config
 }
 
@@ -26,41 +26,49 @@ type Providers struct {
 
 // Instance stores the server state
 type Instance struct {
-	config        *Config
-	providers     Providers
-	grpcServer    *grpc.Server
+	config     *Config
+	providers  Providers
+	grpcServer *grpc.Server
 }
 
 // NewInstance creates new server instance and copy config into that.
 func NewInstance(config *Config, providers Providers) *Instance {
 	s := &Instance{
-		config: config,
+		config:    config,
 		providers: providers,
 	}
 	return s
 }
 
 // Start does startup all dependencies (postgres connections pool, gRPC server, etc..)
-func (s *Instance) Start() error {
+func (instance *Instance) Start() {
 
-	// Create postgres connections pool
-	connPool := storage.CreatePostgresConnection(s.config.Postgres)
+	// create postgres connections pool
+	connPool := storage.CreatePostgresConnection(instance.config.Postgres)
 	defer connPool.Close()
 
-	// Create storage instance
+	// create storage instance
 	storageInstance := storage.NewStorage(connPool)
 
-	// Create the twitterclient instance
-	twitterClient := s.providers.TwitterClientProvider(s.config.Twitterclient)
+	// create the twitterclient instance
+	twitterclientInstance := instance.providers.TwitterClientProvider(instance.config.Twitterclient)
 
-	// Run gRPC server
-	v1API := serviceV1.NewTweetwatchServiceServer(storageInstance, twitterClient)
-	server, err := grpcServer.RunServer(v1API, s.config.GRPC)
-	if err != nil {
-		log.Fatalf("gRPC server error: %s\n", err)
-		return err
+	// run service
+	serviceInstance := service.NewService(storageInstance, twitterclientInstance)
+
+	// create server
+	server := restapi.NewServer(serviceInstance.API)
+	server.Port = instance.config.RESTListen
+	log.Infof("Start listen on %d port", server.Port)
+	defer func() {
+		err := server.Shutdown()
+		if err != nil {
+			log.Warnf("server shutdown got error: %s\n", err)
+		}
+	}()
+
+	// run server
+	if err := server.Serve(); err != nil {
+		log.Fatalln(err)
 	}
-	s.grpcServer = server
-
-	return nil
 }
