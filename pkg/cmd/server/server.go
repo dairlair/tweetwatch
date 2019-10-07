@@ -63,7 +63,7 @@ func (instance *Instance) Start() {
 	defer func() {
 		err := server.Shutdown()
 		if err != nil {
-			log.Warnf("server shutdown got error: %instance\n", err)
+			log.Warnf("server shutdown got error: %s\n", err)
 		}
 	}()
 
