@@ -1,3 +1,4 @@
+// See https://github.com/go-openapi/kvstore/blob/master/cmd/kvstored/main.go as middlewares example
 package server
 
 import (
@@ -5,9 +6,11 @@ import (
 	"github.com/dairlair/tweetwatch/pkg/service"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
-	"google.golang.org/grpc"
-
+	"github.com/justinas/alice"
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"net/http"
 )
 
 // Config is configuration for the Server
@@ -67,8 +70,29 @@ func (instance *Instance) Start() {
 		}
 	}()
 
+	handler := alice.New(
+		func(handler http.Handler) http.Handler {
+			log.Infof("Handler 1 received %v", handler)
+			return handler
+		},
+		NewCorsMiddleware(),
+		func(handler http.Handler) http.Handler {
+			log.Infof("Handler 2 received %v", handler)
+			return handler
+		},
+	).Then(serviceInstance.API.Serve(nil))
+	server.SetHandler(handler)
+
 	// run server
 	if err := server.Serve(); err != nil {
 		log.Fatalln(err)
+	}
+}
+
+// NewAuditMW returns a new Audit middleware
+func NewCorsMiddleware() alice.Constructor {
+	return func(hand http.Handler) http.Handler {
+		handleCORS := cors.AllowAll().Handler
+		return handleCORS(hand)
 	}
 }

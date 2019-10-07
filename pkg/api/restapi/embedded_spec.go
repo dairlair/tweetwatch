@@ -65,6 +65,12 @@ func init() {
             }
           }
         }
+      },
+      "options": {
+        "operationId": "loginCORS",
+        "responses": {
+          "200": {}
+        }
       }
     },
     "/signup": {
@@ -345,6 +351,12 @@ func init() {
               "$ref": "#/definitions/ErrorResponse"
             }
           }
+        }
+      },
+      "options": {
+        "operationId": "loginCORS",
+        "responses": {
+          "200": {}
         }
       }
     },

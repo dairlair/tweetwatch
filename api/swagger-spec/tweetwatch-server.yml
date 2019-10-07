@@ -62,6 +62,10 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    options:
+      operationId: loginCORS
+      responses:
+        "200":
   /topics:
     post:
       operationId: createTopic

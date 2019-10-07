@@ -60,6 +60,11 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 			return middleware.NotImplemented("operation .Login has not yet been implemented")
 		})
 	}
+	if api.LoginCORSHandler == nil {
+		api.LoginCORSHandler = operations.LoginCORSHandlerFunc(func(params operations.LoginCORSParams, principal *models.UserResponse) middleware.Responder {
+			return middleware.NotImplemented("operation .LoginCORS has not yet been implemented")
+		})
+	}
 	if api.SignupHandler == nil {
 		api.SignupHandler = operations.SignupHandlerFunc(func(params operations.SignupParams) middleware.Responder {
 			return middleware.NotImplemented("operation .Signup has not yet been implemented")
