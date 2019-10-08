@@ -48,9 +48,6 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		LoginHandler: LoginHandlerFunc(func(params LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation Login has not yet been implemented")
 		}),
-		LoginCORSHandler: LoginCORSHandlerFunc(func(params LoginCORSParams, principal *models.UserResponse) middleware.Responder {
-			return middleware.NotImplemented("operation LoginCORS has not yet been implemented")
-		}),
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
 			return middleware.NotImplemented("operation Signup has not yet been implemented")
 		}),
@@ -109,8 +106,6 @@ type TweetwatchAPI struct {
 	GetUserTopicsHandler GetUserTopicsHandler
 	// LoginHandler sets the operation handler for the login operation
 	LoginHandler LoginHandler
-	// LoginCORSHandler sets the operation handler for the login c o r s operation
-	LoginCORSHandler LoginCORSHandler
 	// SignupHandler sets the operation handler for the signup operation
 	SignupHandler SignupHandler
 	// UpdateTopicHandler sets the operation handler for the update topic operation
@@ -192,10 +187,6 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.LoginHandler == nil {
 		unregistered = append(unregistered, "LoginHandler")
-	}
-
-	if o.LoginCORSHandler == nil {
-		unregistered = append(unregistered, "LoginCORSHandler")
 	}
 
 	if o.SignupHandler == nil {
@@ -331,11 +322,6 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/login"] = NewLogin(o.context, o.LoginHandler)
-
-	if o.handlers["OPTIONS"] == nil {
-		o.handlers["OPTIONS"] = make(map[string]http.Handler)
-	}
-	o.handlers["OPTIONS"]["/login"] = NewLoginCORS(o.context, o.LoginCORSHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

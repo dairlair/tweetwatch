@@ -70,17 +70,7 @@ func (instance *Instance) Start() {
 		}
 	}()
 
-	handler := alice.New(
-		func(handler http.Handler) http.Handler {
-			log.Infof("Handler 1 received %v", handler)
-			return handler
-		},
-		NewCorsMiddleware(),
-		func(handler http.Handler) http.Handler {
-			log.Infof("Handler 2 received %v", handler)
-			return handler
-		},
-	).Then(serviceInstance.API.Serve(nil))
+	handler := alice.New(NewCorsMiddleware()).Then(serviceInstance.API.Serve(nil))
 	server.SetHandler(handler)
 
 	// run server
@@ -91,8 +81,7 @@ func (instance *Instance) Start() {
 
 // NewAuditMW returns a new Audit middleware
 func NewCorsMiddleware() alice.Constructor {
-	return func(hand http.Handler) http.Handler {
-		handleCORS := cors.AllowAll().Handler
-		return handleCORS(hand)
+	return func(next http.Handler) http.Handler {
+		return cors.AllowAll().Handler(next)
 	}
 }
