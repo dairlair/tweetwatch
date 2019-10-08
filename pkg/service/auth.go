@@ -17,7 +17,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func (service *Service) JWTAuth(token string) (*models.UserResponse, error) {
+func (service *Service) JWTAuth(token string) (*models.User, error) {
 	log.Infof("JWTAuth with token: %s", token)
 	claims := &Claims{}
 	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
@@ -39,7 +39,7 @@ func (service *Service) JWTAuth(token string) (*models.UserResponse, error) {
 		// w.WriteHeader(http.StatusUnauthorized)
 		return nil, errors.New("invalid token")
 	}
-	return &models.UserResponse{
+	return &models.User{
 		Email: swag.String("some"),
 		ID:    swag.Int64(claims.UserID),
 		Token: swag.String(token),
@@ -49,17 +49,17 @@ func (service *Service) JWTAuth(token string) (*models.UserResponse, error) {
 func (service *Service) LoginHandler(params operations.LoginParams) middleware.Responder {
 	id, err := service.storage.Login(*params.User.Email, params.User.Password.String())
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("Invalid credentials")}
+		payload := models.DefaultError{Message: swag.String("Invalid credentials")}
 		return operations.NewLoginDefault(422).WithPayload(&payload)
 	}
 
 	token, err := service.createJwtToken(*id)
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("JWT Token not created")}
+		payload := models.DefaultError{Message: swag.String("JWT Token not created")}
 		return operations.NewLoginDefault(500).WithPayload(&payload)
 	}
 
-	payload := models.UserResponse{
+	payload := models.User{
 		ID: id,
 		Email: params.User.Email,
 		Token: token,
@@ -71,17 +71,17 @@ func (service *Service) SignUpHandler(params operations.SignupParams) middleware
 
 	id, err := service.storage.SignUp(*params.User.Email, params.User.Password.String())
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("Email already taken")}
+		payload := models.DefaultError{Message: swag.String("Email already taken")}
 		return operations.NewSignupDefault(422).WithPayload(&payload)
 	}
 
 	token, err := service.createJwtToken(*id)
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("JWT Token not created")}
+		payload := models.DefaultError{Message: swag.String("JWT Token not created")}
 		return operations.NewSignupDefault(500).WithPayload(&payload)
 	}
 
-	payload := models.UserResponse{
+	payload := models.User{
 		ID: id,
 		Email: params.User.Email,
 		Token: token,

@@ -39,7 +39,7 @@ type UpdateTopicParams struct {
 	  Required: true
 	  In: body
 	*/
-	Topic *models.CreateTopicRequest
+	Topic *models.CreateTopic
 	/*Numeric ID of the topic to update
 	  Required: true
 	  In: path
@@ -58,7 +58,7 @@ func (o *UpdateTopicParams) BindRequest(r *http.Request, route *middleware.Match
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.CreateTopicRequest
+		var body models.CreateTopic
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("topic", "body"))

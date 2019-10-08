@@ -13,9 +13,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// CreateTopicRequest create topic request
-// swagger:model CreateTopicRequest
-type CreateTopicRequest struct {
+// CreateTopic create topic
+// swagger:model CreateTopic
+type CreateTopic struct {
 
 	// is active
 	// Required: true
@@ -30,8 +30,8 @@ type CreateTopicRequest struct {
 	Tracks []string `json:"tracks"`
 }
 
-// Validate validates this create topic request
-func (m *CreateTopicRequest) Validate(formats strfmt.Registry) error {
+// Validate validates this create topic
+func (m *CreateTopic) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateIsActive(formats); err != nil {
@@ -52,7 +52,7 @@ func (m *CreateTopicRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateTopicRequest) validateIsActive(formats strfmt.Registry) error {
+func (m *CreateTopic) validateIsActive(formats strfmt.Registry) error {
 
 	if err := validate.Required("isActive", "body", m.IsActive); err != nil {
 		return err
@@ -61,7 +61,7 @@ func (m *CreateTopicRequest) validateIsActive(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateTopicRequest) validateName(formats strfmt.Registry) error {
+func (m *CreateTopic) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -70,7 +70,7 @@ func (m *CreateTopicRequest) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateTopicRequest) validateTracks(formats strfmt.Registry) error {
+func (m *CreateTopic) validateTracks(formats strfmt.Registry) error {
 
 	if err := validate.Required("tracks", "body", m.Tracks); err != nil {
 		return err
@@ -80,7 +80,7 @@ func (m *CreateTopicRequest) validateTracks(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *CreateTopicRequest) MarshalBinary() ([]byte, error) {
+func (m *CreateTopic) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -88,8 +88,8 @@ func (m *CreateTopicRequest) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *CreateTopicRequest) UnmarshalBinary(b []byte) error {
-	var res CreateTopicRequest
+func (m *CreateTopic) UnmarshalBinary(b []byte) error {
+	var res CreateTopic
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

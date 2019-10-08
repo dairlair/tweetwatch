@@ -14,16 +14,16 @@ import (
 )
 
 // CreateTopicHandlerFunc turns a function with the right signature into a create topic handler
-type CreateTopicHandlerFunc func(CreateTopicParams, *models.UserResponse) middleware.Responder
+type CreateTopicHandlerFunc func(CreateTopicParams, *models.User) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn CreateTopicHandlerFunc) Handle(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+func (fn CreateTopicHandlerFunc) Handle(params CreateTopicParams, principal *models.User) middleware.Responder {
 	return fn(params, principal)
 }
 
 // CreateTopicHandler interface for that can handle valid create topic params
 type CreateTopicHandler interface {
-	Handle(CreateTopicParams, *models.UserResponse) middleware.Responder
+	Handle(CreateTopicParams, *models.User) middleware.Responder
 }
 
 // NewCreateTopic creates a new http.Handler for the create topic operation
@@ -56,9 +56,9 @@ func (o *CreateTopic) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal *models.UserResponse
+	var principal *models.User
 	if uprinc != nil {
-		principal = uprinc.(*models.UserResponse) // this is really a models.UserResponse, I promise
+		principal = uprinc.(*models.User) // this is really a models.User, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

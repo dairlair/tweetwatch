@@ -41,7 +41,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserRequest"
+              "$ref": "#/definitions/Credentials"
             }
           }
         ],
@@ -49,19 +49,19 @@ func init() {
           "200": {
             "description": "Logged in successfully",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/User"
             }
           },
           "422": {
             "description": "Invalid credentials",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -78,7 +78,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserRequest"
+              "$ref": "#/definitions/Credentials"
             }
           }
         ],
@@ -86,19 +86,19 @@ func init() {
           "200": {
             "description": "User created",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/User"
             }
           },
           "422": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -128,7 +128,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateTopicRequest"
+              "$ref": "#/definitions/CreateTopic"
             }
           }
         ],
@@ -142,7 +142,7 @@ func init() {
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -166,7 +166,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateTopicRequest"
+              "$ref": "#/definitions/CreateTopic"
             }
           }
         ],
@@ -180,7 +180,7 @@ func init() {
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -188,7 +188,7 @@ func init() {
     }
   },
   "definitions": {
-    "CreateTopicRequest": {
+    "CreateTopic": {
       "required": [
         "name",
         "tracks",
@@ -209,7 +209,22 @@ func init() {
         }
       }
     },
-    "ErrorResponse": {
+    "Credentials": {
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "DefaultError": {
       "required": [
         "message"
       ],
@@ -248,22 +263,7 @@ func init() {
         }
       }
     },
-    "UserRequest": {
-      "required": [
-        "email",
-        "password"
-      ],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "format": "password"
-        }
-      }
-    },
-    "UserResponse": {
+    "User": {
       "required": [
         "id",
         "email",
@@ -322,7 +322,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserRequest"
+              "$ref": "#/definitions/Credentials"
             }
           }
         ],
@@ -330,19 +330,19 @@ func init() {
           "200": {
             "description": "Logged in successfully",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/User"
             }
           },
           "422": {
             "description": "Invalid credentials",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -359,7 +359,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserRequest"
+              "$ref": "#/definitions/Credentials"
             }
           }
         ],
@@ -367,19 +367,19 @@ func init() {
           "200": {
             "description": "User created",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/User"
             }
           },
           "422": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -409,7 +409,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateTopicRequest"
+              "$ref": "#/definitions/CreateTopic"
             }
           }
         ],
@@ -423,7 +423,7 @@ func init() {
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -447,7 +447,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateTopicRequest"
+              "$ref": "#/definitions/CreateTopic"
             }
           }
         ],
@@ -461,7 +461,7 @@ func init() {
           "default": {
             "description": "Error",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "$ref": "#/definitions/DefaultError"
             }
           }
         }
@@ -469,7 +469,7 @@ func init() {
     }
   },
   "definitions": {
-    "CreateTopicRequest": {
+    "CreateTopic": {
       "required": [
         "name",
         "tracks",
@@ -490,7 +490,22 @@ func init() {
         }
       }
     },
-    "ErrorResponse": {
+    "Credentials": {
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "DefaultError": {
       "required": [
         "message"
       ],
@@ -529,22 +544,7 @@ func init() {
         }
       }
     },
-    "UserRequest": {
-      "required": [
-        "email",
-        "password"
-      ],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "format": "password"
-        }
-      }
-    },
-    "UserResponse": {
+    "User": {
       "required": [
         "id",
         "email",

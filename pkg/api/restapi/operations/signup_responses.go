@@ -25,7 +25,7 @@ type SignupOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UserResponse `json:"body,omitempty"`
+	Payload *models.User `json:"body,omitempty"`
 }
 
 // NewSignupOK creates SignupOK with default headers values
@@ -35,13 +35,13 @@ func NewSignupOK() *SignupOK {
 }
 
 // WithPayload adds the payload to the signup o k response
-func (o *SignupOK) WithPayload(payload *models.UserResponse) *SignupOK {
+func (o *SignupOK) WithPayload(payload *models.User) *SignupOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the signup o k response
-func (o *SignupOK) SetPayload(payload *models.UserResponse) {
+func (o *SignupOK) SetPayload(payload *models.User) {
 	o.Payload = payload
 }
 
@@ -69,7 +69,7 @@ type SignupUnprocessableEntity struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ErrorResponse `json:"body,omitempty"`
+	Payload *models.DefaultError `json:"body,omitempty"`
 }
 
 // NewSignupUnprocessableEntity creates SignupUnprocessableEntity with default headers values
@@ -79,13 +79,13 @@ func NewSignupUnprocessableEntity() *SignupUnprocessableEntity {
 }
 
 // WithPayload adds the payload to the signup unprocessable entity response
-func (o *SignupUnprocessableEntity) WithPayload(payload *models.ErrorResponse) *SignupUnprocessableEntity {
+func (o *SignupUnprocessableEntity) WithPayload(payload *models.DefaultError) *SignupUnprocessableEntity {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the signup unprocessable entity response
-func (o *SignupUnprocessableEntity) SetPayload(payload *models.ErrorResponse) {
+func (o *SignupUnprocessableEntity) SetPayload(payload *models.DefaultError) {
 	o.Payload = payload
 }
 
@@ -111,7 +111,7 @@ type SignupDefault struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ErrorResponse `json:"body,omitempty"`
+	Payload *models.DefaultError `json:"body,omitempty"`
 }
 
 // NewSignupDefault creates SignupDefault with default headers values
@@ -137,13 +137,13 @@ func (o *SignupDefault) SetStatusCode(code int) {
 }
 
 // WithPayload adds the payload to the signup default response
-func (o *SignupDefault) WithPayload(payload *models.ErrorResponse) *SignupDefault {
+func (o *SignupDefault) WithPayload(payload *models.DefaultError) *SignupDefault {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the signup default response
-func (o *SignupDefault) SetPayload(payload *models.ErrorResponse) {
+func (o *SignupDefault) SetPayload(payload *models.DefaultError) {
 	o.Payload = payload
 }
 

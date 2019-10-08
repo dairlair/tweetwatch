@@ -22,21 +22,21 @@ paths:
           description: New User
           required: true
           schema:
-            $ref: '#/definitions/UserRequest'
+            $ref: '#/definitions/Credentials'
       responses:
         "200":
           description: User created
           schema:
-            $ref: "#/definitions/UserResponse"
+            $ref: "#/definitions/User"
         "422":
           description: Email already taken
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
         # responses may fall through to errors
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
   /login:
     post:
       operationId: login
@@ -47,21 +47,21 @@ paths:
           description: New User
           required: true
           schema:
-            $ref: '#/definitions/UserRequest'
+            $ref: '#/definitions/Credentials'
       responses:
         "200":
           description: Logged in successfully
           schema:
-            $ref: "#/definitions/UserResponse"
+            $ref: "#/definitions/User"
         "422":
           description: Invalid credentials
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
         # responses may fall through to errors
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
   /topics:
     post:
       operationId: createTopic
@@ -71,7 +71,7 @@ paths:
           description: New Topic
           required: true
           schema:
-            $ref: '#/definitions/CreateTopicRequest'
+            $ref: '#/definitions/CreateTopic'
       responses:
         "200":
           description: Topic created
@@ -80,7 +80,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
     get:
       operationId: getUserTopics
       responses:
@@ -105,7 +105,7 @@ paths:
           description: Updated topic data
           required: true
           schema:
-            $ref: '#/definitions/CreateTopicRequest'
+            $ref: '#/definitions/CreateTopic'
       responses:
         "200":
           description: Topic updated
@@ -114,9 +114,9 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/DefaultError"
 definitions:
-  UserResponse:
+  User:
     properties:
       id:
         type: integer
@@ -128,7 +128,7 @@ definitions:
       - id
       - email
       - token
-  UserRequest:
+  Credentials:
     properties:
       email:
         type: string
@@ -138,7 +138,7 @@ definitions:
     required:
       - email
       - password
-  CreateTopicRequest:
+  CreateTopic:
     properties:
       name:
         type: string
@@ -172,7 +172,7 @@ definitions:
       - tracks
       - createdAt
       - isActive
-  ErrorResponse:
+  DefaultError:
     properties:
       message:
         type: string

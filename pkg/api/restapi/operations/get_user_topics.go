@@ -14,16 +14,16 @@ import (
 )
 
 // GetUserTopicsHandlerFunc turns a function with the right signature into a get user topics handler
-type GetUserTopicsHandlerFunc func(GetUserTopicsParams, *models.UserResponse) middleware.Responder
+type GetUserTopicsHandlerFunc func(GetUserTopicsParams, *models.User) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn GetUserTopicsHandlerFunc) Handle(params GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
+func (fn GetUserTopicsHandlerFunc) Handle(params GetUserTopicsParams, principal *models.User) middleware.Responder {
 	return fn(params, principal)
 }
 
 // GetUserTopicsHandler interface for that can handle valid get user topics params
 type GetUserTopicsHandler interface {
-	Handle(GetUserTopicsParams, *models.UserResponse) middleware.Responder
+	Handle(GetUserTopicsParams, *models.User) middleware.Responder
 }
 
 // NewGetUserTopics creates a new http.Handler for the get user topics operation
@@ -56,9 +56,9 @@ func (o *GetUserTopics) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal *models.UserResponse
+	var principal *models.User
 	if uprinc != nil {
-		principal = uprinc.(*models.UserResponse) // this is really a models.UserResponse, I promise
+		principal = uprinc.(*models.User) // this is really a models.User, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
