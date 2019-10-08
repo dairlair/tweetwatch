@@ -21,7 +21,7 @@ http :1308/topics "Authorization:${jwt}"
 # Update created topic
 http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]' isActive:=true
 # Check the CORS headers
-http OPTIONS :1308/login "Access-Control-Request-Method:POST"
+ curl "http://localhost:1308/login" -X OPTIONS -H "Sec-Fetch-Mode: cors" -H "Access-Control-Request-Method: POST" -H "Origin: http://localhost:3000" -H "Access-Control-Request-Headers: content-type" --compressed -i
 ```
 
 # Swagger stubs regenerate
