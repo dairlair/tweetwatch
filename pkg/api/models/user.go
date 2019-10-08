@@ -13,9 +13,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UserResponse user response
-// swagger:model UserResponse
-type UserResponse struct {
+// User user
+// swagger:model User
+type User struct {
 
 	// email
 	// Required: true
@@ -30,8 +30,8 @@ type UserResponse struct {
 	Token *string `json:"token"`
 }
 
-// Validate validates this user response
-func (m *UserResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this user
+func (m *User) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateEmail(formats); err != nil {
@@ -52,7 +52,7 @@ func (m *UserResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UserResponse) validateEmail(formats strfmt.Registry) error {
+func (m *User) validateEmail(formats strfmt.Registry) error {
 
 	if err := validate.Required("email", "body", m.Email); err != nil {
 		return err
@@ -61,7 +61,7 @@ func (m *UserResponse) validateEmail(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UserResponse) validateID(formats strfmt.Registry) error {
+func (m *User) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
@@ -70,7 +70,7 @@ func (m *UserResponse) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UserResponse) validateToken(formats strfmt.Registry) error {
+func (m *User) validateToken(formats strfmt.Registry) error {
 
 	if err := validate.Required("token", "body", m.Token); err != nil {
 		return err
@@ -80,7 +80,7 @@ func (m *UserResponse) validateToken(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *UserResponse) MarshalBinary() ([]byte, error) {
+func (m *User) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -88,8 +88,8 @@ func (m *UserResponse) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UserResponse) UnmarshalBinary(b []byte) error {
-	var res UserResponse
+func (m *User) UnmarshalBinary(b []byte) error {
+	var res User
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

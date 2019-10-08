@@ -25,7 +25,7 @@ type LoginOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UserResponse `json:"body,omitempty"`
+	Payload *models.User `json:"body,omitempty"`
 }
 
 // NewLoginOK creates LoginOK with default headers values
@@ -35,13 +35,13 @@ func NewLoginOK() *LoginOK {
 }
 
 // WithPayload adds the payload to the login o k response
-func (o *LoginOK) WithPayload(payload *models.UserResponse) *LoginOK {
+func (o *LoginOK) WithPayload(payload *models.User) *LoginOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the login o k response
-func (o *LoginOK) SetPayload(payload *models.UserResponse) {
+func (o *LoginOK) SetPayload(payload *models.User) {
 	o.Payload = payload
 }
 
@@ -69,7 +69,7 @@ type LoginUnprocessableEntity struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ErrorResponse `json:"body,omitempty"`
+	Payload *models.DefaultError `json:"body,omitempty"`
 }
 
 // NewLoginUnprocessableEntity creates LoginUnprocessableEntity with default headers values
@@ -79,13 +79,13 @@ func NewLoginUnprocessableEntity() *LoginUnprocessableEntity {
 }
 
 // WithPayload adds the payload to the login unprocessable entity response
-func (o *LoginUnprocessableEntity) WithPayload(payload *models.ErrorResponse) *LoginUnprocessableEntity {
+func (o *LoginUnprocessableEntity) WithPayload(payload *models.DefaultError) *LoginUnprocessableEntity {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the login unprocessable entity response
-func (o *LoginUnprocessableEntity) SetPayload(payload *models.ErrorResponse) {
+func (o *LoginUnprocessableEntity) SetPayload(payload *models.DefaultError) {
 	o.Payload = payload
 }
 
@@ -111,7 +111,7 @@ type LoginDefault struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ErrorResponse `json:"body,omitempty"`
+	Payload *models.DefaultError `json:"body,omitempty"`
 }
 
 // NewLoginDefault creates LoginDefault with default headers values
@@ -137,13 +137,13 @@ func (o *LoginDefault) SetStatusCode(code int) {
 }
 
 // WithPayload adds the payload to the login default response
-func (o *LoginDefault) WithPayload(payload *models.ErrorResponse) *LoginDefault {
+func (o *LoginDefault) WithPayload(payload *models.DefaultError) *LoginDefault {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the login default response
-func (o *LoginDefault) SetPayload(payload *models.ErrorResponse) {
+func (o *LoginDefault) SetPayload(payload *models.DefaultError) {
 	o.Payload = payload
 }
 

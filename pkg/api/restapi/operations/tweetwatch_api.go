@@ -39,10 +39,10 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
-		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
 		}),
-		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
+		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetUserTopics has not yet been implemented")
 		}),
 		LoginHandler: LoginHandlerFunc(func(params LoginParams) middleware.Responder {
@@ -51,12 +51,12 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
 			return middleware.NotImplemented("operation Signup has not yet been implemented")
 		}),
-		UpdateTopicHandler: UpdateTopicHandlerFunc(func(params UpdateTopicParams, principal *models.UserResponse) middleware.Responder {
+		UpdateTopicHandler: UpdateTopicHandlerFunc(func(params UpdateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation UpdateTopic has not yet been implemented")
 		}),
 
 		// Applies when the "Authorization" header is set
-		JWTAuth: func(token string) (*models.UserResponse, error) {
+		JWTAuth: func(token string) (*models.User, error) {
 			return nil, errors.NotImplemented("api key auth (JWT) Authorization from header param [Authorization] has not yet been implemented")
 		},
 
@@ -95,7 +95,7 @@ type TweetwatchAPI struct {
 
 	// JWTAuth registers a function that takes a token and returns a principal
 	// it performs authentication based on an api key Authorization provided in the header
-	JWTAuth func(string) (*models.UserResponse, error)
+	JWTAuth func(string) (*models.User, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer

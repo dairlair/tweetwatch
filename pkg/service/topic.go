@@ -9,17 +9,17 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, user *models.UserResponse) middleware.Responder {
+func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, user *models.User) middleware.Responder {
 	topic := topicEntityFromModel(params.Topic, user)
 
 	createdTopic, err := service.storage.AddTopic(&topic)
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String(fmt.Sprintf("%s", err))}
+		payload := models.DefaultError{Message: swag.String(fmt.Sprintf("%s", err))}
 		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
 	}
 
 	if createdTopic == nil {
-		payload := models.ErrorResponse{Message: swag.String("Topic not created with unknown reason")}
+		payload := models.DefaultError{Message: swag.String("Topic not created with unknown reason")}
 		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
 	}
 
@@ -32,11 +32,11 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 	return operations.NewCreateTopicOK().WithPayload(&payload)
 }
 
-func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsParams, user *models.UserResponse) middleware.Responder {
+func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsParams, user *models.User) middleware.Responder {
 	topics, err := service.storage.GetUserTopics(*user.ID)
 
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String("Topics not retrieved with unknown reason")}
+		payload := models.DefaultError{Message: swag.String("Topics not retrieved with unknown reason")}
 		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
 	}
 
@@ -49,14 +49,14 @@ func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsPara
 	return operations.NewGetUserTopicsOK().WithPayload(payload)
 }
 
-func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, user *models.UserResponse) middleware.Responder {
+func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, user *models.User) middleware.Responder {
 	topic := topicEntityFromModel(params.Topic, user)
 	topic.ID = params.TopicID
 
 	// Run update topic in storage
 	updatedTopic, deletedStreamIds, createdStreams, err := service.storage.UpdateTopic(&topic)
 	if err != nil {
-		payload := models.ErrorResponse{Message: swag.String(fmt.Sprintf("Topic not updated: %s", err))}
+		payload := models.DefaultError{Message: swag.String(fmt.Sprintf("Topic not updated: %s", err))}
 		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
 	}
 
@@ -70,7 +70,7 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 	return operations.NewUpdateTopicOK().WithPayload(&payload)
 }
 
-func topicEntityFromModel(model *models.CreateTopicRequest, user *models.UserResponse) entity.Topic {
+func topicEntityFromModel(model *models.CreateTopic, user *models.User) entity.Topic {
 	topic := entity.Topic{
 		UserID:  *user.ID,
 		Name:    *model.Name,
