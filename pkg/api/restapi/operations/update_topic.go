@@ -14,16 +14,16 @@ import (
 )
 
 // UpdateTopicHandlerFunc turns a function with the right signature into a update topic handler
-type UpdateTopicHandlerFunc func(UpdateTopicParams, *models.UserResponse) middleware.Responder
+type UpdateTopicHandlerFunc func(UpdateTopicParams, *models.User) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn UpdateTopicHandlerFunc) Handle(params UpdateTopicParams, principal *models.UserResponse) middleware.Responder {
+func (fn UpdateTopicHandlerFunc) Handle(params UpdateTopicParams, principal *models.User) middleware.Responder {
 	return fn(params, principal)
 }
 
 // UpdateTopicHandler interface for that can handle valid update topic params
 type UpdateTopicHandler interface {
-	Handle(UpdateTopicParams, *models.UserResponse) middleware.Responder
+	Handle(UpdateTopicParams, *models.User) middleware.Responder
 }
 
 // NewUpdateTopic creates a new http.Handler for the update topic operation
@@ -56,9 +56,9 @@ func (o *UpdateTopic) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal *models.UserResponse
+	var principal *models.User
 	if uprinc != nil {
-		principal = uprinc.(*models.UserResponse) // this is really a models.UserResponse, I promise
+		principal = uprinc.(*models.User) // this is really a models.User, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

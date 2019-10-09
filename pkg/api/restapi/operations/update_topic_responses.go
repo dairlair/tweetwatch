@@ -67,7 +67,7 @@ type UpdateTopicDefault struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ErrorResponse `json:"body,omitempty"`
+	Payload *models.DefaultError `json:"body,omitempty"`
 }
 
 // NewUpdateTopicDefault creates UpdateTopicDefault with default headers values
@@ -93,13 +93,13 @@ func (o *UpdateTopicDefault) SetStatusCode(code int) {
 }
 
 // WithPayload adds the payload to the update topic default response
-func (o *UpdateTopicDefault) WithPayload(payload *models.ErrorResponse) *UpdateTopicDefault {
+func (o *UpdateTopicDefault) WithPayload(payload *models.DefaultError) *UpdateTopicDefault {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the update topic default response
-func (o *UpdateTopicDefault) SetPayload(payload *models.ErrorResponse) {
+func (o *UpdateTopicDefault) SetPayload(payload *models.DefaultError) {
 	o.Payload = payload
 }
 

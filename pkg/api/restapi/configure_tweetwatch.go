@@ -15,7 +15,7 @@ import (
 	models "github.com/dairlair/tweetwatch/pkg/api/models"
 )
 
-//go:generate swagger generate server --target ../../api --name Tweetwatch --spec ../../../api/swagger-spec/tweetwatch-server.yml --principal models.UserResponse --exclude-main
+//go:generate swagger generate server --target ../../api --name Tweetwatch --spec ../../../api/swagger-spec/tweetwatch-server.yml --principal models.User --exclude-main
 
 func configureFlags(api *operations.TweetwatchAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -36,7 +36,7 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "Authorization" header is set
-	api.JWTAuth = func(token string) (*models.UserResponse, error) {
+	api.JWTAuth = func(token string) (*models.User, error) {
 		return nil, errors.NotImplemented("api key auth (JWT) Authorization from header param [Authorization] has not yet been implemented")
 	}
 
@@ -46,12 +46,12 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 	if api.CreateTopicHandler == nil {
-		api.CreateTopicHandler = operations.CreateTopicHandlerFunc(func(params operations.CreateTopicParams, principal *models.UserResponse) middleware.Responder {
+		api.CreateTopicHandler = operations.CreateTopicHandlerFunc(func(params operations.CreateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation .CreateTopic has not yet been implemented")
 		})
 	}
 	if api.GetUserTopicsHandler == nil {
-		api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(func(params operations.GetUserTopicsParams, principal *models.UserResponse) middleware.Responder {
+		api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(func(params operations.GetUserTopicsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation .GetUserTopics has not yet been implemented")
 		})
 	}
@@ -66,7 +66,7 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 		})
 	}
 	if api.UpdateTopicHandler == nil {
-		api.UpdateTopicHandler = operations.UpdateTopicHandlerFunc(func(params operations.UpdateTopicParams, principal *models.UserResponse) middleware.Responder {
+		api.UpdateTopicHandler = operations.UpdateTopicHandlerFunc(func(params operations.UpdateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation .UpdateTopic has not yet been implemented")
 		})
 	}

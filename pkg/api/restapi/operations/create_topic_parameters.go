@@ -36,7 +36,7 @@ type CreateTopicParams struct {
 	  Required: true
 	  In: body
 	*/
-	Topic *models.CreateTopicRequest
+	Topic *models.CreateTopic
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,7 +50,7 @@ func (o *CreateTopicParams) BindRequest(r *http.Request, route *middleware.Match
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.CreateTopicRequest
+		var body models.CreateTopic
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("topic", "body"))
