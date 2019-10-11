@@ -28,10 +28,10 @@ paths:
           description: User created
           schema:
             $ref: "#/definitions/User"
-        "422":
+        "403":
           description: Email already taken
           schema:
-            $ref: "#/definitions/DefaultError"
+            $ref: "#/definitions/SignupUserInputError"
         # responses may fall through to errors
         default:
           description: Error
@@ -53,15 +53,23 @@ paths:
           description: Logged in successfully
           schema:
             $ref: "#/definitions/User"
-        "422":
-          description: Invalid credentials
+        "403":
+          description: Invalid credentials or something else
           schema:
-            $ref: "#/definitions/DefaultError"
+            $ref: "#/definitions/LoginUserInputError"
         # responses may fall through to errors
         default:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+  /status:
+    get:
+      operationId: status
+      responses:
+        "200":
+          description: Status of currently authorized user
+          schema:
+            $ref: "#/definitions/User"
   /topics:
     post:
       operationId: createTopic
@@ -178,6 +186,25 @@ definitions:
         type: string
     required:
       - message
+  UserInputError:
+    properties:
+      code:
+        description: Error code
+        type: string
+  LoginUserInputError:
+    allOf:
+      - $ref: '#/definitions/UserInputError'
+      - type: object
+        properties:
+          code:
+            enum: [INVALID_CREDENTIALS]
+  SignupUserInputError:
+    allOf:
+      - $ref: '#/definitions/UserInputError'
+      - type: object
+        properties:
+          code:
+            enum: [EMAIL_ALREADY_TAKEN]
 # Default Security requirements for all operations
 security:
   - JWT: []
