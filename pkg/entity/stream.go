@@ -1,10 +1,13 @@
 package entity
 
+import "time"
+
 // StreamInterface describes entity Stream
 type StreamInterface interface {
 	GetID() int64
 	GetTopicID() int64
 	GetTrack() string
+	GetCreatedAt() time.Time
 }
 
 // Stream contains info required by twitter client to retrieve data from Twitter Streaming API and to store stream into the database
@@ -12,6 +15,7 @@ type Stream struct {
 	ID    int64
 	TopicID int64
 	Track string
+	CreateAt time.Time
 }
 
 func NewStreams(tracks []string) []StreamInterface {
@@ -40,9 +44,7 @@ func (s *Stream) GetTrack() string {
 	return s.Track
 }
 
-func GetStreamIDs(streams []StreamInterface) (IDs []int64) {
-	for _, stream := range streams {
-		IDs = append(IDs, stream.GetID())
-	}
-	return IDs
+// GetTrack returns the stream's track
+func (s *Stream) GetCreatedAt() time.Time {
+	return s.CreateAt
 }

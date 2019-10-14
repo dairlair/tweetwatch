@@ -5,6 +5,26 @@ import (
 	"github.com/jackc/pgx"
 )
 
+func (storage *Storage) AddStream(streamInterface entity.StreamInterface) (createdStream entity.StreamInterface, err error) {
+	tx, err := storage.connPool.Begin()
+	if err != nil {
+		return nil, pgError(err)
+	}
+	defer func() {
+		if err != nil {
+			pgRollback(tx)
+		}
+	}()
+
+	createdStream, err = txAddStream(tx, streamInterface)
+
+	if err := tx.Commit(); err != nil {
+		return nil, pgError(err)
+	}
+
+	return createdStream, nil
+}
+
 func txAddStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.StreamInterface, err error) {
 	const addStreamSQL = `
 		INSERT INTO stream (
@@ -12,7 +32,11 @@ func txAddStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.Strea
 			, track
 		) VALUES (
 			$1, $2
-		) RETURNING stream_id, topic_id, track
+		) RETURNING 
+			stream_id
+			, topic_id 
+			, track
+			, created_at
 	`
 
 	createdStream := entity.Stream{}
@@ -24,6 +48,7 @@ func txAddStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.Strea
 			&createdStream.ID,
 			&createdStream.TopicID,
 			&createdStream.Track,
+			&createdStream.CreateAt,
 		); err != nil {
 		return nil, pgError(err)
 	}

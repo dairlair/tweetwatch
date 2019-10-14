@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function migration() {
-  migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" "$1"
+  ./tools/migrate.darwin-amd64 -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" "$1"
 }
 
 function run_unit_tests() {

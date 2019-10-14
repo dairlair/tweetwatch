@@ -185,9 +185,85 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/streams": {
+      "get": {
+        "summary": "Returns list of streams inside the topic",
+        "operationId": "getStreams",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streams list",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Stream"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to create stream",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Stream to create",
+            "name": "stream",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateStream"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream created",
+            "schema": {
+              "$ref": "#/definitions/Stream"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CreateStream": {
+      "required": [
+        "track"
+      ],
+      "properties": {
+        "track": {
+          "type": "string"
+        }
+      }
+    },
     "CreateTopic": {
       "required": [
         "name",
@@ -230,6 +306,24 @@ func init() {
       ],
       "properties": {
         "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Stream": {
+      "required": [
+        "id",
+        "track",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "track": {
           "type": "string"
         }
       }
@@ -466,9 +560,85 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/streams": {
+      "get": {
+        "summary": "Returns list of streams inside the topic",
+        "operationId": "getStreams",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streams list",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Stream"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to create stream",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Stream to create",
+            "name": "stream",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateStream"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream created",
+            "schema": {
+              "$ref": "#/definitions/Stream"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CreateStream": {
+      "required": [
+        "track"
+      ],
+      "properties": {
+        "track": {
+          "type": "string"
+        }
+      }
+    },
     "CreateTopic": {
       "required": [
         "name",
@@ -511,6 +681,24 @@ func init() {
       ],
       "properties": {
         "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Stream": {
+      "required": [
+        "id",
+        "track",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "track": {
           "type": "string"
         }
       }

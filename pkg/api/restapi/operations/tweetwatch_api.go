@@ -39,8 +39,14 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		CreateStreamHandler: CreateStreamHandlerFunc(func(params CreateStreamParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation CreateStream has not yet been implemented")
+		}),
 		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
+		}),
+		GetStreamsHandler: GetStreamsHandlerFunc(func(params GetStreamsParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation GetStreams has not yet been implemented")
 		}),
 		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetUserTopics has not yet been implemented")
@@ -100,8 +106,12 @@ type TweetwatchAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// CreateStreamHandler sets the operation handler for the create stream operation
+	CreateStreamHandler CreateStreamHandler
 	// CreateTopicHandler sets the operation handler for the create topic operation
 	CreateTopicHandler CreateTopicHandler
+	// GetStreamsHandler sets the operation handler for the get streams operation
+	GetStreamsHandler GetStreamsHandler
 	// GetUserTopicsHandler sets the operation handler for the get user topics operation
 	GetUserTopicsHandler GetUserTopicsHandler
 	// LoginHandler sets the operation handler for the login operation
@@ -177,8 +187,16 @@ func (o *TweetwatchAPI) Validate() error {
 		unregistered = append(unregistered, "AuthorizationAuth")
 	}
 
+	if o.CreateStreamHandler == nil {
+		unregistered = append(unregistered, "CreateStreamHandler")
+	}
+
 	if o.CreateTopicHandler == nil {
 		unregistered = append(unregistered, "CreateTopicHandler")
+	}
+
+	if o.GetStreamsHandler == nil {
+		unregistered = append(unregistered, "GetStreamsHandler")
 	}
 
 	if o.GetUserTopicsHandler == nil {
@@ -311,7 +329,17 @@ func (o *TweetwatchAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/topics/{topicId}/streams"] = NewCreateStream(o.context, o.CreateStreamHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/topics"] = NewCreateTopic(o.context, o.CreateTopicHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/topics/{topicId}/streams"] = NewGetStreams(o.context, o.GetStreamsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

@@ -115,6 +115,49 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+  /topics/{topicId}/streams:
+    post:
+      operationId: createStream
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to create stream
+        - in: body
+          name: stream
+          required: true
+          description: Stream to create
+          schema:
+            $ref: '#/definitions/CreateStream'
+      responses:
+        "200":
+          description: Stream created
+          schema:
+            $ref: "#/definitions/Stream"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
+    get:
+      summary: Returns list of streams inside the topic
+      operationId: getStreams
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+      responses:
+        "200":
+          description: Streams list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Stream"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
 definitions:
   User:
     properties:
@@ -172,6 +215,24 @@ definitions:
       - tracks
       - createdAt
       - isActive
+  CreateStream:
+    properties:
+      track:
+        type: string
+    required:
+      - track
+  Stream:
+    properties:
+      id:
+        type: integer
+      track:
+        type: string
+      createdAt:
+        type: string
+    required:
+      - id
+      - track
+      - createdAt
   DefaultError:
     properties:
       message:
