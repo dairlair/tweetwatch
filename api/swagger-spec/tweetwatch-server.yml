@@ -64,7 +64,7 @@ paths:
             $ref: "#/definitions/DefaultError"
   /status:
     get:
-      operationId: status
+      operationId: checkStatus
       responses:
         "200":
           description: Status of currently authorized user
@@ -186,25 +186,20 @@ definitions:
         type: string
     required:
       - message
-  UserInputError:
+  LoginUserInputError:
     properties:
       code:
-        description: Error code
         type: string
-  LoginUserInputError:
-    allOf:
-      - $ref: '#/definitions/UserInputError'
-      - type: object
-        properties:
-          code:
-            enum: [INVALID_CREDENTIALS]
+        enum: [INVALID_CREDENTIALS]
+    required:
+      - code
   SignupUserInputError:
-    allOf:
-      - $ref: '#/definitions/UserInputError'
-      - type: object
-        properties:
-          code:
-            enum: [EMAIL_ALREADY_TAKEN]
+    properties:
+      code:
+        type: string
+        enum: [EMAIL_ALREADY_TAKEN]
+    required:
+      - code
 # Default Security requirements for all operations
 security:
   - JWT: []

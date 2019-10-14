@@ -39,6 +39,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		CheckStatusHandler: CheckStatusHandlerFunc(func(params CheckStatusParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation CheckStatus has not yet been implemented")
+		}),
 		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
 		}),
@@ -100,6 +103,8 @@ type TweetwatchAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// CheckStatusHandler sets the operation handler for the check status operation
+	CheckStatusHandler CheckStatusHandler
 	// CreateTopicHandler sets the operation handler for the create topic operation
 	CreateTopicHandler CreateTopicHandler
 	// GetUserTopicsHandler sets the operation handler for the get user topics operation
@@ -175,6 +180,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.JWTAuth == nil {
 		unregistered = append(unregistered, "AuthorizationAuth")
+	}
+
+	if o.CheckStatusHandler == nil {
+		unregistered = append(unregistered, "CheckStatusHandler")
 	}
 
 	if o.CreateTopicHandler == nil {
@@ -307,6 +316,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/status"] = NewCheckStatus(o.context, o.CheckStatusHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

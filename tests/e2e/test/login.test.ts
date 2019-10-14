@@ -14,16 +14,19 @@ it('Should POST /login return 200 and JWT Token', async function () {
     const res = await request
         .post('/login')
         .send({email: newUserData.email, password: newUserData.password});
-    console.error('Response body', JSON.stringify(res.body));
     expect(res.body).has.property("token").not.eq("");
 });
 
-it('Should POST /login return 422 for wrong credentials', async function () {
+it('Should POST /login return 403 for wrong credentials', async function () {
     const res = await request
         .post('/login')
         .send({email: newUserData.email, password: 'wrong password'})
-        .expect(422);
+        .expect(403);
+
+    console.log(JSON.stringify(res.body))
 
     expect(res.body).not.has.property("token");
-    expect(res.body).has.property("message").eq("Invalid credentials");
+    expect(res.body).has.property("code").eq("INVALID_CREDENTIALS");
+
+
 });

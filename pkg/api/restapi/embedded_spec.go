@@ -52,10 +52,10 @@ func init() {
               "$ref": "#/definitions/User"
             }
           },
-          "422": {
-            "description": "Invalid credentials",
+          "403": {
+            "description": "Invalid credentials or something else",
             "schema": {
-              "$ref": "#/definitions/DefaultError"
+              "$ref": "#/definitions/LoginUserInputError"
             }
           },
           "default": {
@@ -89,16 +89,29 @@ func init() {
               "$ref": "#/definitions/User"
             }
           },
-          "422": {
+          "403": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/DefaultError"
+              "$ref": "#/definitions/SignupUserInputError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
               "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "checkStatus",
+        "responses": {
+          "200": {
+            "description": "Status of currently authorized user",
+            "schema": {
+              "$ref": "#/definitions/User"
             }
           }
         }
@@ -231,6 +244,32 @@ func init() {
       "properties": {
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "LoginUserInputError": {
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "INVALID_CREDENTIALS"
+          ]
+        }
+      }
+    },
+    "SignupUserInputError": {
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "EMAIL_ALREADY_TAKEN"
+          ]
         }
       }
     },
@@ -333,10 +372,10 @@ func init() {
               "$ref": "#/definitions/User"
             }
           },
-          "422": {
-            "description": "Invalid credentials",
+          "403": {
+            "description": "Invalid credentials or something else",
             "schema": {
-              "$ref": "#/definitions/DefaultError"
+              "$ref": "#/definitions/LoginUserInputError"
             }
           },
           "default": {
@@ -370,16 +409,29 @@ func init() {
               "$ref": "#/definitions/User"
             }
           },
-          "422": {
+          "403": {
             "description": "Email already taken",
             "schema": {
-              "$ref": "#/definitions/DefaultError"
+              "$ref": "#/definitions/SignupUserInputError"
             }
           },
           "default": {
             "description": "Error",
             "schema": {
               "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "checkStatus",
+        "responses": {
+          "200": {
+            "description": "Status of currently authorized user",
+            "schema": {
+              "$ref": "#/definitions/User"
             }
           }
         }
@@ -512,6 +564,32 @@ func init() {
       "properties": {
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "LoginUserInputError": {
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "INVALID_CREDENTIALS"
+          ]
+        }
+      }
+    },
+    "SignupUserInputError": {
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "EMAIL_ALREADY_TAKEN"
+          ]
         }
       }
     },

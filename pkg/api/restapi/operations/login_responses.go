@@ -57,42 +57,42 @@ func (o *LoginOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produce
 	}
 }
 
-// LoginUnprocessableEntityCode is the HTTP code returned for type LoginUnprocessableEntity
-const LoginUnprocessableEntityCode int = 422
+// LoginForbiddenCode is the HTTP code returned for type LoginForbidden
+const LoginForbiddenCode int = 403
 
-/*LoginUnprocessableEntity Invalid credentials
+/*LoginForbidden Invalid credentials or something else
 
-swagger:response loginUnprocessableEntity
+swagger:response loginForbidden
 */
-type LoginUnprocessableEntity struct {
+type LoginForbidden struct {
 
 	/*
 	  In: Body
 	*/
-	Payload *models.DefaultError `json:"body,omitempty"`
+	Payload *models.LoginUserInputError `json:"body,omitempty"`
 }
 
-// NewLoginUnprocessableEntity creates LoginUnprocessableEntity with default headers values
-func NewLoginUnprocessableEntity() *LoginUnprocessableEntity {
+// NewLoginForbidden creates LoginForbidden with default headers values
+func NewLoginForbidden() *LoginForbidden {
 
-	return &LoginUnprocessableEntity{}
+	return &LoginForbidden{}
 }
 
-// WithPayload adds the payload to the login unprocessable entity response
-func (o *LoginUnprocessableEntity) WithPayload(payload *models.DefaultError) *LoginUnprocessableEntity {
+// WithPayload adds the payload to the login forbidden response
+func (o *LoginForbidden) WithPayload(payload *models.LoginUserInputError) *LoginForbidden {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the login unprocessable entity response
-func (o *LoginUnprocessableEntity) SetPayload(payload *models.DefaultError) {
+// SetPayload sets the payload to the login forbidden response
+func (o *LoginForbidden) SetPayload(payload *models.LoginUserInputError) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *LoginUnprocessableEntity) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *LoginForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(422)
+	rw.WriteHeader(403)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

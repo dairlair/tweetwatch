@@ -20,7 +20,7 @@ it('Should POST /signup return 200 and id and email with valid credentials', asy
     expect(res.body).has.property("token").not.eq("");
 });
 
-it('Should POST /signup return 422 for missing email', async function () {   
+it('Should POST /signup return 422 for missing email', async function () {
     const res = await request
         .post('/signup')
         .send({password: password})
@@ -40,12 +40,12 @@ it('Should POST /signup return 422 for missing password', async function () {
     expect(res.body).has.property("message").eq("password in body is required");
 });
 
-it('Should POST /signup return 422 for email already taken', async function () {   
+it('Should POST /signup return 403 for email already taken', async function () {
     const res = await request
         .post('/signup')
         .send({email: email, password: password})
-        .expect(422);
+        .expect(403);
 
     expect(res.body).not.has.property("token");
-    expect(res.body).has.property("message").eq("Email already taken");
+    expect(res.body).has.property("code").eq("EMAIL_ALREADY_TAKEN");
 });
