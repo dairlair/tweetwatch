@@ -6,63 +6,43 @@ import { withData } from 'leche';
 const request = supertest('http://localhost:1308');
 
 type TopicRequest = {name: string, tracks: Array<string>, isActive: boolean};
+type StreamRequest = {track: string};
 let newUserData: CreatedNewUserData;
 let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
-let createdTopicId: bigint;
 
 before(async () => {  
     newUserData = await signupNewUser()
 });
 
-it('Should POST /topics return 200 with valid topic request data', async function () {
-    const res = await request
+describe('Should streams CRUD works fine', function() {
+    let createdTopicId: bigint
+    before(async function () {
+        const res = await request
         .post('/topics')
         .set('Authorization', newUserData.jwtToken)
         .send(topicRequestData)
         .expect(200);
-
-    validateTopic(res.body, topicRequestData);
-});
-
-/**
- * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
- * http :1308/topics "Authorization:Basic ${basic}"
- */
-it('Should GET /topics return 200 with valid topics', async function () {
-    const res = await request
-        .get('/topics')
-        .set('Authorization', newUserData.jwtToken)
-        .expect(200);
-
-    validateTopic(res.body[0], topicRequestData);
-});
-
-
-describe('Should topics update endpoint works fine', function() {
-    before(function () {
-        // @TODO Create initial topic here
+        expect(res.body).has.property("id").greaterThan(0)
+        createdTopicId = res.body.id
     });
     withData({
-        defaultTopic: topicRequestData,
-        emptyTopic: {name: '', tracks: [], isActive: false},
-    }, function(topicRequest: TopicRequest) {
-        it('Should PUT /topics/:id 200 with valid topic request data', async function() {
+        simpleStream: {track: 'Something'},
+        twoWordsStream: {track: 'Something else'},
+    }, function(streamRequest: StreamRequest) {
+        it('Should POST /topics/:id/streams 200 with valid stream request data', async function() {
             // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
             const res = await request
-                .put('/topics/' + createdTopicId)
+                .post('/topics/' + createdTopicId + '/streams')
                 .set('Authorization', newUserData.jwtToken)
-                .send(topicRequest)
+                .send(streamRequest)
                 .expect(200);
-            validateTopic(res.body, topicRequest);
+            validateStream(res.body, streamRequest);
         });
     });
 });
 
-function validateTopic(topic: {id: bigint}, expected: TopicRequest) {
+function validateStream(topic: {id: bigint, track: string}, expected: StreamRequest) {
     expect(topic).has.property("id").greaterThan(0);
-    expect(topic).has.property("name").eq(expected.name);
-    expect(topic).has.property("tracks").to.eql(expected.tracks);
+    expect(topic).has.property("track").to.eql(expected.track);
     expect(topic).has.property("createdAt").not.empty;
-    expect(topic).has.property("isActive").eq(expected.isActive);
-    createdTopicId = topic.id;
 }
