@@ -25,10 +25,11 @@ describe('Should streams CRUD works fine', function() {
         expect(res.body).has.property("id").greaterThan(0)
         createdTopicId = res.body.id
     });
-    withData({
+    const streamsToCreate = {
         simpleStream: {track: 'Something'},
         twoWordsStream: {track: 'Something else'},
-    }, function(streamRequest: StreamRequest) {
+    }
+    withData(streamsToCreate, async function(streamRequest: StreamRequest) {
         it('Should POST /topics/:id/streams 200 with valid stream request data', async function() {
             // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
             const res = await request
@@ -39,10 +40,20 @@ describe('Should streams CRUD works fine', function() {
             validateStream(res.body, streamRequest);
         });
     });
+    it('Should GET /topics/:id/streams 200 with existed streams data', async function() {
+        // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
+        const res = await request
+            .get('/topics/' + createdTopicId + '/streams')
+            .set('Authorization', newUserData.jwtToken)
+            .expect(200);
+
+        let streams = res.body
+        expect(streams).length(2) // Count of data sets in streamsToCreate
+    });
 });
 
-function validateStream(topic: {id: bigint, track: string}, expected: StreamRequest) {
-    expect(topic).has.property("id").greaterThan(0);
-    expect(topic).has.property("track").to.eql(expected.track);
-    expect(topic).has.property("createdAt").not.empty;
+function validateStream(stream: {id: bigint, track: string}, expected: StreamRequest) {
+    expect(stream).has.property("id").greaterThan(0);
+    expect(stream).has.property("track").to.eql(expected.track);
+    expect(stream).has.property("createdAt").not.empty;
 }

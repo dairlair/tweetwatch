@@ -24,6 +24,8 @@ http :1308/topics "Authorization:${jwt}"
 http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]' isActive:=true
 # Add stream to some topic
 http POST :1308/topics/1/streams "Authorization:${jwt}" track="something"
+# Get streams from some topic
+http :1308/topics/1/streams "Authorization:${jwt}"
 ```
 
 # Swagger stubs regenerate

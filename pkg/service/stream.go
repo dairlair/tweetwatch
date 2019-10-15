@@ -33,6 +33,23 @@ func (service *Service) CreateStreamHandler(params operations.CreateStreamParams
 	return operations.NewCreateStreamOK().WithPayload(&payload)
 }
 
+func (service *Service) GetStreamsHandler(params operations.GetStreamsParams, user *models.User) middleware.Responder {
+	streams, err := service.storage.GetTopicStreams(params.TopicID)
+
+	if err != nil {
+		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
+		return operations.NewGetStreamsDefault(500).WithPayload(&payload)
+	}
+
+	var payload []*models.Stream
+	for _, stream := range streams {
+		model := streamModelFromEntity(stream)
+		payload = append(payload, &model)
+	}
+
+	return operations.NewGetStreamsOK().WithPayload(payload)
+}
+
 func streamEntityFromModel(topicID int64, model *models.CreateStream, user *models.User) entity.Stream {
 	stream := entity.Stream{
 		TopicID: topicID,

@@ -102,6 +102,7 @@ func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err erro
 		SELECT 
 			stream_id
 			, track
+			, created_at
 		FROM
 			stream
 	`
@@ -116,6 +117,39 @@ func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err erro
 		if err := rows.Scan(
 			&stream.ID,
 			&stream.Track,
+			&stream.CreateAt,
+		); err != nil {
+			return nil, err
+		}
+		streams = append(streams, &stream)
+	}
+
+	return streams, nil
+}
+
+// GetStreams returns all existing streams
+func (storage *Storage) GetTopicStreams(topicID int64) (streams []entity.StreamInterface, err error) {
+	const getStreamsSQL = `
+		SELECT 
+			stream_id
+			, track
+			, created_at
+		FROM
+			stream
+		WHERE topic_id = $1
+	`
+
+	rows, err := storage.connPool.Query(getStreamsSQL, topicID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var stream entity.Stream
+		if err := rows.Scan(
+			&stream.ID,
+			&stream.Track,
+			&stream.CreateAt,
 		); err != nil {
 			return nil, err
 		}
