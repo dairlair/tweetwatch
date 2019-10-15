@@ -158,6 +158,59 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+  /topics/{topicId}/streams/{streamId}:
+    put:
+      summary: Update desired stream by Topic ID and Stream ID
+      operationId: updateStream
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to update
+        - in: path
+          name: streamId
+          type: integer
+          required: true
+          description: Numeric ID of the stream to update
+        - name: stream
+          in: body
+          description: Updated stream data
+          required: true
+          schema:
+            $ref: '#/definitions/CreateStream'
+      responses:
+        "200":
+          description: Stream updated
+          schema:
+            $ref: "#/definitions/Stream"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
+    delete:
+      summary: Delete desired stream by Topic ID and Stream ID
+      operationId: deleteStream
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to update
+        - in: path
+          name: streamId
+          type: integer
+          required: true
+          description: Numeric ID of the stream to update
+      responses:
+        "200":
+          description: Stream deleted
+          schema:
+            $ref: "#/definitions/DefaultSuccess"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
 definitions:
   User:
     properties:
@@ -233,6 +286,12 @@ definitions:
       - id
       - track
       - createdAt
+  DefaultSuccess:
+    properties:
+      message:
+        type: string
+    required:
+      - message
   DefaultError:
     properties:
       message:

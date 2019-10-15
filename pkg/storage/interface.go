@@ -15,4 +15,6 @@ type Interface interface {
 	SignUp(email string, password string) (id *int64, err error)
 	Login(email string, password string) (id *int64, err error)
 	AddStream(streamInterface entity.StreamInterface) (result entity.StreamInterface, err error)
+	UpdateStream(streamInterface entity.StreamInterface) (result entity.StreamInterface, err error)
+	DeleteStream(streamID int64) error
 }

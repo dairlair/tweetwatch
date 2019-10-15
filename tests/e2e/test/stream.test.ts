@@ -30,6 +30,7 @@ describe('Should streams CRUD works fine', function() {
         twoWordsStream: {track: 'Something else'},
     }
     withData(streamsToCreate, async function(streamRequest: StreamRequest) {
+        let createdStream: {id: bigint, track: string};
         it('Should POST /topics/:id/streams 200 with valid stream request data', async function() {
             // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
             const res = await request
@@ -37,7 +38,20 @@ describe('Should streams CRUD works fine', function() {
                 .set('Authorization', newUserData.jwtToken)
                 .send(streamRequest)
                 .expect(200);
-            validateStream(res.body, streamRequest);
+
+            createdStream = res.body;
+            validateStream(createdStream, streamRequest);
+        });
+
+        it('Should PUT /topics/:id/streams 200 with valid stream request data', async function() {
+            const streamUpdateRequest = {track: "Nothing"}
+            const res = await request
+                .put('/topics/' + createdTopicId + '/streams/' + createdStream.id)
+                .set('Authorization', newUserData.jwtToken)
+                .send(streamUpdateRequest)
+                .expect(200);
+            console.error('Updated stream:', res.body)
+            validateStream(res.body, streamUpdateRequest)
         });
     });
     it('Should GET /topics/:id/streams 200 with existed streams data', async function() {

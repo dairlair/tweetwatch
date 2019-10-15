@@ -45,6 +45,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		CreateTopicHandler: CreateTopicHandlerFunc(func(params CreateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation CreateTopic has not yet been implemented")
 		}),
+		DeleteStreamHandler: DeleteStreamHandlerFunc(func(params DeleteStreamParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteStream has not yet been implemented")
+		}),
 		GetStreamsHandler: GetStreamsHandlerFunc(func(params GetStreamsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetStreams has not yet been implemented")
 		}),
@@ -56,6 +59,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		}),
 		SignupHandler: SignupHandlerFunc(func(params SignupParams) middleware.Responder {
 			return middleware.NotImplemented("operation Signup has not yet been implemented")
+		}),
+		UpdateStreamHandler: UpdateStreamHandlerFunc(func(params UpdateStreamParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation UpdateStream has not yet been implemented")
 		}),
 		UpdateTopicHandler: UpdateTopicHandlerFunc(func(params UpdateTopicParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation UpdateTopic has not yet been implemented")
@@ -110,6 +116,8 @@ type TweetwatchAPI struct {
 	CreateStreamHandler CreateStreamHandler
 	// CreateTopicHandler sets the operation handler for the create topic operation
 	CreateTopicHandler CreateTopicHandler
+	// DeleteStreamHandler sets the operation handler for the delete stream operation
+	DeleteStreamHandler DeleteStreamHandler
 	// GetStreamsHandler sets the operation handler for the get streams operation
 	GetStreamsHandler GetStreamsHandler
 	// GetUserTopicsHandler sets the operation handler for the get user topics operation
@@ -118,6 +126,8 @@ type TweetwatchAPI struct {
 	LoginHandler LoginHandler
 	// SignupHandler sets the operation handler for the signup operation
 	SignupHandler SignupHandler
+	// UpdateStreamHandler sets the operation handler for the update stream operation
+	UpdateStreamHandler UpdateStreamHandler
 	// UpdateTopicHandler sets the operation handler for the update topic operation
 	UpdateTopicHandler UpdateTopicHandler
 
@@ -195,6 +205,10 @@ func (o *TweetwatchAPI) Validate() error {
 		unregistered = append(unregistered, "CreateTopicHandler")
 	}
 
+	if o.DeleteStreamHandler == nil {
+		unregistered = append(unregistered, "DeleteStreamHandler")
+	}
+
 	if o.GetStreamsHandler == nil {
 		unregistered = append(unregistered, "GetStreamsHandler")
 	}
@@ -209,6 +223,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.SignupHandler == nil {
 		unregistered = append(unregistered, "SignupHandler")
+	}
+
+	if o.UpdateStreamHandler == nil {
+		unregistered = append(unregistered, "UpdateStreamHandler")
 	}
 
 	if o.UpdateTopicHandler == nil {
@@ -336,6 +354,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 	}
 	o.handlers["POST"]["/topics"] = NewCreateTopic(o.context, o.CreateTopicHandler)
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/topics/{topicId}/streams/{streamId}"] = NewDeleteStream(o.context, o.DeleteStreamHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -355,6 +378,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/signup"] = NewSignup(o.context, o.SignupHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/topics/{topicId}/streams/{streamId}"] = NewUpdateStream(o.context, o.UpdateStreamHandler)
 
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)

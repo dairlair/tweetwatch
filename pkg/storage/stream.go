@@ -164,3 +164,12 @@ func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, er
 	// @TODO Refactor when tweet table got is_active flag.
 	return storage.GetStreams()
 }
+
+// GetStreams returns all active streams (streams with flag "is_active" = TRUE)
+func (storage *Storage) UpdateStream(streamInterface entity.StreamInterface) (updatedStream entity.StreamInterface, err error) {
+	return updatedStream, err
+}
+
+func (storage *Storage) DeleteStream(streamID int64) (err error) {
+	return nil
+}

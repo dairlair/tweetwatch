@@ -251,6 +251,85 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/streams/{streamId}": {
+      "put": {
+        "summary": "Update desired stream by Topic ID and Stream ID",
+        "operationId": "updateStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Numeric ID of the stream to update",
+            "name": "streamId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated stream data",
+            "name": "stream",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateStream"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream updated",
+            "schema": {
+              "$ref": "#/definitions/Stream"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete desired stream by Topic ID and Stream ID",
+        "operationId": "deleteStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Numeric ID of the stream to update",
+            "name": "streamId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream deleted",
+            "schema": {
+              "$ref": "#/definitions/DefaultSuccess"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -301,6 +380,16 @@ func init() {
       }
     },
     "DefaultError": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "DefaultSuccess": {
       "required": [
         "message"
       ],
@@ -626,6 +715,85 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/streams/{streamId}": {
+      "put": {
+        "summary": "Update desired stream by Topic ID and Stream ID",
+        "operationId": "updateStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Numeric ID of the stream to update",
+            "name": "streamId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated stream data",
+            "name": "stream",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateStream"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream updated",
+            "schema": {
+              "$ref": "#/definitions/Stream"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete desired stream by Topic ID and Stream ID",
+        "operationId": "deleteStream",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to update",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Numeric ID of the stream to update",
+            "name": "streamId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream deleted",
+            "schema": {
+              "$ref": "#/definitions/DefaultSuccess"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -676,6 +844,16 @@ func init() {
       }
     },
     "DefaultError": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "DefaultSuccess": {
       "required": [
         "message"
       ],
