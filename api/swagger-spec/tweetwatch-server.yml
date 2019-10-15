@@ -238,15 +238,10 @@ definitions:
     properties:
       name:
         type: string
-      tracks:
-        type: array
-        items:
-          type: string
       isActive:
         type: boolean
     required:
       - name
-      - tracks
       - isActive
   Topic:
     properties:
@@ -254,10 +249,6 @@ definitions:
         type: integer
       name:
         type: string
-      tracks:
-        type: array
-        items:
-          type: string
       createdAt:
         type: string
       isActive:
@@ -265,7 +256,6 @@ definitions:
     required:
       - id
       - name
-      - tracks
       - createdAt
       - isActive
   CreateStream:

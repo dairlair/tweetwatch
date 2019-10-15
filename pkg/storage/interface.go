@@ -7,7 +7,7 @@ import (
 // Interface must be implemented by postgres based storage or something else.
 type Interface interface {
 	AddTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
-	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreams []entity.StreamInterface, err error)
+	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
 	GetUserTopics(userID int64) (result []entity.TopicInterface, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
 	GetTopicStreams(topicID int64) (streams []entity.StreamInterface, err error)

@@ -32,10 +32,6 @@ type Topic struct {
 	// name
 	// Required: true
 	Name *string `json:"name"`
-
-	// tracks
-	// Required: true
-	Tracks []string `json:"tracks"`
 }
 
 // Validate validates this topic
@@ -55,10 +51,6 @@ func (m *Topic) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateTracks(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,15 +90,6 @@ func (m *Topic) validateIsActive(formats strfmt.Registry) error {
 func (m *Topic) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Topic) validateTracks(formats strfmt.Registry) error {
-
-	if err := validate.Required("tracks", "body", m.Tracks); err != nil {
 		return err
 	}
 

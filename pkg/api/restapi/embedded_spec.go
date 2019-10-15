@@ -346,7 +346,6 @@ func init() {
     "CreateTopic": {
       "required": [
         "name",
-        "tracks",
         "isActive"
       ],
       "properties": {
@@ -355,12 +354,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        },
-        "tracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -421,7 +414,6 @@ func init() {
       "required": [
         "id",
         "name",
-        "tracks",
         "createdAt",
         "isActive"
       ],
@@ -437,12 +429,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        },
-        "tracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -810,7 +796,6 @@ func init() {
     "CreateTopic": {
       "required": [
         "name",
-        "tracks",
         "isActive"
       ],
       "properties": {
@@ -819,12 +804,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        },
-        "tracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -885,7 +864,6 @@ func init() {
       "required": [
         "id",
         "name",
-        "tracks",
         "createdAt",
         "isActive"
       ],
@@ -901,12 +879,6 @@ func init() {
         },
         "name": {
           "type": "string"
-        },
-        "tracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },

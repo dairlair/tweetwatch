@@ -5,10 +5,10 @@ import { withData } from 'leche';
 
 const request = supertest('http://localhost:1308');
 
-type TopicRequest = {name: string, tracks: Array<string>, isActive: boolean};
+type TopicRequest = {name: string, isActive: boolean};
 type StreamRequest = {track: string};
 let newUserData: CreatedNewUserData;
-let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
+let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', isActive: true};
 
 before(async () => {  
     newUserData = await signupNewUser()
@@ -24,6 +24,12 @@ describe('Should streams CRUD works fine', function() {
         .expect(200);
         expect(res.body).has.property("id").greaterThan(0)
         createdTopicId = res.body.id
+
+        await request
+            .post('/topics/' + createdTopicId + '/streams')
+            .set('Authorization', newUserData.jwtToken)
+            .send({track: 'SomeUnknownWord'})
+            .expect(200);
     });
     const streamsToCreate = {
         simpleStream: {track: 'Something'},
@@ -68,7 +74,7 @@ describe('Should streams CRUD works fine', function() {
             .expect(200);
 
         let streams = res.body
-        expect(streams).length(2) // Count of data sets in streamsToCreate
+        expect(streams).length(1) // Count of data sets in streamsToCreate
     });
 });
 
