@@ -23,6 +23,9 @@ func (service *Service) CreateStreamHandler(params operations.CreateStreamParams
 		return operations.NewCreateStreamDefault(422).WithPayload(&payload)
 	}
 
+	// @twitterclient: Add this stream to watching
+	service.addStreamsToWatching([]entity.StreamInterface{createdStream})
+
 	// @TODO Add stream watching if the topic is active
 	//// Start watching created streams
 	//if createdStream.GetIsActive() {
@@ -61,6 +64,11 @@ func (service *Service) UpdateStreamHandler(params operations.UpdateStreamParams
 		payload := models.DefaultError{Message: swag.String("Stream not updated with unknown reason")}
 		return operations.NewUpdateStreamDefault(500).WithPayload(&payload)
 	}
+
+	// @twitterclient: Update this stream in watching
+	service.deleteStreamsFromWatching([]int64{params.StreamID})
+	service.addStreamsToWatching([]entity.StreamInterface{updatedStream})
+
 	payload := streamModelFromEntity(updatedStream)
 	return operations.NewUpdateStreamOK().WithPayload(&payload)
 }
@@ -71,6 +79,10 @@ func (service *Service) DeleteStreamHandler(params operations.DeleteStreamParams
 		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
 		return operations.NewDeleteStreamDefault(500).WithPayload(&payload)
 	}
+
+	// @twitterclient: Remove this stream from watching
+	service.deleteStreamsFromWatching([]int64{params.StreamID})
+
 	payload := models.DefaultSuccess{Message:swag.String("Stream deleted successfully")}
 	return operations.NewDeleteStreamOK().WithPayload(&payload)
 }

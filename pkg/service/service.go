@@ -82,6 +82,10 @@ func (service *Service) up() {
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
 }
 
+/**
+ * @TODO Add updated methods to use single stream, not a slice.
+ * @TODO Use method with slice to stop all streams of inactivated topic or to add streams of activated topic.
+ */
 func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	service.twitterclient.Unwatch()
 	service.twitterclient.AddStreams(streams)

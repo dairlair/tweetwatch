@@ -15,13 +15,11 @@ http :1308/topics "Authorization:${jwt}"
 # Validate your creds via
 http post :1308/login "Authorization:${jwt}"
 # And create your first topic
-http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='[]' isActive:=true
-http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." tracks:='["Trump"]' isActive:=true
-http POST :1308/topics "Authorization:${jwt}" name="Disney" tracks:='["Mickey Mouse","Donald Duck"]' isActive:=true
+http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." isActive:=true
 # Get topics list after that
 http :1308/topics "Authorization:${jwt}"
 # Update created topic
-http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." tracks:='["BFR","Elon Musk"]' isActive:=true
+http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." isActive:=false
 # Add stream to some topic
 http POST :1308/topics/1/streams "Authorization:${jwt}" track="qwerty"
 # Get streams from some topic
