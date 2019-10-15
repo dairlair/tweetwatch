@@ -10,7 +10,7 @@ import (
 )
 
 func (service *Service) CreateStreamHandler(params operations.CreateStreamParams, user *models.User) middleware.Responder {
-	stream := streamEntityFromModel(params.TopicID, params.Stream, user)
+	stream := streamEntityFromModel(params.TopicID, 0, params.Stream, user)
 
 	createdStream, err := service.storage.AddStream(&stream)
 	if err != nil {
@@ -51,24 +51,33 @@ func (service *Service) GetStreamsHandler(params operations.GetStreamsParams, us
 }
 
 func (service *Service) UpdateStreamHandler(params operations.UpdateStreamParams, user *models.User) middleware.Responder {
-	//streams, err := service.storage.GetTopicStreams(params.TopicID)
-	//
-	//if err != nil {
-	//	payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
-	//	return operations.NewGetStreamsDefault(500).WithPayload(&payload)
-	//}
-	//
-	//var payload []*models.Stream
-	//for _, stream := range streams {
-	//	model := streamModelFromEntity(stream)
-	//	payload = append(payload, &model)
-	//}
-	payload := models.Stream{}
+	stream := streamEntityFromModel(params.TopicID, params.StreamID, params.Stream, user)
+	updatedStream, err := service.storage.UpdateStream(&stream)
+	if err != nil {
+		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
+		return operations.NewUpdateStreamDefault(500).WithPayload(&payload)
+	}
+	if updatedStream == nil {
+		payload := models.DefaultError{Message: swag.String("Stream not updated with unknown reason")}
+		return operations.NewUpdateStreamDefault(500).WithPayload(&payload)
+	}
+	payload := streamModelFromEntity(updatedStream)
 	return operations.NewUpdateStreamOK().WithPayload(&payload)
 }
 
-func streamEntityFromModel(topicID int64, model *models.CreateStream, user *models.User) entity.Stream {
+func (service *Service) DeleteStreamHandler(params operations.DeleteStreamParams, user *models.User) middleware.Responder {
+	err := service.storage.DeleteStream(params.StreamID)
+	if err != nil {
+		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
+		return operations.NewDeleteStreamDefault(500).WithPayload(&payload)
+	}
+	payload := models.DefaultSuccess{Message:swag.String("Stream deleted successfully")}
+	return operations.NewDeleteStreamOK().WithPayload(&payload)
+}
+
+func streamEntityFromModel(topicID int64, streamID int64, model *models.CreateStream, user *models.User) entity.Stream {
 	stream := entity.Stream{
+		ID: streamID,
 		TopicID: topicID,
 		Track:   *model.Track,
 	}

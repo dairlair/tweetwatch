@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/jackc/pgx"
 )
@@ -48,12 +49,47 @@ func txAddStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.Strea
 			&createdStream.ID,
 			&createdStream.TopicID,
 			&createdStream.Track,
-			&createdStream.CreateAt,
+			&createdStream.CreatedAt,
 		); err != nil {
 		return nil, pgError(err)
 	}
 
 	result = &createdStream
+
+	return result, nil
+}
+
+func txUpdateStream(tx *pgx.Tx, stream entity.StreamInterface) (result entity.StreamInterface, err error) {
+	if stream.GetID() < 1 {
+		return nil, errors.New("stream ID is required for update")
+	}
+	const sql = `
+		UPDATE stream
+		SET 
+			track = $2
+		WHERE stream_id = $1
+		RETURNING 
+			stream_id
+			, topic_id 
+			, track
+			, created_at
+	`
+
+	updatedStream := entity.Stream{}
+	if err = tx.QueryRow(
+		sql,
+		stream.GetID(),
+		stream.GetTrack(),
+	).Scan(
+		&updatedStream.ID,
+		&updatedStream.TopicID,
+		&updatedStream.Track,
+		&updatedStream.CreatedAt,
+	); err != nil {
+		return nil, pgError(err)
+	}
+
+	result = &updatedStream
 
 	return result, nil
 }
@@ -117,7 +153,7 @@ func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err erro
 		if err := rows.Scan(
 			&stream.ID,
 			&stream.Track,
-			&stream.CreateAt,
+			&stream.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -149,7 +185,7 @@ func (storage *Storage) GetTopicStreams(topicID int64) (streams []entity.StreamI
 		if err := rows.Scan(
 			&stream.ID,
 			&stream.Track,
-			&stream.CreateAt,
+			&stream.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -165,11 +201,28 @@ func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, er
 	return storage.GetStreams()
 }
 
-// GetStreams returns all active streams (streams with flag "is_active" = TRUE)
+// UpdateStream just update stream
 func (storage *Storage) UpdateStream(streamInterface entity.StreamInterface) (updatedStream entity.StreamInterface, err error) {
-	return updatedStream, err
+	tx, err := storage.connPool.Begin()
+	if err != nil {
+		return nil, pgError(err)
+	}
+	defer func() {
+		if err != nil {
+			pgRollback(tx)
+		}
+	}()
+
+	updatedStream, err = txUpdateStream(tx, streamInterface)
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+
+	return updatedStream, nil
 }
 
 func (storage *Storage) DeleteStream(streamID int64) (err error) {
-	return nil
+	const sql = `DELETE FROM stream WHERE stream_id = $1 RETURNING stream_id`
+	_, err = storage.connPool.Exec(sql, streamID)
+	return err
 }

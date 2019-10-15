@@ -50,9 +50,15 @@ describe('Should streams CRUD works fine', function() {
                 .set('Authorization', newUserData.jwtToken)
                 .send(streamUpdateRequest)
                 .expect(200);
-            console.error('Updated stream:', res.body)
             validateStream(res.body, streamUpdateRequest)
         });
+
+        it('Should DELETE /topics/:id/streams 200 with valid path', async function() {
+            const res = await request
+                .delete('/topics/' + createdTopicId + '/streams/' + createdStream.id)
+                .set('Authorization', newUserData.jwtToken)
+                .expect(200);
+        })
     });
     it('Should GET /topics/:id/streams 200 with existed streams data', async function() {
         // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.

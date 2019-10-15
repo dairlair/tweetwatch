@@ -12,10 +12,10 @@ type StreamInterface interface {
 
 // Stream contains info required by twitter client to retrieve data from Twitter Streaming API and to store stream into the database
 type Stream struct {
-	ID    int64
-	TopicID int64
-	Track string
-	CreateAt time.Time
+	ID        int64
+	TopicID   int64
+	Track     string
+	CreatedAt time.Time
 }
 
 func NewStreams(tracks []string) []StreamInterface {
@@ -46,5 +46,5 @@ func (s *Stream) GetTrack() string {
 
 // GetTrack returns the stream's track
 func (s *Stream) GetCreatedAt() time.Time {
-	return s.CreateAt
+	return s.CreatedAt
 }
