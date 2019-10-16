@@ -223,6 +223,6 @@ func (storage *Storage) UpdateStream(streamInterface entity.StreamInterface) (up
 
 func (storage *Storage) DeleteStream(streamID int64) (err error) {
 	const sql = `DELETE FROM stream WHERE stream_id = $1 RETURNING stream_id`
-	_, err = storage.connPool.Exec(sql, streamID)
-	return err
+	var deletedStreamID int64
+	return storage.connPool.QueryRow(sql, streamID).Scan(&deletedStreamID)
 }

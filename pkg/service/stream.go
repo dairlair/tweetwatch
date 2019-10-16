@@ -76,6 +76,10 @@ func (service *Service) UpdateStreamHandler(params operations.UpdateStreamParams
 func (service *Service) DeleteStreamHandler(params operations.DeleteStreamParams, user *models.User) middleware.Responder {
 	err := service.storage.DeleteStream(params.StreamID)
 	if err != nil {
+		if err.Error() == "no rows in result set" {
+			payload := models.DefaultError{Message: swag.String("Not found")}
+			return operations.NewDeleteStreamDefault(404).WithPayload(&payload)
+		}
 		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
 		return operations.NewDeleteStreamDefault(500).WithPayload(&payload)
 	}

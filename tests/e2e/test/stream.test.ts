@@ -65,14 +65,20 @@ describe('Should streams CRUD works fine', function() {
                 .set('Authorization', newUserData.jwtToken)
                 .expect(200);
         })
+
+        it('Should DELETE /topics/:id/streams 404 with already deleted stream', async function() {
+            const res = await request
+                .delete('/topics/' + createdTopicId + '/streams/' + createdStream.id)
+                .set('Authorization', newUserData.jwtToken)
+                .expect(404);
+        })
     });
+
     it('Should GET /topics/:id/streams 200 with existed streams data', async function() {
-        // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
         const res = await request
             .get('/topics/' + createdTopicId + '/streams')
             .set('Authorization', newUserData.jwtToken)
             .expect(200);
-
         let streams = res.body
         expect(streams).length(1) // Count of data sets in streamsToCreate
     });
