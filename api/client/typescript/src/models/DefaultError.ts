@@ -40,7 +40,7 @@ export function DefaultErrorFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function DefaultErrorToJSON(value?: DefaultError): any {
+export function DefaultErrorToJSON(value?: DefaultError | null): any {
     if (value === undefined) {
         return undefined;
     }

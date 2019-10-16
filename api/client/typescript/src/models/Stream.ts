@@ -15,39 +15,46 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Credentials
+ * @interface Stream
  */
-export interface Credentials {
+export interface Stream {
+    /**
+     * 
+     * @type {number}
+     * @memberof Stream
+     */
+    id: number;
     /**
      * 
      * @type {string}
-     * @memberof Credentials
+     * @memberof Stream
      */
-    email: string;
+    track: string;
     /**
      * 
      * @type {string}
-     * @memberof Credentials
+     * @memberof Stream
      */
-    password: string;
+    createdAt: string;
 }
 
-export function CredentialsFromJSON(json: any): Credentials {
-    return CredentialsFromJSONTyped(json, false);
+export function StreamFromJSON(json: any): Stream {
+    return StreamFromJSONTyped(json, false);
 }
 
-export function CredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Credentials {
+export function StreamFromJSONTyped(json: any, ignoreDiscriminator: boolean): Stream {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'email': json['email'],
-        'password': json['password'],
+        'id': json['id'],
+        'track': json['track'],
+        'createdAt': json['createdAt'],
     };
 }
 
-export function CredentialsToJSON(value?: Credentials | null): any {
+export function StreamToJSON(value?: Stream | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -56,8 +63,9 @@ export function CredentialsToJSON(value?: Credentials | null): any {
     }
     return {
         
-        'email': value.email,
-        'password': value.password,
+        'id': value.id,
+        'track': value.track,
+        'createdAt': value.createdAt,
     };
 }
 
