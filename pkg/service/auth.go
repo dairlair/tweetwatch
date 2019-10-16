@@ -90,7 +90,7 @@ func (service *Service) SignUpHandler(params operations.SignupParams) middleware
 }
 
 func (service *Service) createJwtToken(userID int64) (token *string, err error) {
-	expirationTime := time.Now().Add(time.Hour)
+	expirationTime := time.Now().AddDate(10, 0, 0)
 	claims := &Claims{
 		UserID: userID,
 		StandardClaims: jwt.StandardClaims{

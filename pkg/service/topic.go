@@ -23,11 +23,6 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
 	}
 
-	// Start watching created streams
-	if createdTopic.GetIsActive() {
-		service.addStreamsToWatching(createdTopic.GetStreams())
-	}
-
 	payload := topicModelFromEntity(createdTopic)
 	return operations.NewCreateTopicOK().WithPayload(&payload)
 }
@@ -54,16 +49,10 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 	topic.ID = params.TopicID
 
 	// Run update topic in storage
-	updatedTopic, deletedStreamIds, createdStreams, err := service.storage.UpdateTopic(&topic)
+	updatedTopic, err := service.storage.UpdateTopic(&topic)
 	if err != nil {
 		payload := models.DefaultError{Message: swag.String(fmt.Sprintf("Topic not updated: %s", err))}
 		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
-	}
-
-	// Update twitterclient to unwatch old streams and watch new streams
-	service.deleteStreamsFromWatching(deletedStreamIds)
-	if updatedTopic.GetIsActive() {
-		service.addStreamsToWatching(createdStreams)
 	}
 
 	payload := topicModelFromEntity(updatedTopic)
@@ -74,8 +63,6 @@ func topicEntityFromModel(model *models.CreateTopic, user *models.User) entity.T
 	topic := entity.Topic{
 		UserID:  *user.ID,
 		Name:    *model.Name,
-		Streams: entity.NewStreams(model.Tracks),
-		Tracks:  model.Tracks,
 		IsActive: *model.IsActive,
 	}
 	return topic
@@ -85,7 +72,6 @@ func topicModelFromEntity(entity entity.TopicInterface) models.Topic {
 	model := models.Topic{
 		ID:        swag.Int64(entity.GetID()),
 		Name:      swag.String(entity.GetName()),
-		Tracks:    entity.GetTracks(),
 		CreatedAt: swag.String(entity.GetCreatedAt().Format("2006-01-02T15:04:05-0700")),
 		IsActive:  swag.Bool(entity.GetIsActive()),
 	}

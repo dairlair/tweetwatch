@@ -5,9 +5,9 @@ import { withData } from 'leche';
 
 const request = supertest('http://localhost:1308');
 
-type TopicRequest = {name: string, tracks: Array<string>, isActive: boolean};
+type TopicRequest = {name: string, isActive: boolean};
 let newUserData: CreatedNewUserData;
-let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', tracks: ['Tesla', 'Elon Musk'], isActive: true};
+let topicRequestData: TopicRequest = {name: 'Tesla, Inc.', isActive: true};
 let createdTopicId: bigint;
 
 before(async () => {  
@@ -44,7 +44,7 @@ describe('Should topics update endpoint works fine', function() {
     });
     withData({
         defaultTopic: topicRequestData,
-        emptyTopic: {name: '', tracks: [], isActive: false},
+        emptyTopic: {name: '', isActive: false},
     }, function(topicRequest: TopicRequest) {
         it('Should PUT /topics/:id 200 with valid topic request data', async function() {
             // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
@@ -61,7 +61,6 @@ describe('Should topics update endpoint works fine', function() {
 function validateTopic(topic: {id: bigint}, expected: TopicRequest) {
     expect(topic).has.property("id").greaterThan(0);
     expect(topic).has.property("name").eq(expected.name);
-    expect(topic).has.property("tracks").to.eql(expected.tracks);
     expect(topic).has.property("createdAt").not.empty;
     expect(topic).has.property("isActive").eq(expected.isActive);
     createdTopicId = topic.id;

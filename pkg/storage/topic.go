@@ -12,14 +12,12 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 		INSERT INTO topic (
 			user_id
 			, name
-			, tracks
 		) VALUES (
-			$1, $2, $3
+			$1, $2
 		) RETURNING 
 			topic_id
 			, user_id
 			, name
-			, tracks
 			, created_at
 			, is_active
 	`
@@ -38,19 +36,15 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			addTopicSQL,
 			topic.GetUserID(),
 			topic.GetName(),
-			topic.GetTracks(),
 		).Scan(
 			&createdTopic.ID,
 			&createdTopic.UserID,
 			&createdTopic.Name,
-			&createdTopic.Tracks,
 			&createdTopic.CreatedAt,
 			&createdTopic.IsActive,
 		); err != nil {
 		return nil, pgError(err)
 	}
-
-	createdTopic.Streams, err = txInsertTopicStreams(tx, createdTopic.GetID(), topic.GetStreams())
 
 	if err := tx.Commit(); err != nil {
 		return nil, pgError(err)
@@ -70,7 +64,6 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 			topic_id
 			, user_id
 			, name
-			, tracks
 			, created_at
 			, is_active
 		FROM topic 
@@ -84,7 +77,6 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 		&topic.ID,
 		&topic.UserID,
 		&topic.Name,
-		&topic.Tracks,
 		&topic.CreatedAt,
 		&topic.IsActive,
 	)
@@ -95,10 +87,10 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 }
 
 // AddTopic inserts topic into database
-func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, deletedStreamIDs []int64, insertedStreams []entity.StreamInterface, err error) {
+func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
 	tx, err := storage.connPool.Begin()
 	if err != nil {
-		return nil, nil, nil, pgError(err)
+		return nil, pgError(err)
 	}
 	defer func() {
 		if err != nil {
@@ -108,51 +100,38 @@ func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.
 
 	_, err = getTopicByID(tx, topic.GetID())
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	// Update the main topic record
 	const sql = `
 		UPDATE topic SET
 			name = $2
-			, tracks = $3
-			, is_active = $4
+			, is_active = $3
 		WHERE topic_id = $1
 	`
 	_, err = tx.Exec(
 		sql,
 		topic.GetID(),
 		topic.GetName(),
-		topic.GetTracks(),
 		topic.GetIsActive(),
 	)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil,  err
 	}
 
-	// Delete all previous streams
-	deletedStreamIDs, err = txDeleteTopicStreams(tx, topic.GetID())
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	// Insert new streams
-	insertedStreams, err = txInsertTopicStreams(tx, topic.GetID(), entity.NewStreams(topic.GetTracks()))
-	if err != nil {
-		return nil, nil, nil, err
-	}
 
 	// Read saved topic
 	savedTopic, err := getTopicByID(tx, topic.GetID())
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, nil, nil, pgError(err)
+		return nil, pgError(err)
 	}
 
-	return savedTopic, deletedStreamIDs, insertedStreams, err
+	return savedTopic, err
 }
 
 func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterface, err error) {
@@ -161,7 +140,6 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 			topic_id
 			, user_id
 			, name
-			, tracks
 			, created_at
 			, is_active
 		FROM topic 
@@ -181,7 +159,6 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 			&topic.ID,
 			&topic.UserID,
 			&topic.Name,
-			&topic.Tracks,
 			&topic.CreatedAt,
 			&topic.IsActive,
 		)

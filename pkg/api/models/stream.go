@@ -13,9 +13,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Topic topic
-// swagger:model Topic
-type Topic struct {
+// Stream stream
+// swagger:model Stream
+type Stream struct {
 
 	// created at
 	// Required: true
@@ -25,17 +25,13 @@ type Topic struct {
 	// Required: true
 	ID *int64 `json:"id"`
 
-	// is active
+	// track
 	// Required: true
-	IsActive *bool `json:"isActive"`
-
-	// name
-	// Required: true
-	Name *string `json:"name"`
+	Track *string `json:"track"`
 }
 
-// Validate validates this topic
-func (m *Topic) Validate(formats strfmt.Registry) error {
+// Validate validates this stream
+func (m *Stream) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreatedAt(formats); err != nil {
@@ -46,11 +42,7 @@ func (m *Topic) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateIsActive(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateTrack(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -60,7 +52,7 @@ func (m *Topic) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Topic) validateCreatedAt(formats strfmt.Registry) error {
+func (m *Stream) validateCreatedAt(formats strfmt.Registry) error {
 
 	if err := validate.Required("createdAt", "body", m.CreatedAt); err != nil {
 		return err
@@ -69,7 +61,7 @@ func (m *Topic) validateCreatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Topic) validateID(formats strfmt.Registry) error {
+func (m *Stream) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
@@ -78,18 +70,9 @@ func (m *Topic) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Topic) validateIsActive(formats strfmt.Registry) error {
+func (m *Stream) validateTrack(formats strfmt.Registry) error {
 
-	if err := validate.Required("isActive", "body", m.IsActive); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Topic) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("track", "body", m.Track); err != nil {
 		return err
 	}
 
@@ -97,7 +80,7 @@ func (m *Topic) validateName(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *Topic) MarshalBinary() ([]byte, error) {
+func (m *Stream) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -105,8 +88,8 @@ func (m *Topic) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Topic) UnmarshalBinary(b []byte) error {
-	var res Topic
+func (m *Stream) UnmarshalBinary(b []byte) error {
+	var res Stream
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

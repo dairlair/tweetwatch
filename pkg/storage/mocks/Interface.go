@@ -12,6 +12,29 @@ type Interface struct {
 	mock.Mock
 }
 
+// AddStream provides a mock function with given fields: streamInterface
+func (_m *Interface) AddStream(streamInterface entity.StreamInterface) (entity.StreamInterface, error) {
+	ret := _m.Called(streamInterface)
+
+	var r0 entity.StreamInterface
+	if rf, ok := ret.Get(0).(func(entity.StreamInterface) entity.StreamInterface); ok {
+		r0 = rf(streamInterface)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(entity.StreamInterface)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(entity.StreamInterface) error); ok {
+		r1 = rf(streamInterface)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // AddTopic provides a mock function with given fields: _a0
 func (_m *Interface) AddTopic(_a0 entity.TopicInterface) (entity.TopicInterface, error) {
 	ret := _m.Called(_a0)
@@ -56,6 +79,20 @@ func (_m *Interface) AddTweetStreams(tweetStreams entity.TweetStreamsInterface) 
 	return r0, r1
 }
 
+// DeleteStream provides a mock function with given fields: streamID
+func (_m *Interface) DeleteStream(streamID int64) error {
+	ret := _m.Called(streamID)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(int64) error); ok {
+		r0 = rf(streamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // GetStreams provides a mock function with given fields:
 func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
 	ret := _m.Called()
@@ -79,13 +116,36 @@ func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
 	return r0, r1
 }
 
-// GetUserTopics provides a mock function with given fields: userId
-func (_m *Interface) GetUserTopics(userId int64) ([]entity.TopicInterface, error) {
-	ret := _m.Called(userId)
+// GetTopicStreams provides a mock function with given fields: topicID
+func (_m *Interface) GetTopicStreams(topicID int64) ([]entity.StreamInterface, error) {
+	ret := _m.Called(topicID)
+
+	var r0 []entity.StreamInterface
+	if rf, ok := ret.Get(0).(func(int64) []entity.StreamInterface); ok {
+		r0 = rf(topicID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]entity.StreamInterface)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int64) error); ok {
+		r1 = rf(topicID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetUserTopics provides a mock function with given fields: userID
+func (_m *Interface) GetUserTopics(userID int64) ([]entity.TopicInterface, error) {
+	ret := _m.Called(userID)
 
 	var r0 []entity.TopicInterface
 	if rf, ok := ret.Get(0).(func(int64) []entity.TopicInterface); ok {
-		r0 = rf(userId)
+		r0 = rf(userID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]entity.TopicInterface)
@@ -94,7 +154,7 @@ func (_m *Interface) GetUserTopics(userId int64) ([]entity.TopicInterface, error
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(int64) error); ok {
-		r1 = rf(userId)
+		r1 = rf(userID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -148,8 +208,31 @@ func (_m *Interface) SignUp(email string, password string) (*int64, error) {
 	return r0, r1
 }
 
+// UpdateStream provides a mock function with given fields: streamInterface
+func (_m *Interface) UpdateStream(streamInterface entity.StreamInterface) (entity.StreamInterface, error) {
+	ret := _m.Called(streamInterface)
+
+	var r0 entity.StreamInterface
+	if rf, ok := ret.Get(0).(func(entity.StreamInterface) entity.StreamInterface); ok {
+		r0 = rf(streamInterface)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(entity.StreamInterface)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(entity.StreamInterface) error); ok {
+		r1 = rf(streamInterface)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateTopic provides a mock function with given fields: _a0
-func (_m *Interface) UpdateTopic(_a0 entity.TopicInterface) (entity.TopicInterface, []int64, []entity.StreamInterface, error) {
+func (_m *Interface) UpdateTopic(_a0 entity.TopicInterface) (entity.TopicInterface, error) {
 	ret := _m.Called(_a0)
 
 	var r0 entity.TopicInterface
@@ -161,30 +244,12 @@ func (_m *Interface) UpdateTopic(_a0 entity.TopicInterface) (entity.TopicInterfa
 		}
 	}
 
-	var r1 []int64
-	if rf, ok := ret.Get(1).(func(entity.TopicInterface) []int64); ok {
+	var r1 error
+	if rf, ok := ret.Get(1).(func(entity.TopicInterface) error); ok {
 		r1 = rf(_a0)
 	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).([]int64)
-		}
+		r1 = ret.Error(1)
 	}
 
-	var r2 []entity.StreamInterface
-	if rf, ok := ret.Get(2).(func(entity.TopicInterface) []entity.StreamInterface); ok {
-		r2 = rf(_a0)
-	} else {
-		if ret.Get(2) != nil {
-			r2 = ret.Get(2).([]entity.StreamInterface)
-		}
-	}
-
-	var r3 error
-	if rf, ok := ret.Get(3).(func(entity.TopicInterface) error); ok {
-		r3 = rf(_a0)
-	} else {
-		r3 = ret.Error(3)
-	}
-
-	return r0, r1, r2, r3
+	return r0, r1
 }

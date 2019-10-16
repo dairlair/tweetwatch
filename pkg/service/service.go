@@ -42,6 +42,10 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.CreateTopicHandler = operations.CreateTopicHandlerFunc(service.CreateTopicHandler)
 	api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(service.GetUserTopicsHandler)
 	api.UpdateTopicHandler = operations.UpdateTopicHandlerFunc(service.UpdateTopicHandler)
+	api.CreateStreamHandler = operations.CreateStreamHandlerFunc(service.CreateStreamHandler)
+	api.GetStreamsHandler = operations.GetStreamsHandlerFunc(service.GetStreamsHandler)
+	api.UpdateStreamHandler = operations.UpdateStreamHandlerFunc(service.UpdateStreamHandler)
+	api.DeleteStreamHandler = operations.DeleteStreamHandlerFunc(service.DeleteStreamHandler)
 	service.API = api
 
 	// up...
@@ -78,6 +82,10 @@ func (service *Service) up() {
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
 }
 
+/**
+ * @TODO Add updated methods to use single stream, not a slice.
+ * @TODO Use method with slice to stop all streams of inactivated topic or to add streams of activated topic.
+ */
 func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	service.twitterclient.Unwatch()
 	service.twitterclient.AddStreams(streams)

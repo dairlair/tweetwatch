@@ -14,7 +14,6 @@ it('Should POST /login return 200 and JWT Token', async function () {
     const res = await request
         .post('/login')
         .send({email: newUserData.email, password: newUserData.password});
-    console.error('Response body', JSON.stringify(res.body));
     expect(res.body).has.property("token").not.eq("");
 });
 

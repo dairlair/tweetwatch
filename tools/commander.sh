@@ -1,7 +1,19 @@
 #!/bin/bash
 
 function migration() {
-  migrate -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" "$1"
+  os_name="$(uname -s)"
+  case "${os_name}" in
+    Linux*)
+      executable="./tools/migrate.linux-amd64"
+      ;;
+    Darwin*)
+      executable="./tools/migrate.darwin-amd64"
+      ;;
+    *)
+      echo "Unknown OS ${os_name}"
+      return
+  esac
+  ${executable} -source file:schema/postgres -database "postgres://tweetwatch:tweetwatch@localhost:5432/tweetwatch?sslmode=disable" "$1"
 }
 
 function run_unit_tests() {
