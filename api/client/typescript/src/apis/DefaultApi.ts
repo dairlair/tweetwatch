@@ -14,6 +14,9 @@
 
 import * as runtime from '../runtime';
 import {
+    CreateStream,
+    CreateStreamFromJSON,
+    CreateStreamToJSON,
     CreateTopic,
     CreateTopicFromJSON,
     CreateTopicToJSON,
@@ -23,6 +26,12 @@ import {
     DefaultError,
     DefaultErrorFromJSON,
     DefaultErrorToJSON,
+    DefaultSuccess,
+    DefaultSuccessFromJSON,
+    DefaultSuccessToJSON,
+    Stream,
+    StreamFromJSON,
+    StreamToJSON,
     Topic,
     TopicFromJSON,
     TopicToJSON,
@@ -31,8 +40,22 @@ import {
     UserToJSON,
 } from '../models';
 
+export interface CreateStreamRequest {
+    topicId: number;
+    stream: CreateStream;
+}
+
 export interface CreateTopicRequest {
     topic: CreateTopic;
+}
+
+export interface DeleteStreamRequest {
+    topicId: number;
+    streamId: number;
+}
+
+export interface GetStreamsRequest {
+    topicId: number;
 }
 
 export interface LoginRequest {
@@ -41,6 +64,12 @@ export interface LoginRequest {
 
 export interface SignupRequest {
     user: Credentials;
+}
+
+export interface UpdateStreamRequest {
+    topicId: number;
+    streamId: number;
+    stream: CreateStream;
 }
 
 export interface UpdateTopicRequest {
@@ -52,6 +81,45 @@ export interface UpdateTopicRequest {
  * no description
  */
 export class DefaultApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async createStreamRaw(requestParameters: CreateStreamRequest): Promise<runtime.ApiResponse<Stream>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling createStream.');
+        }
+
+        if (requestParameters.stream === null || requestParameters.stream === undefined) {
+            throw new runtime.RequiredError('stream','Required parameter requestParameters.stream was null or undefined when calling createStream.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}/streams`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateStreamToJSON(requestParameters.stream),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StreamFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async createStream(requestParameters: CreateStreamRequest): Promise<Stream> {
+        const response = await this.createStreamRaw(requestParameters);
+        return await response.value();
+    }
 
     /**
      */
@@ -81,10 +149,82 @@ export class DefaultApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => TopicFromJSON(jsonValue));
     }
 
-   /**
-    */
+    /**
+     */
     async createTopic(requestParameters: CreateTopicRequest): Promise<Topic> {
         const response = await this.createTopicRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Delete desired stream by Topic ID and Stream ID
+     */
+    async deleteStreamRaw(requestParameters: DeleteStreamRequest): Promise<runtime.ApiResponse<DefaultSuccess>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling deleteStream.');
+        }
+
+        if (requestParameters.streamId === null || requestParameters.streamId === undefined) {
+            throw new runtime.RequiredError('streamId','Required parameter requestParameters.streamId was null or undefined when calling deleteStream.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}/streams/{streamId}`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))).replace(`{${"streamId"}}`, encodeURIComponent(String(requestParameters.streamId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DefaultSuccessFromJSON(jsonValue));
+    }
+
+    /**
+     * Delete desired stream by Topic ID and Stream ID
+     */
+    async deleteStream(requestParameters: DeleteStreamRequest): Promise<DefaultSuccess> {
+        const response = await this.deleteStreamRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Returns list of streams inside the topic
+     */
+    async getStreamsRaw(requestParameters: GetStreamsRequest): Promise<runtime.ApiResponse<Array<Stream>>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling getStreams.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}/streams`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(StreamFromJSON));
+    }
+
+    /**
+     * Returns list of streams inside the topic
+     */
+    async getStreams(requestParameters: GetStreamsRequest): Promise<Array<Stream>> {
+        const response = await this.getStreamsRaw(requestParameters);
         return await response.value();
     }
 
@@ -109,8 +249,8 @@ export class DefaultApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TopicFromJSON));
     }
 
-   /**
-    */
+    /**
+     */
     async getUserTopics(): Promise<Array<Topic>> {
         const response = await this.getUserTopicsRaw();
         return await response.value();
@@ -144,8 +284,8 @@ export class DefaultApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
     }
 
-   /**
-    */
+    /**
+     */
     async login(requestParameters: LoginRequest): Promise<User> {
         const response = await this.loginRaw(requestParameters);
         return await response.value();
@@ -179,10 +319,55 @@ export class DefaultApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
     }
 
-   /**
-    */
+    /**
+     */
     async signup(requestParameters: SignupRequest): Promise<User> {
         const response = await this.signupRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Update desired stream by Topic ID and Stream ID
+     */
+    async updateStreamRaw(requestParameters: UpdateStreamRequest): Promise<runtime.ApiResponse<Stream>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling updateStream.');
+        }
+
+        if (requestParameters.streamId === null || requestParameters.streamId === undefined) {
+            throw new runtime.RequiredError('streamId','Required parameter requestParameters.streamId was null or undefined when calling updateStream.');
+        }
+
+        if (requestParameters.stream === null || requestParameters.stream === undefined) {
+            throw new runtime.RequiredError('stream','Required parameter requestParameters.stream was null or undefined when calling updateStream.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}/streams/{streamId}`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))).replace(`{${"streamId"}}`, encodeURIComponent(String(requestParameters.streamId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateStreamToJSON(requestParameters.stream),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StreamFromJSON(jsonValue));
+    }
+
+    /**
+     * Update desired stream by Topic ID and Stream ID
+     */
+    async updateStream(requestParameters: UpdateStreamRequest): Promise<Stream> {
+        const response = await this.updateStreamRaw(requestParameters);
         return await response.value();
     }
 
@@ -219,9 +404,9 @@ export class DefaultApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => TopicFromJSON(jsonValue));
     }
 
-   /**
-    * Update desired topic by Topic ID
-    */
+    /**
+     * Update desired topic by Topic ID
+     */
     async updateTopic(requestParameters: UpdateTopicRequest): Promise<Topic> {
         const response = await this.updateTopicRaw(requestParameters);
         return await response.value();

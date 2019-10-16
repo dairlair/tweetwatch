@@ -28,18 +28,30 @@ http :1308/topics/1/streams "Authorization:${jwt}"
 http PUT :1308/topics/1/streams/1 "Authorization:${jwt}" track="zxcvbn"
 ```
 
-# Swagger stubs regenerate
+### Swagger stubs regenerate
 
 To regenerate swagger stubs run this command:
 
-```shell
-./tools/swagger.sh
+```shell script
+./tools/commander swagger
 ```
 
 ### Mockery mocks
 
 To regenerate mock used in tests (i.g.: /pkg/storage/mocks) run this command:./c
 
-```shell
-./tools/regenerate-mocks.sh
+```shell script
+./tools/commander mocks
+```
+
+### API Client generator
+
+Install this package (more info on [github](https://github.com/OpenAPITools/openapi-generator)):
+```shell script
+npm install @openapitools/openapi-generator-cli -g
+```
+
+then run:
+```shell script
+./tools/commander client
 ```

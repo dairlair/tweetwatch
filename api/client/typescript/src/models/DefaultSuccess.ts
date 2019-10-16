@@ -15,39 +15,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Credentials
+ * @interface DefaultSuccess
  */
-export interface Credentials {
+export interface DefaultSuccess {
     /**
      * 
      * @type {string}
-     * @memberof Credentials
+     * @memberof DefaultSuccess
      */
-    email: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Credentials
-     */
-    password: string;
+    message: string;
 }
 
-export function CredentialsFromJSON(json: any): Credentials {
-    return CredentialsFromJSONTyped(json, false);
+export function DefaultSuccessFromJSON(json: any): DefaultSuccess {
+    return DefaultSuccessFromJSONTyped(json, false);
 }
 
-export function CredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Credentials {
+export function DefaultSuccessFromJSONTyped(json: any, ignoreDiscriminator: boolean): DefaultSuccess {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'email': json['email'],
-        'password': json['password'],
+        'message': json['message'],
     };
 }
 
-export function CredentialsToJSON(value?: Credentials | null): any {
+export function DefaultSuccessToJSON(value?: DefaultSuccess | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -56,8 +49,7 @@ export function CredentialsToJSON(value?: Credentials | null): any {
     }
     return {
         
-        'email': value.email,
-        'password': value.password,
+        'message': value.message,
     };
 }
 

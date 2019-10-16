@@ -26,12 +26,6 @@ export interface CreateTopic {
     name: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof CreateTopic
-     */
-    tracks: Array<string>;
-    /**
-     * 
      * @type {boolean}
      * @memberof CreateTopic
      */
@@ -49,12 +43,11 @@ export function CreateTopicFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'name': json['name'],
-        'tracks': json['tracks'],
         'isActive': json['isActive'],
     };
 }
 
-export function CreateTopicToJSON(value?: CreateTopic): any {
+export function CreateTopicToJSON(value?: CreateTopic | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -64,7 +57,6 @@ export function CreateTopicToJSON(value?: CreateTopic): any {
     return {
         
         'name': value.name,
-        'tracks': value.tracks,
         'isActive': value.isActive,
     };
 }

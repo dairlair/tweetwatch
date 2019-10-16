@@ -15,39 +15,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Credentials
+ * @interface CreateStream
  */
-export interface Credentials {
+export interface CreateStream {
     /**
      * 
      * @type {string}
-     * @memberof Credentials
+     * @memberof CreateStream
      */
-    email: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Credentials
-     */
-    password: string;
+    track: string;
 }
 
-export function CredentialsFromJSON(json: any): Credentials {
-    return CredentialsFromJSONTyped(json, false);
+export function CreateStreamFromJSON(json: any): CreateStream {
+    return CreateStreamFromJSONTyped(json, false);
 }
 
-export function CredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Credentials {
+export function CreateStreamFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateStream {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'email': json['email'],
-        'password': json['password'],
+        'track': json['track'],
     };
 }
 
-export function CredentialsToJSON(value?: Credentials | null): any {
+export function CreateStreamToJSON(value?: CreateStream | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -56,8 +49,7 @@ export function CredentialsToJSON(value?: Credentials | null): any {
     }
     return {
         
-        'email': value.email,
-        'password': value.password,
+        'track': value.track,
     };
 }
 
