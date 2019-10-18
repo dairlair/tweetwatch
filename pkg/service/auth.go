@@ -14,6 +14,7 @@ import (
 
 type Claims struct {
 	UserID int64 `json:"userId"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
@@ -40,7 +41,7 @@ func (service *Service) JWTAuth(token string) (*models.User, error) {
 		return nil, errors.New("invalid token")
 	}
 	return &models.User{
-		Email: swag.String("some"),
+		Email: swag.String(claims.Email),
 		ID:    swag.Int64(claims.UserID),
 		Token: swag.String(token),
 	}, nil
@@ -53,7 +54,7 @@ func (service *Service) LoginHandler(params operations.LoginParams) middleware.R
 		return operations.NewLoginDefault(422).WithPayload(&payload)
 	}
 
-	token, err := service.createJwtToken(*id)
+	token, err := service.createJwtToken(*id, *params.User.Email)
 	if err != nil {
 		payload := models.DefaultError{Message: swag.String("JWT Token not created")}
 		return operations.NewLoginDefault(500).WithPayload(&payload)
@@ -75,7 +76,7 @@ func (service *Service) SignUpHandler(params operations.SignupParams) middleware
 		return operations.NewSignupDefault(422).WithPayload(&payload)
 	}
 
-	token, err := service.createJwtToken(*id)
+	token, err := service.createJwtToken(*id, *params.User.Email)
 	if err != nil {
 		payload := models.DefaultError{Message: swag.String("JWT Token not created")}
 		return operations.NewSignupDefault(500).WithPayload(&payload)
@@ -89,10 +90,11 @@ func (service *Service) SignUpHandler(params operations.SignupParams) middleware
 	return operations.NewSignupOK().WithPayload(&payload)
 }
 
-func (service *Service) createJwtToken(userID int64) (token *string, err error) {
+func (service *Service) createJwtToken(userID int64, email string) (token *string, err error) {
 	expirationTime := time.Now().AddDate(10, 0, 0)
 	claims := &Claims{
 		UserID: userID,
+		Email: email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

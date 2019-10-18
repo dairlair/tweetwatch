@@ -104,6 +104,31 @@ func init() {
         }
       }
     },
+    "/status": {
+      "get": {
+        "operationId": "getStatus",
+        "responses": {
+          "200": {
+            "description": "Current JWT is valid",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "403": {
+            "description": "Invalid JWT",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
+    },
     "/topics": {
       "get": {
         "operationId": "getUserTopics",
@@ -541,6 +566,31 @@ func init() {
           },
           "422": {
             "description": "Email already taken",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "getStatus",
+        "responses": {
+          "200": {
+            "description": "Current JWT is valid",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "403": {
+            "description": "Invalid JWT",
             "schema": {
               "$ref": "#/definitions/DefaultError"
             }
