@@ -62,6 +62,14 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+  /status:
+    get:
+      operationId: getStatus
+      responses:
+        "200":
+          description: Current JWT is valid
+          schema:
+            $ref: "#/definitions/User"
   /topics:
     post:
       operationId: createTopic

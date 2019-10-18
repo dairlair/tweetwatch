@@ -60,6 +60,11 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 			return middleware.NotImplemented("operation .DeleteStream has not yet been implemented")
 		})
 	}
+	if api.GetStatusHandler == nil {
+		api.GetStatusHandler = operations.GetStatusHandlerFunc(func(params operations.GetStatusParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation .GetStatus has not yet been implemented")
+		})
+	}
 	if api.GetStreamsHandler == nil {
 		api.GetStreamsHandler = operations.GetStreamsHandlerFunc(func(params operations.GetStreamsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation .GetStreams has not yet been implemented")

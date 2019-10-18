@@ -48,6 +48,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		DeleteStreamHandler: DeleteStreamHandlerFunc(func(params DeleteStreamParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteStream has not yet been implemented")
 		}),
+		GetStatusHandler: GetStatusHandlerFunc(func(params GetStatusParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation GetStatus has not yet been implemented")
+		}),
 		GetStreamsHandler: GetStreamsHandlerFunc(func(params GetStreamsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetStreams has not yet been implemented")
 		}),
@@ -118,6 +121,8 @@ type TweetwatchAPI struct {
 	CreateTopicHandler CreateTopicHandler
 	// DeleteStreamHandler sets the operation handler for the delete stream operation
 	DeleteStreamHandler DeleteStreamHandler
+	// GetStatusHandler sets the operation handler for the get status operation
+	GetStatusHandler GetStatusHandler
 	// GetStreamsHandler sets the operation handler for the get streams operation
 	GetStreamsHandler GetStreamsHandler
 	// GetUserTopicsHandler sets the operation handler for the get user topics operation
@@ -207,6 +212,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.DeleteStreamHandler == nil {
 		unregistered = append(unregistered, "DeleteStreamHandler")
+	}
+
+	if o.GetStatusHandler == nil {
+		unregistered = append(unregistered, "GetStatusHandler")
 	}
 
 	if o.GetStreamsHandler == nil {
@@ -358,6 +367,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/topics/{topicId}/streams/{streamId}"] = NewDeleteStream(o.context, o.DeleteStreamHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/status"] = NewGetStatus(o.context, o.GetStatusHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
