@@ -23,14 +23,11 @@ func (service *Service) CreateStreamHandler(params operations.CreateStreamParams
 		return operations.NewCreateStreamDefault(422).WithPayload(&payload)
 	}
 
-	// @twitterclient: Add this stream to watching
-	service.addStreamsToWatching([]entity.StreamInterface{createdStream})
-
-	// @TODO Add stream watching if the topic is active
-	//// Start watching created streams
-	//if createdStream.GetIsActive() {
-	//	service.addStreamsToWatching(createdTopic.GetStreams())
-	//}
+	//Add stream to watching if the topic is active
+	topic, _ := service.storage.GetTopic(createdStream.GetTopicID())
+	if topic.GetIsActive() {
+		service.addStreamsToWatching([]entity.StreamInterface{createdStream})
+	}
 
 	payload := streamModelFromEntity(createdStream)
 	return operations.NewCreateStreamOK().WithPayload(&payload)
@@ -66,7 +63,9 @@ func (service *Service) UpdateStreamHandler(params operations.UpdateStreamParams
 	}
 
 	// @twitterclient: Update this stream in watching
-	service.deleteStreamsFromWatching([]int64{params.StreamID})
+	var streams []entity.StreamInterface
+	streams = append(streams, &stream)
+	service.deleteStreamsFromWatching(streams)
 	service.addStreamsToWatching([]entity.StreamInterface{updatedStream})
 
 	payload := streamModelFromEntity(updatedStream)
@@ -84,8 +83,7 @@ func (service *Service) DeleteStreamHandler(params operations.DeleteStreamParams
 		return operations.NewDeleteStreamDefault(500).WithPayload(&payload)
 	}
 
-	// @twitterclient: Remove this stream from watching
-	service.deleteStreamsFromWatching([]int64{params.StreamID})
+	service.deleteStreamsFromWatching([]entity.StreamInterface{&entity.Stream{ID: params.StreamID}})
 
 	payload := models.DefaultSuccess{Message:swag.String("Stream deleted successfully")}
 	return operations.NewDeleteStreamOK().WithPayload(&payload)

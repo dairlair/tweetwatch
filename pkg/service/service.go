@@ -92,7 +92,8 @@ func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	}
 }
 
-func (service *Service) deleteStreamsFromWatching(streamIDs []int64) {
+func (service *Service) deleteStreamsFromWatching(streams []entity.StreamInterface) {
+	streamIDs := entity.GetStreamIDs(streams)
 	service.twitterclient.Unwatch()
 	service.twitterclient.DeleteStreams(streamIDs)
 	if err := service.twitterclient.Watch(service.tweetStreamsChannel); err != nil {

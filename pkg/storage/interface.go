@@ -10,6 +10,7 @@ type Interface interface {
 	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
 	GetUserTopics(userID int64) (result []entity.TopicInterface, err error)
 	GetStreams() (streams []entity.StreamInterface, err error)
+	GetTopic(topicID int64) (topic entity.TopicInterface, err error)
 	GetTopicStreams(topicID int64) (streams []entity.StreamInterface, err error)
 	AddTweetStreams(tweetStreams entity.TweetStreamsInterface) (id int64, err error)
 	SignUp(email string, password string) (id *int64, err error)

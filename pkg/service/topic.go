@@ -55,6 +55,18 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 		return operations.NewUpdateTopicDefault(422).WithPayload(&payload)
 	}
 
+	// Update the watched streams in twitterclient
+	streams, _ := service.storage.GetTopicStreams(updatedTopic.GetID())
+	if len(streams) > 0 {
+		isEnabled := updatedTopic.GetIsActive()
+		if isEnabled {
+			// We need to add all streams to the twitterclient
+			service.addStreamsToWatching(streams)
+		} else {
+			service.deleteStreamsFromWatching(streams)
+		}
+	}
+
 	payload := topicModelFromEntity(updatedTopic)
 	return operations.NewUpdateTopicOK().WithPayload(&payload)
 }

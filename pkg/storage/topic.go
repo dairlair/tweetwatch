@@ -86,6 +86,38 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 	return &topic, nil
 }
 
+func (storage *Storage) GetTopic(topicID int64) (topic entity.TopicInterface, err error) {
+	if topicID < 1 {
+		return nil, errors.New("the topic ID is required")
+	}
+	const sql = `
+		SELECT
+			topic_id
+			, user_id
+			, name
+			, created_at
+			, is_active
+		FROM topic 
+		WHERE 
+			topic_id = $1 
+			AND is_deleted = FALSE
+	`
+	row := storage.connPool.QueryRow(sql, topicID)
+	topicEntity := entity.Topic{}
+	err = row.Scan(
+		&topicEntity.ID,
+		&topicEntity.UserID,
+		&topicEntity.Name,
+		&topicEntity.CreatedAt,
+		&topicEntity.IsActive,
+	)
+	if err != nil {
+		return nil, err
+	}
+	topic = &topicEntity
+	return topic, nil
+}
+
 // AddTopic inserts topic into database
 func (storage *Storage) UpdateTopic(topic entity.TopicInterface) (result entity.TopicInterface, err error) {
 	tx, err := storage.connPool.Begin()
