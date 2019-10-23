@@ -49,13 +49,10 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.GetStatusHandler = operations.GetStatusHandlerFunc(service.GetStatusHandler)
 	service.API = api
 
-	// up...
-	service.up()
-
 	return service
 }
 
-func (service *Service) up() {
+func (service *Service) Up() {
 	log.Infof("Tweetwatch service up...")
 	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {

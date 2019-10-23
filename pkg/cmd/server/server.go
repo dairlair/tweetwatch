@@ -58,6 +58,7 @@ func (instance *Instance) Start() {
 
 	// run service
 	serviceInstance := service.NewService(storageInstance, twitterclientInstance)
+	serviceInstance.Up()
 
 	// create server
 	server := restapi.NewServer(serviceInstance.API)
