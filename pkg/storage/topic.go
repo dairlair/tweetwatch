@@ -180,6 +180,7 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 		WHERE 
 			user_id = $1 
 			AND is_deleted = FALSE
+		ORDER BY created_at DESC
 	`
 	var topics []entity.TopicInterface
 
@@ -208,4 +209,10 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 	}
 
 	return topics, nil
+}
+
+func (storage *Storage) DeleteTopic(topicID int64) (err error) {
+	const sql = `DELETE FROM topic WHERE topic_id = $1 RETURNING topic_id`
+	var deletedTopicID int64
+	return storage.connPool.QueryRow(sql, topicID).Scan(&deletedTopicID)
 }

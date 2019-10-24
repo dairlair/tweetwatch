@@ -7,6 +7,7 @@ import (
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
+	"time"
 )
 
 func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, user *models.User) middleware.Responder {
@@ -22,6 +23,9 @@ func (service *Service) CreateTopicHandler(params operations.CreateTopicParams, 
 		payload := models.DefaultError{Message: swag.String("Topic not created with unknown reason")}
 		return operations.NewCreateTopicDefault(422).WithPayload(&payload)
 	}
+
+	// @TODO Remove that before release
+	time.Sleep(time.Second)
 
 	payload := topicModelFromEntity(createdTopic)
 	return operations.NewCreateTopicOK().WithPayload(&payload)
@@ -40,6 +44,9 @@ func (service *Service) GetUserTopicsHandler(params operations.GetUserTopicsPara
 		model := topicModelFromEntity(topic)
 		payload = append(payload, &model)
 	}
+
+	// @TODO Remove that before release
+	time.Sleep(time.Second)
 
 	return operations.NewGetUserTopicsOK().WithPayload(payload)
 }
@@ -67,8 +74,33 @@ func (service *Service) UpdateTopicHandler(params operations.UpdateTopicParams, 
 		}
 	}
 
+	// @TODO Remove that before release
+	time.Sleep(time.Second)
+
 	payload := topicModelFromEntity(updatedTopic)
 	return operations.NewUpdateTopicOK().WithPayload(&payload)
+}
+
+func (service *Service) DeleteTopicHandler(params operations.DeleteTopicParams, user *models.User) middleware.Responder {
+	err := service.storage.DeleteTopic(params.TopicID)
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			payload := models.DefaultError{Message: swag.String("Not found")}
+			return operations.NewDeleteTopicDefault(404).WithPayload(&payload)
+		}
+		payload := models.DefaultError{Message: swag.String(fmt.Sprint(err))}
+		return operations.NewDeleteTopicDefault(500).WithPayload(&payload)
+	}
+
+	// Update the watched streams in twitterclient
+	streams, _ := service.storage.GetTopicStreams(params.TopicID)
+	service.deleteStreamsFromWatching(streams)
+
+	// @TODO Remove that before release
+	time.Sleep(time.Second)
+
+	payload := models.DefaultSuccess{Message:swag.String("Stream deleted successfully")}
+	return operations.NewDeleteStreamOK().WithPayload(&payload)
 }
 
 func topicEntityFromModel(model *models.CreateTopic, user *models.User) entity.Topic {

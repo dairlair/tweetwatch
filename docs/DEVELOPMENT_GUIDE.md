@@ -20,6 +20,8 @@ http POST :1308/topics "Authorization:${jwt}" name="Tesla Inc." isActive:=true
 http :1308/topics "Authorization:${jwt}"
 # Update created topic
 http PUT :1308/topics/1 "Authorization:${jwt}" name="Tesla Inc." isActive:=false
+# Delete topic
+http DELETE :1308/topics/1 "Authorization:${jwt}"
 # Add stream to some topic
 http POST :1308/topics/1/streams "Authorization:${jwt}" track="qwerty"
 # Get streams from some topic

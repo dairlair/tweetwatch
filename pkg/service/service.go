@@ -42,6 +42,7 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.CreateTopicHandler = operations.CreateTopicHandlerFunc(service.CreateTopicHandler)
 	api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(service.GetUserTopicsHandler)
 	api.UpdateTopicHandler = operations.UpdateTopicHandlerFunc(service.UpdateTopicHandler)
+	api.DeleteTopicHandler = operations.DeleteTopicHandlerFunc(service.DeleteTopicHandler)
 	api.CreateStreamHandler = operations.CreateStreamHandlerFunc(service.CreateStreamHandler)
 	api.GetStreamsHandler = operations.GetStreamsHandlerFunc(service.GetStreamsHandler)
 	api.UpdateStreamHandler = operations.UpdateStreamHandlerFunc(service.UpdateStreamHandler)
