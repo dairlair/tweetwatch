@@ -66,7 +66,7 @@ func (service *Service) Up() {
 	log.Infof("Tweetwatch service is ready to accept tweets")
 
 	// Restore streams
-	streams, err := service.storage.GetStreams()
+	streams, err := service.storage.GetActiveStreams()
 	if err != nil {
 		log.Fatalf("failed to restore streams: %s\n", err)
 	}
@@ -80,10 +80,6 @@ func (service *Service) Up() {
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
 }
 
-/**
- * @TODO Add updated methods to use single stream, not a slice.
- * @TODO Use method with slice to stop all streams of inactivated topic or to add streams of activated topic.
- */
 func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	service.twitterclient.Unwatch()
 	service.twitterclient.AddStreams(streams)

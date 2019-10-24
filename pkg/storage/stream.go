@@ -133,14 +133,16 @@ func txInsertTopicStreams(tx *pgx.Tx, topicID int64, streams []entity.StreamInte
 }
 
 // GetStreams returns all existing streams
-func (storage *Storage) GetStreams() (streams []entity.StreamInterface, err error) {
+func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, err error) {
 	const getStreamsSQL = `
 		SELECT 
-			stream_id
-			, track
-			, created_at
+			s.stream_id
+			, s.track
+			, s.created_at
 		FROM
-			stream
+			stream AS s
+			INNER JOIN topic AS t ON t.topic_id = s.topic_id 
+		WHERE t.is_active = true
 	`
 
 	rows, err := storage.connPool.Query(getStreamsSQL)
@@ -193,12 +195,6 @@ func (storage *Storage) GetTopicStreams(topicID int64) (streams []entity.StreamI
 	}
 
 	return streams, nil
-}
-
-// GetStreams returns all active streams (streams with flag "is_active" = TRUE)
-func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, err error) {
-	// @TODO Refactor when tweet table got is_active flag.
-	return storage.GetStreams()
 }
 
 // UpdateStream just update stream
