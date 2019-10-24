@@ -12,8 +12,9 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 		INSERT INTO topic (
 			user_id
 			, name
+			, is_active
 		) VALUES (
-			$1, $2
+			$1, $2, $3
 		) RETURNING 
 			topic_id
 			, user_id
@@ -36,6 +37,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			addTopicSQL,
 			topic.GetUserID(),
 			topic.GetName(),
+			topic.GetIsActive(),
 		).Scan(
 			&createdTopic.ID,
 			&createdTopic.UserID,
