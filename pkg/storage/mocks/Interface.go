@@ -93,8 +93,22 @@ func (_m *Interface) DeleteStream(streamID int64) error {
 	return r0
 }
 
-// GetStreams provides a mock function with given fields:
-func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
+// DeleteTopic provides a mock function with given fields: streamID
+func (_m *Interface) DeleteTopic(streamID int64) error {
+	ret := _m.Called(streamID)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(int64) error); ok {
+		r0 = rf(streamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetActiveStreams provides a mock function with given fields:
+func (_m *Interface) GetActiveStreams() ([]entity.StreamInterface, error) {
 	ret := _m.Called()
 
 	var r0 []entity.StreamInterface
@@ -109,6 +123,29 @@ func (_m *Interface) GetStreams() ([]entity.StreamInterface, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func() error); ok {
 		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTopic provides a mock function with given fields: topicID
+func (_m *Interface) GetTopic(topicID int64) (entity.TopicInterface, error) {
+	ret := _m.Called(topicID)
+
+	var r0 entity.TopicInterface
+	if rf, ok := ret.Get(0).(func(int64) entity.TopicInterface); ok {
+		r0 = rf(topicID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(entity.TopicInterface)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int64) error); ok {
+		r1 = rf(topicID)
 	} else {
 		r1 = ret.Error(1)
 	}

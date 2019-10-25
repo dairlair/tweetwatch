@@ -113,18 +113,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/User"
             }
-          },
-          "403": {
-            "description": "Invalid JWT",
-            "schema": {
-              "$ref": "#/definitions/DefaultError"
-            }
-          },
-          "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/DefaultError"
-            }
           }
         }
       }
@@ -200,6 +188,33 @@ func init() {
             "description": "Topic updated",
             "schema": {
               "$ref": "#/definitions/Topic"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete desired topic by Topic ID",
+        "operationId": "deleteTopic",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to delete",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic deleted",
+            "schema": {
+              "$ref": "#/definitions/DefaultSuccess"
             }
           },
           "default": {
@@ -588,18 +603,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/User"
             }
-          },
-          "403": {
-            "description": "Invalid JWT",
-            "schema": {
-              "$ref": "#/definitions/DefaultError"
-            }
-          },
-          "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/DefaultError"
-            }
           }
         }
       }
@@ -675,6 +678,33 @@ func init() {
             "description": "Topic updated",
             "schema": {
               "$ref": "#/definitions/Topic"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete desired topic by Topic ID",
+        "operationId": "deleteTopic",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Numeric ID of the topic to delete",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic deleted",
+            "schema": {
+              "$ref": "#/definitions/DefaultSuccess"
             }
           },
           "default": {

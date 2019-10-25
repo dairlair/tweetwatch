@@ -54,6 +54,10 @@ export interface DeleteStreamRequest {
     streamId: number;
 }
 
+export interface DeleteTopicRequest {
+    topicId: number;
+}
+
 export interface GetStreamsRequest {
     topicId: number;
 }
@@ -191,6 +195,68 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async deleteStream(requestParameters: DeleteStreamRequest): Promise<DefaultSuccess> {
         const response = await this.deleteStreamRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Delete desired topic by Topic ID
+     */
+    async deleteTopicRaw(requestParameters: DeleteTopicRequest): Promise<runtime.ApiResponse<DefaultSuccess>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling deleteTopic.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DefaultSuccessFromJSON(jsonValue));
+    }
+
+    /**
+     * Delete desired topic by Topic ID
+     */
+    async deleteTopic(requestParameters: DeleteTopicRequest): Promise<DefaultSuccess> {
+        const response = await this.deleteTopicRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getStatusRaw(): Promise<runtime.ApiResponse<User>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/status`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getStatus(): Promise<User> {
+        const response = await this.getStatusRaw();
         return await response.value();
     }
 

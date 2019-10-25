@@ -12,8 +12,9 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 		INSERT INTO topic (
 			user_id
 			, name
+			, is_active
 		) VALUES (
-			$1, $2
+			$1, $2, $3
 		) RETURNING 
 			topic_id
 			, user_id
@@ -36,6 +37,7 @@ func (storage *Storage) AddTopic(topic entity.TopicInterface) (result entity.Top
 			addTopicSQL,
 			topic.GetUserID(),
 			topic.GetName(),
+			topic.GetIsActive(),
 		).Scan(
 			&createdTopic.ID,
 			&createdTopic.UserID,
@@ -84,6 +86,38 @@ func getTopicByID(tx *pgx.Tx, topicID int64) (result entity.TopicInterface, err 
 		return nil, err
 	}
 	return &topic, nil
+}
+
+func (storage *Storage) GetTopic(topicID int64) (topic entity.TopicInterface, err error) {
+	if topicID < 1 {
+		return nil, errors.New("the topic ID is required")
+	}
+	const sql = `
+		SELECT
+			topic_id
+			, user_id
+			, name
+			, created_at
+			, is_active
+		FROM topic 
+		WHERE 
+			topic_id = $1 
+			AND is_deleted = FALSE
+	`
+	row := storage.connPool.QueryRow(sql, topicID)
+	topicEntity := entity.Topic{}
+	err = row.Scan(
+		&topicEntity.ID,
+		&topicEntity.UserID,
+		&topicEntity.Name,
+		&topicEntity.CreatedAt,
+		&topicEntity.IsActive,
+	)
+	if err != nil {
+		return nil, err
+	}
+	topic = &topicEntity
+	return topic, nil
 }
 
 // AddTopic inserts topic into database
@@ -146,6 +180,7 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 		WHERE 
 			user_id = $1 
 			AND is_deleted = FALSE
+		ORDER BY created_at DESC
 	`
 	var topics []entity.TopicInterface
 
@@ -174,4 +209,10 @@ func (storage *Storage) GetUserTopics(userId int64) (result []entity.TopicInterf
 	}
 
 	return topics, nil
+}
+
+func (storage *Storage) DeleteTopic(topicID int64) (err error) {
+	const sql = `DELETE FROM topic WHERE topic_id = $1 RETURNING topic_id`
+	var deletedTopicID int64
+	return storage.connPool.QueryRow(sql, topicID).Scan(&deletedTopicID)
 }

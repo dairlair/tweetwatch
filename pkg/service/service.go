@@ -42,6 +42,7 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.CreateTopicHandler = operations.CreateTopicHandlerFunc(service.CreateTopicHandler)
 	api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(service.GetUserTopicsHandler)
 	api.UpdateTopicHandler = operations.UpdateTopicHandlerFunc(service.UpdateTopicHandler)
+	api.DeleteTopicHandler = operations.DeleteTopicHandlerFunc(service.DeleteTopicHandler)
 	api.CreateStreamHandler = operations.CreateStreamHandlerFunc(service.CreateStreamHandler)
 	api.GetStreamsHandler = operations.GetStreamsHandlerFunc(service.GetStreamsHandler)
 	api.UpdateStreamHandler = operations.UpdateStreamHandlerFunc(service.UpdateStreamHandler)
@@ -49,13 +50,10 @@ func NewService(s storage.Interface, t twitterclient.Interface) Service {
 	api.GetStatusHandler = operations.GetStatusHandlerFunc(service.GetStatusHandler)
 	service.API = api
 
-	// up...
-	service.up()
-
 	return service
 }
 
-func (service *Service) up() {
+func (service *Service) Up() {
 	log.Infof("Tweetwatch service up...")
 	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {
@@ -69,7 +67,7 @@ func (service *Service) up() {
 	log.Infof("Tweetwatch service is ready to accept tweets")
 
 	// Restore streams
-	streams, err := service.storage.GetStreams()
+	streams, err := service.storage.GetActiveStreams()
 	if err != nil {
 		log.Fatalf("failed to restore streams: %s\n", err)
 	}
@@ -83,10 +81,6 @@ func (service *Service) up() {
 	_ = service.twitterclient.Watch(service.tweetStreamsChannel)
 }
 
-/**
- * @TODO Add updated methods to use single stream, not a slice.
- * @TODO Use method with slice to stop all streams of inactivated topic or to add streams of activated topic.
- */
 func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	service.twitterclient.Unwatch()
 	service.twitterclient.AddStreams(streams)
@@ -95,7 +89,8 @@ func (service *Service) addStreamsToWatching(streams []entity.StreamInterface) {
 	}
 }
 
-func (service *Service) deleteStreamsFromWatching(streamIDs []int64) {
+func (service *Service) deleteStreamsFromWatching(streams []entity.StreamInterface) {
+	streamIDs := entity.GetStreamIDs(streams)
 	service.twitterclient.Unwatch()
 	service.twitterclient.DeleteStreams(streamIDs)
 	if err := service.twitterclient.Watch(service.tweetStreamsChannel); err != nil {

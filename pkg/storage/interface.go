@@ -9,8 +9,10 @@ type Interface interface {
 	AddTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
 	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
 	GetUserTopics(userID int64) (result []entity.TopicInterface, err error)
-	GetStreams() (streams []entity.StreamInterface, err error)
+	GetTopic(topicID int64) (topic entity.TopicInterface, err error)
 	GetTopicStreams(topicID int64) (streams []entity.StreamInterface, err error)
+	GetActiveStreams() (streams []entity.StreamInterface, err error)
+	DeleteTopic(streamID int64) error
 	AddTweetStreams(tweetStreams entity.TweetStreamsInterface) (id int64, err error)
 	SignUp(email string, password string) (id *int64, err error)
 	Login(email string, password string) (id *int64, err error)

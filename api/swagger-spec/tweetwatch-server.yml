@@ -123,6 +123,24 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+    delete:
+      summary: Delete desired topic by Topic ID
+      operationId: deleteTopic
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+          description: Numeric ID of the topic to delete
+      responses:
+        "200":
+          description: Topic deleted
+          schema:
+            $ref: "#/definitions/DefaultSuccess"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
   /topics/{topicId}/streams:
     post:
       operationId: createStream

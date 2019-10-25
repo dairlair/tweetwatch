@@ -22,7 +22,7 @@ it('Should POST /topics return 200 with valid topic request data', async functio
         .expect(200);
 
     validateTopic(res.body, topicRequestData);
-});
+})
 
 /**
  * basic=`echo "john@example.com:secret"|tr -d '\n'|base64 -i`
@@ -33,10 +33,10 @@ it('Should GET /topics return 200 with valid topics', async function () {
         .get('/topics')
         .set('Authorization', newUserData.jwtToken)
         .expect(200);
-
+    expect(res.body).has.a('array', 'This endpoint must returns topics list as array')
+    expect(res.body).length.greaterThan(0, 'Topics list must not be empty')
     validateTopic(res.body[0], topicRequestData);
-});
-
+})
 
 describe('Should topics update endpoint works fine', function() {
     before(function () {
@@ -45,9 +45,11 @@ describe('Should topics update endpoint works fine', function() {
     withData({
         defaultTopic: topicRequestData,
         emptyTopic: {name: '', isActive: false},
+        activeTopic: {name: 'Tesla, Inc.', isActive: true},
+        inactiveTopic: {name: 'Tesla, Inc.', isActive: false},
     }, function(topicRequest: TopicRequest) {
         it('Should PUT /topics/:id 200 with valid topic request data', async function() {
-            // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.
+            // @TODO Add check for topic Request instanceof. When TopicRequest will be moved to separate class.)
             const res = await request
                 .put('/topics/' + createdTopicId)
                 .set('Authorization', newUserData.jwtToken)

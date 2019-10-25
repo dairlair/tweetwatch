@@ -48,3 +48,11 @@ func (s *Stream) GetTrack() string {
 func (s *Stream) GetCreatedAt() time.Time {
 	return s.CreatedAt
 }
+
+func GetStreamIDs(streams []StreamInterface) []int64 {
+	var IDs []int64
+	for _, stream := range streams {
+		IDs = append(IDs, stream.GetID())
+	}
+	return IDs
+}
