@@ -326,15 +326,21 @@ definitions:
     properties:
       id:
         type: integer
-      twitteId:
+      twitterId:
         type: integer
+      twitterUserId:
+        type: integer
+      twitterUsername:
+        type: string
       fullText:
         type: string
       createdAt:
         type: string
     required:
       - id
-      - twitteId
+      - twitterId
+      - twitterUserId
+      - twitterUsername
       - fullText
       - createdAt
   DefaultSuccess:

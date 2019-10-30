@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 // TweetInterface defines methods implemented by the platform's entity twit.
 type TweetInterface interface {
 	GetID() int64
@@ -7,7 +9,7 @@ type TweetInterface interface {
 	GetTwitterUserID() int64
 	GetTwitterUsername() string
 	GetFullText() string
-	GetCreatedAt() string
+	GetCreatedAt() time.Time
 }
 
 // Tweet is a basic structure implementing TweetInterface
@@ -17,7 +19,7 @@ type Tweet struct {
 	TwitterUserID   int64
 	TwitterUsername string
 	FullText        string
-	CreatedAt       string
+	CreatedAt       time.Time
 }
 
 // GetID returns the Tweet ID from the twitwatch platform
@@ -46,6 +48,6 @@ func (t *Tweet) GetFullText() string {
 }
 
 // GetCreatedAt returns the user id from twitter
-func (t *Tweet) GetCreatedAt() string {
+func (t *Tweet) GetCreatedAt() time.Time {
 	return t.CreatedAt
 }

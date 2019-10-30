@@ -136,12 +136,16 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 }
 
 func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
+	createdAt, err := tweet.CreatedAtTime()
+	if err != nil {
+		log.Warnf("Created at not parsed from string [%s]", tweet.CreatedAt)
+	}
 	return &entity.Tweet{
 		TwitterID:       tweet.ID,
 		TwitterUserID:   tweet.User.ID,
 		TwitterUsername: tweet.User.ScreenName,
 		FullText:        getFullText(tweet),
-		CreatedAt:       tweet.CreatedAt,
+		CreatedAt:       createdAt,
 	}
 }
 

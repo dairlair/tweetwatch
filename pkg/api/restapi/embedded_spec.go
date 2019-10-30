@@ -506,7 +506,9 @@ func init() {
     "Tweet": {
       "required": [
         "id",
-        "twitteId",
+        "twitterId",
+        "twitterUserId",
+        "twitterUsername",
         "fullText",
         "createdAt"
       ],
@@ -520,8 +522,14 @@ func init() {
         "id": {
           "type": "integer"
         },
-        "twitteId": {
+        "twitterId": {
           "type": "integer"
+        },
+        "twitterUserId": {
+          "type": "integer"
+        },
+        "twitterUsername": {
+          "type": "string"
         }
       }
     },
@@ -1049,7 +1057,9 @@ func init() {
     "Tweet": {
       "required": [
         "id",
-        "twitteId",
+        "twitterId",
+        "twitterUserId",
+        "twitterUsername",
         "fullText",
         "createdAt"
       ],
@@ -1063,8 +1073,14 @@ func init() {
         "id": {
           "type": "integer"
         },
-        "twitteId": {
+        "twitterId": {
           "type": "integer"
+        },
+        "twitterUserId": {
+          "type": "integer"
+        },
+        "twitterUsername": {
+          "type": "string"
         }
       }
     },

@@ -29,9 +29,17 @@ type Tweet struct {
 	// Required: true
 	ID *int64 `json:"id"`
 
-	// twitte Id
+	// twitter Id
 	// Required: true
-	TwitteID *int64 `json:"twitteId"`
+	TwitterID *int64 `json:"twitterId"`
+
+	// twitter user Id
+	// Required: true
+	TwitterUserID *int64 `json:"twitterUserId"`
+
+	// twitter username
+	// Required: true
+	TwitterUsername *string `json:"twitterUsername"`
 }
 
 // Validate validates this tweet
@@ -50,7 +58,15 @@ func (m *Tweet) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateTwitteID(formats); err != nil {
+	if err := m.validateTwitterID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTwitterUserID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTwitterUsername(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -87,9 +103,27 @@ func (m *Tweet) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Tweet) validateTwitteID(formats strfmt.Registry) error {
+func (m *Tweet) validateTwitterID(formats strfmt.Registry) error {
 
-	if err := validate.Required("twitteId", "body", m.TwitteID); err != nil {
+	if err := validate.Required("twitterId", "body", m.TwitterID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Tweet) validateTwitterUserID(formats strfmt.Registry) error {
+
+	if err := validate.Required("twitterUserId", "body", m.TwitterUserID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Tweet) validateTwitterUsername(formats strfmt.Registry) error {
+
+	if err := validate.Required("twitterUsername", "body", m.TwitterUsername); err != nil {
 		return err
 	}
 

@@ -1,22 +1,23 @@
 package storage
 
 import (
-	"github.com/dairlair/tweetwatch/pkg/entity"
+	. "github.com/dairlair/tweetwatch/pkg/entity"
 )
 
-// Interface must be implemented by postgres based storage or something else.
+// Interface must be implemented by DBMS based storage.
 type Interface interface {
-	AddTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
-	UpdateTopic(entity.TopicInterface) (result entity.TopicInterface, err error)
-	GetUserTopics(userID int64) (result []entity.TopicInterface, err error)
-	GetTopic(topicID int64) (topic entity.TopicInterface, err error)
-	GetTopicStreams(topicID int64) (streams []entity.StreamInterface, err error)
-	GetActiveStreams() (streams []entity.StreamInterface, err error)
+	AddTopic(TopicInterface) (result TopicInterface, err error)
+	UpdateTopic(TopicInterface) (result TopicInterface, err error)
+	GetUserTopics(userID int64) (result []TopicInterface, err error)
+	GetTopic(topicID int64) (topic TopicInterface, err error)
+	GetTopicStreams(topicID int64) (streams []StreamInterface, err error)
+	GetTopicTweets(topicID int64) (tweets []TweetInterface, err error)
+	GetActiveStreams() (streams []StreamInterface, err error)
 	DeleteTopic(streamID int64) error
-	AddTweetStreams(tweetStreams entity.TweetStreamsInterface) (id int64, err error)
+	AddTweetStreams(tweetStreams TweetStreamsInterface) (id int64, err error)
 	SignUp(email string, password string) (id *int64, err error)
 	Login(email string, password string) (id *int64, err error)
-	AddStream(streamInterface entity.StreamInterface) (result entity.StreamInterface, err error)
-	UpdateStream(streamInterface entity.StreamInterface) (result entity.StreamInterface, err error)
+	AddStream(streamInterface StreamInterface) (result StreamInterface, err error)
+	UpdateStream(streamInterface StreamInterface) (result StreamInterface, err error)
 	DeleteStream(streamID int64) error
 }

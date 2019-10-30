@@ -5,6 +5,46 @@ import (
 	"github.com/jackc/pgx"
 )
 
+func (storage *Storage)  GetTopicTweets(topicID int64) (tweets []entity.TweetInterface, err error) {
+	const sql = `
+		SELECT 
+			tweet_id
+			, twitter_id
+			, twitter_user_id
+			, twitter_username
+			, full_text
+			, created_at
+		FROM
+			tweet 
+		WHERE tweet_id IN (
+			SELECT tweet_id FROM tweet_stream WHERE topic_id = $1
+		)
+		ORDER BY created_at DESC
+	`
+
+	rows, err := storage.connPool.Query(sql, topicID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var tweet entity.Tweet
+		if err := rows.Scan(
+			&tweet.ID,
+			&tweet.TwitterID,
+			&tweet.TwitterUserID,
+			&tweet.TwitterUsername,
+			&tweet.FullText,
+			&tweet.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		tweets = append(tweets, &tweet)
+	}
+
+	return tweets, nil
+}
+
 // AddTwit just insert tweet into database
 func addTweet(tx *pgx.Tx, tweet entity.TweetInterface) (id int64, err error) {
 	const addTweetSQL = `

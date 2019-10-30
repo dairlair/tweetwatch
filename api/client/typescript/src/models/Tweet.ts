@@ -29,7 +29,19 @@ export interface Tweet {
      * @type {number}
      * @memberof Tweet
      */
-    twitteId: number;
+    twitterId: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Tweet
+     */
+    twitterUserId: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Tweet
+     */
+    twitterUsername: string;
     /**
      * 
      * @type {string}
@@ -55,7 +67,9 @@ export function TweetFromJSONTyped(json: any, ignoreDiscriminator: boolean): Twe
     return {
         
         'id': json['id'],
-        'twitteId': json['twitteId'],
+        'twitterId': json['twitterId'],
+        'twitterUserId': json['twitterUserId'],
+        'twitterUsername': json['twitterUsername'],
         'fullText': json['fullText'],
         'createdAt': json['createdAt'],
     };
@@ -71,7 +85,9 @@ export function TweetToJSON(value?: Tweet | null): any {
     return {
         
         'id': value.id,
-        'twitteId': value.twitteId,
+        'twitterId': value.twitterId,
+        'twitterUserId': value.twitterUserId,
+        'twitterUsername': value.twitterUsername,
         'fullText': value.fullText,
         'createdAt': value.createdAt,
     };
