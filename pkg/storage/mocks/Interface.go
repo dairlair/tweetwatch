@@ -176,6 +176,29 @@ func (_m *Interface) GetTopicStreams(topicID int64) ([]entity.StreamInterface, e
 	return r0, r1
 }
 
+// GetTopicTweets provides a mock function with given fields: topicID
+func (_m *Interface) GetTopicTweets(topicID int64) ([]entity.TweetInterface, error) {
+	ret := _m.Called(topicID)
+
+	var r0 []entity.TweetInterface
+	if rf, ok := ret.Get(0).(func(int64) []entity.TweetInterface); ok {
+		r0 = rf(topicID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]entity.TweetInterface)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int64) error); ok {
+		r1 = rf(topicID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetUserTopics provides a mock function with given fields: userID
 func (_m *Interface) GetUserTopics(userID int64) ([]entity.TopicInterface, error) {
 	ret := _m.Called(userID)
