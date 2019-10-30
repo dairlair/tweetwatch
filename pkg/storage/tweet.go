@@ -86,7 +86,7 @@ func addTweetStream(tx *pgx.Tx, tweetId int64, streamId int64, topicId int64) (i
 	if err := tx.QueryRow(addTweetStreamSQL,
 		tweetId,
 		streamId,
-
+		topicId,
 	).Scan(&id); err != nil {
 		return 0, pgError(err)
 	}

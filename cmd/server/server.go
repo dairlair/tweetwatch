@@ -78,7 +78,7 @@ func configureViper() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("/etc/tweetwatch")
 	viper.AddConfigPath("$HOME/.tweetwatch")
-	viper.AddConfigPath("./")
+	viper.AddConfigPath("./../../")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetDefault("rest.post", "1308")
 	viper.SetDefault("twitter.provider", "go-twitter")
