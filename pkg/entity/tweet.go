@@ -22,7 +22,7 @@ type Tweet struct {
 	CreatedAt       time.Time
 }
 
-// GetID returns the Tweet ID from the twitwatch platform
+// GetID returns the Tweet ID from the tweetwatch platform
 func (t *Tweet) GetID() int64 {
 	return t.ID
 }
