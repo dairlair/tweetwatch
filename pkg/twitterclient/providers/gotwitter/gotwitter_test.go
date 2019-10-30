@@ -20,10 +20,10 @@ func TestStart_Successful(t *testing.T) {
 		t.Skip("Skip test for twitterclient successful start")
 	}
 	cfg := twitterclient.Config{
-		TwitterConsumerKey:    os.Getenv("TWITWATCH_TEST_TWITTER_CONSUMER_KEY"),
-		TwitterConsumerSecret: os.Getenv("TWITWATCH_TEST_TWITTER_CONSUMER_SECRET"),
-		TwitterAccessToken:    os.Getenv("TWITWATCH_TEST_TWITTER_ACCESS_TOKEN"),
-		TwitterAccessSecret:   os.Getenv("TWITWATCH_TEST_TWITTER_ACCESS_SECRET"),
+		TwitterConsumerKey:    os.Getenv("TWEETWATCH_TEST_TWITTER_CONSUMER_KEY"),
+		TwitterConsumerSecret: os.Getenv("TWEETWATCH_TEST_TWITTER_CONSUMER_SECRET"),
+		TwitterAccessToken:    os.Getenv("TWEETWATCH_TEST_TWITTER_ACCESS_TOKEN"),
+		TwitterAccessSecret:   os.Getenv("TWEETWATCH_TEST_TWITTER_ACCESS_SECRET"),
 	}
 	instance := NewInstance(cfg)
 
