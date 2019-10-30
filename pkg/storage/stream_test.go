@@ -2,6 +2,7 @@ package storage
 
 import (
 	. "github.com/dairlair/tweetwatch/pkg/entity"
+	"time"
 )
 
 func (suite StorageSuite) TestAddStream_Successful() {
@@ -10,7 +11,7 @@ func (suite StorageSuite) TestAddStream_Successful() {
 		TwitterID:     2,
 		TwitterUserID: 3,
 		FullText:      "Something...",
-		CreatedAt:     "2019-02-03 12:12:12",
+		CreatedAt:     time.Now(),
 	}, []StreamInterface{&Stream{
 		ID:      1,
 		TopicID: 2,
