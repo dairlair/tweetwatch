@@ -18,8 +18,8 @@ type Instance struct {
 	// We will send to this channel all found tweets with associated streams
 	output chan entity.TweetStreamsInterface
 	// Internal resources
-	client  *twitter.Client
-	source  *twitter.Stream
+	client *twitter.Client
+	source *twitter.Stream
 }
 
 // NewInstance creates new twitter instance scrapper
@@ -135,15 +135,13 @@ func (instance *Instance) onTweet(tweet *twitter.Tweet) {
 	instance.processTweet(createTweetEntity(tweet))
 }
 
-
-
 func createTweetEntity(tweet *twitter.Tweet) entity.TweetInterface {
 	return &entity.Tweet{
-		ID:            tweet.ID,
-		TwitterID:     tweet.ID,
-		TwitterUserID: tweet.User.ID,
-		FullText:      getFullText(tweet),
-		CreatedAt:     tweet.CreatedAt,
+		TwitterID:       tweet.ID,
+		TwitterUserID:   tweet.User.ID,
+		TwitterUsername: tweet.User.ScreenName,
+		FullText:        getFullText(tweet),
+		CreatedAt:       tweet.CreatedAt,
 	}
 }
 

@@ -5,17 +5,19 @@ type TweetInterface interface {
 	GetID() int64
 	GetTwitterID() int64
 	GetTwitterUserID() int64
+	GetTwitterUsername() string
 	GetFullText() string
 	GetCreatedAt() string
 }
 
 // Tweet is a basic structure implementing TweetInterface
 type Tweet struct {
-	ID            int64
-	TwitterID     int64
-	TwitterUserID int64
-	FullText      string
-	CreatedAt     string
+	ID              int64
+	TwitterID       int64
+	TwitterUserID   int64
+	TwitterUsername string
+	FullText        string
+	CreatedAt       string
 }
 
 // GetID returns the Tweet ID from the twitwatch platform
@@ -31,6 +33,11 @@ func (t *Tweet) GetTwitterID() int64 {
 // GetTwitterUserID returns the user id from twitter
 func (t *Tweet) GetTwitterUserID() int64 {
 	return t.TwitterUserID
+}
+
+// GetTwitterUserID returns the user id from twitter
+func (t *Tweet) GetTwitterUsername() string {
+	return t.TwitterUsername
 }
 
 // GetFullText returns twit's full text

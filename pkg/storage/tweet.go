@@ -9,18 +9,20 @@ import (
 func addTweet(tx *pgx.Tx, tweet entity.TweetInterface) (id int64, err error) {
 	const addTweetSQL = `
 		INSERT INTO tweet (
-			id
-			, user_id
+			twitter_id
+			, twitter_user_id
+			, twitter_username
 			, full_text
 			, created_at
 		) VALUES (
-			$1, $2, $3, $4
+			$1, $2, $3, $4, $5
 		) RETURNING tweet_id
 	`
 
 	if err := tx.QueryRow(addTweetSQL,
-		tweet.GetID(),
+		tweet.GetTwitterID(),
 		tweet.GetTwitterUserID(),
+		tweet.GetTwitterUsername(),
 		tweet.GetFullText(),
 		tweet.GetCreatedAt(),
 	).Scan(&id); err != nil {
@@ -30,19 +32,21 @@ func addTweet(tx *pgx.Tx, tweet entity.TweetInterface) (id int64, err error) {
 	return id, nil
 }
 
-func addTweetStream(tx *pgx.Tx, tweetId int64, streamId int64) (id int64, err error) {
+func addTweetStream(tx *pgx.Tx, tweetId int64, streamId int64, topicId int64) (id int64, err error) {
 	const addTweetStreamSQL = `
 		INSERT INTO tweet_stream (
 			tweet_id
 			, stream_id
+			, topic_id
 		) VALUES (
-			$1, $2
+			$1, $2, $3
 		) RETURNING tweet_id
 	`
 
 	if err := tx.QueryRow(addTweetStreamSQL,
 		tweetId,
 		streamId,
+
 	).Scan(&id); err != nil {
 		return 0, pgError(err)
 	}
@@ -68,7 +72,7 @@ func (storage *Storage) AddTweetStreams(tweetStreams entity.TweetStreamsInterfac
 	}
 
 	for _, stream := range tweetStreams.GetStreams() {
-		_, err = addTweetStream(tx, tweetId, stream.GetID())
+		_, err = addTweetStream(tx, tweetId, stream.GetID(), stream.GetTopicID())
 		if err != nil {
 			return 0, pgError(err)
 		}

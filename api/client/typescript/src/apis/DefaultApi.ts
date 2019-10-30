@@ -35,6 +35,9 @@ import {
     Topic,
     TopicFromJSON,
     TopicToJSON,
+    Tweet,
+    TweetFromJSON,
+    TweetToJSON,
     User,
     UserFromJSON,
     UserToJSON,
@@ -59,6 +62,10 @@ export interface DeleteTopicRequest {
 }
 
 export interface GetStreamsRequest {
+    topicId: number;
+}
+
+export interface GetTopicTweetsRequest {
     topicId: number;
 }
 
@@ -291,6 +298,40 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getStreams(requestParameters: GetStreamsRequest): Promise<Array<Stream>> {
         const response = await this.getStreamsRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Returns list of tweets retrieved for this topic
+     */
+    async getTopicTweetsRaw(requestParameters: GetTopicTweetsRequest): Promise<runtime.ApiResponse<Array<Tweet>>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling getTopicTweets.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // JWT authentication
+        }
+
+        const response = await this.request({
+            path: `/topics/{topicId}/tweets`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TweetFromJSON));
+    }
+
+    /**
+     * Returns list of tweets retrieved for this topic
+     */
+    async getTopicTweets(requestParameters: GetTopicTweetsRequest): Promise<Array<Tweet>> {
+        const response = await this.getTopicTweetsRaw(requestParameters);
         return await response.value();
     }
 
