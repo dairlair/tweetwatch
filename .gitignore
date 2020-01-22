@@ -15,5 +15,5 @@
 *.out
 
 # Local developer config file
-/twitwatch.yml
+/tweetwatch.yml
 /coverage.txt

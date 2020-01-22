@@ -184,6 +184,26 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/DefaultError"
+  /topics/{topicId}/tweets:
+    get:
+      summary: Returns list of tweets retrieved for this topic
+      operationId: getTopicTweets
+      parameters:
+        - in: path
+          name: topicId
+          type: integer
+          required: true
+      responses:
+        "200":
+          description: Tweets list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Tweet"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultError"
   /topics/{topicId}/streams/{streamId}:
     put:
       summary: Update desired stream by Topic ID and Stream ID
@@ -301,6 +321,27 @@ definitions:
     required:
       - id
       - track
+      - createdAt
+  Tweet:
+    properties:
+      id:
+        type: integer
+      twitterId:
+        type: integer
+      twitterUserId:
+        type: integer
+      twitterUsername:
+        type: string
+      fullText:
+        type: string
+      createdAt:
+        type: string
+    required:
+      - id
+      - twitterId
+      - twitterUserId
+      - twitterUsername
+      - fullText
       - createdAt
   DefaultSuccess:
     properties:

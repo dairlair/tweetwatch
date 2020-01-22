@@ -57,6 +57,9 @@ func NewTweetwatchAPI(spec *loads.Document) *TweetwatchAPI {
 		GetStreamsHandler: GetStreamsHandlerFunc(func(params GetStreamsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetStreams has not yet been implemented")
 		}),
+		GetTopicTweetsHandler: GetTopicTweetsHandlerFunc(func(params GetTopicTweetsParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation GetTopicTweets has not yet been implemented")
+		}),
 		GetUserTopicsHandler: GetUserTopicsHandlerFunc(func(params GetUserTopicsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation GetUserTopics has not yet been implemented")
 		}),
@@ -130,6 +133,8 @@ type TweetwatchAPI struct {
 	GetStatusHandler GetStatusHandler
 	// GetStreamsHandler sets the operation handler for the get streams operation
 	GetStreamsHandler GetStreamsHandler
+	// GetTopicTweetsHandler sets the operation handler for the get topic tweets operation
+	GetTopicTweetsHandler GetTopicTweetsHandler
 	// GetUserTopicsHandler sets the operation handler for the get user topics operation
 	GetUserTopicsHandler GetUserTopicsHandler
 	// LoginHandler sets the operation handler for the login operation
@@ -229,6 +234,10 @@ func (o *TweetwatchAPI) Validate() error {
 
 	if o.GetStreamsHandler == nil {
 		unregistered = append(unregistered, "GetStreamsHandler")
+	}
+
+	if o.GetTopicTweetsHandler == nil {
+		unregistered = append(unregistered, "GetTopicTweetsHandler")
 	}
 
 	if o.GetUserTopicsHandler == nil {
@@ -391,6 +400,11 @@ func (o *TweetwatchAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/topics/{topicId}/streams"] = NewGetStreams(o.context, o.GetStreamsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/topics/{topicId}/tweets"] = NewGetTopicTweets(o.context, o.GetTopicTweetsHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

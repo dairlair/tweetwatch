@@ -28,6 +28,8 @@ http POST :1308/topics/1/streams "Authorization:${jwt}" track="qwerty"
 http :1308/topics/1/streams "Authorization:${jwt}"
 # Update created stream
 http PUT :1308/topics/1/streams/1 "Authorization:${jwt}" track="zxcvbn"
+# Get tweets of topic
+http :1308/topics/1/tweets "Authorization:${jwt}"
 ```
 
 ### Swagger stubs regenerate

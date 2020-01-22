@@ -370,6 +370,37 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/tweets": {
+      "get": {
+        "summary": "Returns list of tweets retrieved for this topic",
+        "operationId": "getTopicTweets",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tweets list",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tweet"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -468,6 +499,36 @@ func init() {
           "type": "boolean"
         },
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Tweet": {
+      "required": [
+        "id",
+        "twitterId",
+        "twitterUserId",
+        "twitterUsername",
+        "fullText",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "fullText": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "twitterId": {
+          "type": "integer"
+        },
+        "twitterUserId": {
+          "type": "integer"
+        },
+        "twitterUsername": {
           "type": "string"
         }
       }
@@ -860,6 +921,37 @@ func init() {
           }
         }
       }
+    },
+    "/topics/{topicId}/tweets": {
+      "get": {
+        "summary": "Returns list of tweets retrieved for this topic",
+        "operationId": "getTopicTweets",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "topicId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tweets list",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tweet"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/DefaultError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -958,6 +1050,36 @@ func init() {
           "type": "boolean"
         },
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Tweet": {
+      "required": [
+        "id",
+        "twitterId",
+        "twitterUserId",
+        "twitterUsername",
+        "fullText",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "fullText": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "twitterId": {
+          "type": "integer"
+        },
+        "twitterUserId": {
+          "type": "integer"
+        },
+        "twitterUsername": {
           "type": "string"
         }
       }

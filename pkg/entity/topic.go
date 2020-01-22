@@ -20,12 +20,12 @@ type Topic struct {
 	IsActive bool
 }
 
-// GetID returns the Topic ID from the twitwatch platform
+// GetID returns the Topic ID from the tweetwatch platform
 func (t *Topic) GetID() int64 {
 	return t.ID
 }
 
-// GetID returns the topic's owner User ID from the twitwatch platform
+// GetID returns the topic's owner User ID from the tweetwatch platform
 func (t *Topic) GetUserID() int64 {
 	return t.UserID
 }

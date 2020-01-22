@@ -75,6 +75,11 @@ func configureAPI(api *operations.TweetwatchAPI) http.Handler {
 			return middleware.NotImplemented("operation .GetStreams has not yet been implemented")
 		})
 	}
+	if api.GetTopicTweetsHandler == nil {
+		api.GetTopicTweetsHandler = operations.GetTopicTweetsHandlerFunc(func(params operations.GetTopicTweetsParams, principal *models.User) middleware.Responder {
+			return middleware.NotImplemented("operation .GetTopicTweets has not yet been implemented")
+		})
+	}
 	if api.GetUserTopicsHandler == nil {
 		api.GetUserTopicsHandler = operations.GetUserTopicsHandlerFunc(func(params operations.GetUserTopicsParams, principal *models.User) middleware.Responder {
 			return middleware.NotImplemented("operation .GetUserTopics has not yet been implemented")

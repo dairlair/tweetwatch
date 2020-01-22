@@ -74,10 +74,10 @@ func readConfig() (server.Config, server.Providers, error) {
 
 func configureViper() {
 	viper.AutomaticEnv()
-	viper.SetConfigName("twitwatch")
+	viper.SetConfigName("tweetwatch")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("/etc/twitwatch")
-	viper.AddConfigPath("$HOME/.twitwatch")
+	viper.AddConfigPath("/etc/tweetwatch")
+	viper.AddConfigPath("$HOME/.tweetwatch")
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetDefault("rest.post", "1308")
