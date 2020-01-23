@@ -1,2 +1,2 @@
 # TweetWatch
-A Twitter API based daemon for twits analyses purposes
+A Twitter API based daemon for tweets analyses purposes
