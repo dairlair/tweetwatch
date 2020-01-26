@@ -1,3 +1,62 @@
+# 3.6.2 (January 24, 2020)
+
+* Fix Rows.Values() fallback to generic decoder (Matt Jibson)
+
+# 3.6.1 (January 11, 2020)
+
+## Features
+
+* Add PgError.SQLState method
+* Bit supports text format
+
+## Fixes
+
+* Fix multiple replication connections sharing minimalConnInfo
+
+# 3.6.0 (September 14, 2019)
+
+## Features
+
+* Improve zap logger (Nicholas Wilson)
+* Improve composite type support (David)
+* Connect multi-host support (Artemiy Ryabinkov)
+* Improve UUID to any [16]byte conversion (Nicholas Wilson)
+* Add database/sql repeatable read transaction support (Nathaniel Caza)
+* Load user-defined array type oids (Dmitriy Garanzha)
+* Add ConnPool.AcquireEx (Kale Blankenship)
+
+## Fixes
+
+* Remove 0 bytes when sanitizing identifiers
+* Terminate context prior to releasing when killing batch connection (Andrew S. Brown)
+* Do not ignore PostgreSQL errors from deferred constraints
+* Correct example for WaitForNotification (Ian Stapleton Cordasco)
+* Include ParameterOIDs when preparing statements on new pool connections (Kale Blankenship)
+* Fix DSN parsing with single quoted values (Joshua Barone)
+
+## Changes
+
+* Adjust default read buffer to match default PostgreSQL send buffer (Artemiy Ryabinkov)
+* Add https://github.com/gofrs/uuid extension (David Hudson)
+
+# 3.5.0 (June 29, 2019)
+
+## Features
+
+* Protocol support for PortalSuspended message (avivklas)
+* Read OIDs for composite types on connection init (Nick Jones)
+
+## Fixes
+
+* Hstore can have empty keys (Josh Leverette)
+* Fix -0 value for numeric type (David Hudson)
+* Log error message on rows-close error (Euan Kemp)
+
+## Changes
+
+* Explicitly cast binary string to bytea in simple protocol (jinhua luo)
+* Skip parse and sanitize simple query when no arguments (jinhua luo)
+
 # 3.4.0 (May 3, 2019)
 
 ## Features

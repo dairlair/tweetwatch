@@ -3,6 +3,7 @@ package server
 
 import (
 	"github.com/dairlair/tweetwatch/pkg/api/restapi"
+	"github.com/dairlair/tweetwatch/pkg/broadcaster/providers/nats"
 	"github.com/dairlair/tweetwatch/pkg/service"
 	"github.com/dairlair/tweetwatch/pkg/storage"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
@@ -17,6 +18,7 @@ import (
 type Config struct {
 	LogLevel      string
 	Postgres      storage.PostgresConfig
+	NATS          nats.Config
 	RESTListen    int
 	Twitterclient twitterclient.Config
 }
@@ -56,8 +58,14 @@ func (instance *Instance) Start() {
 	// create the twitterclient instance
 	twitterclientInstance := instance.providers.TwitterClientProvider(instance.config.Twitterclient)
 
+	// create broadcaster (NATS streaming)
+	var broadcaster service.BroadcasterInterface = nil
+	if natsClient := nats.NewClient(instance.config.NATS); natsClient != nil {
+		broadcaster = natsClient
+	}
+
 	// run service
-	serviceInstance := service.NewService(storageInstance, twitterclientInstance)
+	serviceInstance := service.NewService(storageInstance, twitterclientInstance, broadcaster)
 	serviceInstance.Up()
 
 	// create server

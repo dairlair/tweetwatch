@@ -10,3 +10,7 @@ twitter:
   consumerSecret: ""
   accessToken: ""
   accessSecret: ""
+nats:
+  url: "nats://localhost:4222"
+  clusterId: "tweetwatch-cluster"
+  clientId: "tweetwatch-client"
