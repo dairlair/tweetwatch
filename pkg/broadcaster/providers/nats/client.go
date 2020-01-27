@@ -31,6 +31,6 @@ func (c Client) Broadcast(channel string, tweetStreams entity.TweetStreamsInterf
 	eventMsg := []byte(fmt.Sprintf("Tweet #%d", tweetStreams.GetTweet().GetTwitterID()))
 	err := c.conn.Publish(channel, eventMsg)
 	if err != nil {
-		log.Errorf("Error publishing message %s: %v\n", err.Error())
+		log.Errorf("Error publishing message %s\n", err.Error())
 	}
 }

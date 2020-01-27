@@ -39,7 +39,7 @@ func TestService_UpdateTopicHandler(t *testing.T) {
 	twitterMock.On("Watch", mock.AnythingOfType("chan entity.TweetStreamsInterface")).Return(nil)
 	twitterMock.On("DeleteStreams", entity.GetStreamIDs(streams)).Return().Once()
 
-	srv := NewService(storageMock, twitterMock)
+	srv := NewService(storageMock, twitterMock, nil)
 	srv.UpdateTopicHandler(operations.UpdateTopicParams{
 		Topic:       &topicModel,
 		TopicID:     topicID,
