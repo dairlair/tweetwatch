@@ -1,6 +1,7 @@
 package void
 
 import (
+	"fmt"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	"github.com/dairlair/tweetwatch/pkg/twitterclient"
 	log "github.com/sirupsen/logrus"
@@ -28,14 +29,13 @@ func (instance *Instance) Start() error {
 func (instance *Instance) addStream(stream entity.StreamInterface) {
 }
 
-// AddStream adds desired stream to the current instance of twitterclient
+// AddStreams adds desired stream to the current instance of twitterclient
 func (instance *Instance) AddStreams(streams []entity.StreamInterface) {
 }
 
-// AddStream adds desired stream to the current instance of twitterclient
+// DeleteStreams removes desired stream to the current instance of twitterclient
 func (instance *Instance) DeleteStreams([]int64) {
 }
-
 
 // GetStreams returns all the streams from the current instance of twitterclient
 func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
@@ -45,24 +45,26 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 // Watch starts watching
 func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
 	go func() {
-		tweet := entity.Tweet{
-			ID:            1,
-			TwitterID:     9381,
-			TwitterUserID: 5234,
-			TwitterUsername: "dairlair",
-			FullText:      "Just a fake tweet from void",
-			CreatedAt:     time.Now(),
-		}
-		tweetStreams := entity.NewTweetStreams(&tweet, entity.StreamsMapToSlice(instance.GetStreams()))
-		for i := 0; i < 1; i++ {
-			<-time.After(time.Second)
+		count := 1
+		interval := 10 * time.Millisecond
+		for i := 0; i < count; i++ {
+			tweet := entity.Tweet{
+				ID:              1,
+				TwitterID:       time.Now().Unix() + int64(i),
+				TwitterUserID:   int64(time.Now().Second() + i),
+				TwitterUsername: "dairlair",
+				FullText:        fmt.Sprintf("Just a fake tweet from void #%d", i),
+				CreatedAt:       time.Now(),
+			}
+			tweetStreams := entity.NewTweetStreams(&tweet, entity.StreamsMapToSlice(instance.GetStreams()))
+			<-time.After(interval)
 			select {
 			case output <- tweetStreams:
 			default:
 				log.Errorf("Can not send tweet and streams to output")
 			}
 		}
-	} ()
+	}()
 	return nil
 }
 

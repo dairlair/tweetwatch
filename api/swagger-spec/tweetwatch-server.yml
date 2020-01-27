@@ -343,6 +343,14 @@ definitions:
       - twitterUsername
       - fullText
       - createdAt
+  SavedTweet: # Contains full info about tweet saved to the storage
+    allOf:
+      - $ref: '#/definitions/Tweet'
+    properties:
+      streams:
+        type: array
+        items:
+          $ref: "#/definitions/Stream"
   DefaultSuccess:
     properties:
       message:

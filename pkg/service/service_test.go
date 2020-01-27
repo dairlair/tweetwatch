@@ -10,7 +10,7 @@ import (
 func TestEnvConfigurationReading(t *testing.T) {
 	tc := createTwitterclientMock()
 	s := createStorageMock()
-	srv := NewService(s, tc)
+	srv := NewService(s, tc, nil)
 	assert.NotNil(t, srv)
 }
 

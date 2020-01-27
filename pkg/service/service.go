@@ -11,20 +11,22 @@ import (
 )
 
 type Service struct {
-	API *operations.TweetwatchAPI
-	storage storage.Interface
-	twitterclient twitterclient.Interface
+	API                 *operations.TweetwatchAPI
+	storage             storage.Interface
+	twitterclient       twitterclient.Interface
 	tweetStreamsChannel chan entity.TweetStreamsInterface
-	jwtKey []byte
+	jwtKey              []byte
+	broadcaster         BroadcasterInterface
 }
 
-func NewService(s storage.Interface, t twitterclient.Interface) Service {
+func NewService(s storage.Interface, t twitterclient.Interface, broadcaster BroadcasterInterface) Service {
 	service := Service{
-		storage:s,
-		twitterclient: t,
+		storage:             s,
+		twitterclient:       t,
 		tweetStreamsChannel: make(chan entity.TweetStreamsInterface, 100),
 		// @TODO take jwt key from config
-		jwtKey: []byte("something"),
+		jwtKey:      []byte("something"),
+		broadcaster: broadcaster,
 	}
 	// load embedded swagger file
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
@@ -59,12 +61,15 @@ func (service *Service) Up() {
 	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {
 			log.Infof("Store tweet to the database: %d\n", tweetStreams.GetTweet().GetTwitterID())
-			_, err := storage.AddTweetStreams(tweetStreams)
+			id, err := storage.AddTweetStreams(tweetStreams)
 			if err != nil {
 				log.Fatalf("storage error: %s\n", err)
+				continue
 			}
+
+			service.broadcast(id, tweetStreams)
 		}
-	} (service.tweetStreamsChannel, service.storage)
+	}(service.tweetStreamsChannel, service.storage)
 	log.Infof("Tweetwatch service is ready to accept tweets")
 
 	// Restore streams

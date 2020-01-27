@@ -137,6 +137,7 @@ func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, er
 	const getStreamsSQL = `
 		SELECT 
 			s.stream_id
+			, s.topic_id
 			, s.track
 			, s.created_at
 		FROM
@@ -154,6 +155,7 @@ func (storage *Storage) GetActiveStreams() (streams []entity.StreamInterface, er
 		var stream entity.Stream
 		if err := rows.Scan(
 			&stream.ID,
+			&stream.TopicID,
 			&stream.Track,
 			&stream.CreatedAt,
 		); err != nil {

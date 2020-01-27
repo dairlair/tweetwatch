@@ -1,18 +1,19 @@
 package storage
 
 import (
+	"fmt"
 	. "github.com/dairlair/tweetwatch/pkg/entity"
 	"time"
 )
 
 func (suite StorageSuite) TestAddStream_Successful() {
-
-	userId, err := suite.storage.SignUp("tester@example.com", "secret")
+	email := fmt.Sprintf("tester%d@example.com", time.Now().Second())
+	userId, err := suite.storage.SignUp(email, "secret")
 	suite.Nil(err, "User must be created successfully")
 
 	topic, err := suite.storage.AddTopic(&Topic{
 		UserID:    *userId,
-		Name:      "Test topic",
+		Name:      fmt.Sprintf("Test topic %d", time.Now().Second()),
 		CreatedAt: time.Time{},
 		IsActive:  true,
 	})

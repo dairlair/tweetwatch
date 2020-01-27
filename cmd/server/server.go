@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/dairlair/tweetwatch/pkg/broadcaster/providers/nats"
 	"strings"
 
 	"github.com/dairlair/tweetwatch/pkg/cmd/server"
@@ -68,6 +69,11 @@ func readConfig() (server.Config, server.Providers, error) {
 			TwitterConsumerSecret: viper.GetString("twitter.consumerSecret"),
 			TwitterAccessToken:    viper.GetString("twitter.accessToken"),
 			TwitterAccessSecret:   viper.GetString("twitter.accessSecret"),
+		},
+		NATS: nats.Config{
+			URL:       viper.GetString("nats.url"),
+			ClusterID: viper.GetString("nats.clusterId"),
+			ClientID:  viper.GetString("nats.clientId"),
 		},
 	}, providers, nil
 }
