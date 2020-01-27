@@ -38,6 +38,5 @@ func (service *Service) broadcast(tweetID int64, tweetStreams entity.TweetStream
 		log.Errorf("Saved tweet marshalling failed: %s", err)
 	}
 
-	log.Errorf("Broadcast JSON: %s", json)
 	service.broadcaster.Broadcast(broadcastingServiceName+"."+broadcastingEventTweetSaved, json)
 }
