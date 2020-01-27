@@ -1,6 +1,6 @@
 module github.com/dairlair/tweetwatch
 
-go 1.13
+go 1.12
 
 require (
 	github.com/bxcodec/faker/v3 v3.2.0
