@@ -61,16 +61,13 @@ func (service *Service) Up() {
 	go func(input chan entity.TweetStreamsInterface, storage storage.Interface) {
 		for tweetStreams := range input {
 			log.Infof("Store tweet to the database: %d\n", tweetStreams.GetTweet().GetTwitterID())
-			_, err := storage.AddTweetStreams(tweetStreams)
+			id, err := storage.AddTweetStreams(tweetStreams)
 			if err != nil {
 				log.Fatalf("storage error: %s\n", err)
 				continue
 			}
 
-			if service.broadcaster != nil {
-				// @TODO Add the stored tweet ID to broadcasting
-				service.broadcaster.Broadcast("TweetWatch.TweetSaved", tweetStreams)
-			}
+			service.broadcast(id, tweetStreams)
 		}
 	}(service.tweetStreamsChannel, service.storage)
 	log.Infof("Tweetwatch service is ready to accept tweets")

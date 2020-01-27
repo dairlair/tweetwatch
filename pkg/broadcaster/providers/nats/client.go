@@ -1,8 +1,6 @@
 package nats
 
 import (
-	"fmt"
-	"github.com/dairlair/tweetwatch/pkg/entity"
 	stan "github.com/nats-io/go-nats-streaming"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,9 +25,8 @@ func NewClient(config Config) *Client {
 	}
 }
 
-func (c Client) Broadcast(channel string, tweetStreams entity.TweetStreamsInterface) {
-	eventMsg := []byte(fmt.Sprintf("Tweet #%d", tweetStreams.GetTweet().GetTwitterID()))
-	err := c.conn.Publish(channel, eventMsg)
+func (c Client) Broadcast(channel string, data []byte) {
+	err := c.conn.Publish(channel, data)
 	if err != nil {
 		log.Errorf("Error publishing message %s\n", err.Error())
 	}

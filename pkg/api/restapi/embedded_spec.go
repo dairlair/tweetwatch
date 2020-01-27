@@ -463,6 +463,21 @@ func init() {
         }
       }
     },
+    "SavedTweet": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Tweet"
+        }
+      ],
+      "properties": {
+        "streams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Stream"
+          }
+        }
+      }
+    },
     "Stream": {
       "required": [
         "id",
@@ -1011,6 +1026,21 @@ func init() {
       "properties": {
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "SavedTweet": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Tweet"
+        }
+      ],
+      "properties": {
+        "streams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Stream"
+          }
         }
       }
     },

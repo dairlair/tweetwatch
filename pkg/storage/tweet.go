@@ -107,13 +107,13 @@ func (storage *Storage) AddTweetStreams(tweetStreams entity.TweetStreamsInterfac
 	}()
 
 	// Add tweet and get his ID.
-	tweetId, err := addTweet(tx, tweetStreams.GetTweet())
+	id, err = addTweet(tx, tweetStreams.GetTweet())
 	if err != nil {
 		return id, err
 	}
 
 	for _, stream := range tweetStreams.GetStreams() {
-		_, err = addTweetStream(tx, tweetId, stream.GetID(), stream.GetTopicID())
+		_, err = addTweetStream(tx, id, stream.GetID(), stream.GetTopicID())
 		if err != nil {
 			if errVal, ok := err.(*pgx.PgError); ok {
 				log.Error(errVal.Detail)
