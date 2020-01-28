@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	broadcastingServiceName     = "TweetWatch"
 	broadcastingEventTweetSaved = "TweetSaved"
 )
 
@@ -38,5 +37,5 @@ func (service *Service) broadcast(tweetID int64, tweetStreams entity.TweetStream
 		log.Errorf("Saved tweet marshalling failed: %s", err)
 	}
 
-	service.broadcaster.Broadcast(broadcastingServiceName+"."+broadcastingEventTweetSaved, json)
+	service.broadcaster.Broadcast(broadcastingEventTweetSaved, json)
 }
