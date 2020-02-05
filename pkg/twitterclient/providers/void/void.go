@@ -45,9 +45,8 @@ func (instance *Instance) GetStreams() map[int64]entity.StreamInterface {
 // Watch starts watching
 func (instance *Instance) Watch(output chan entity.TweetStreamsInterface) error {
 	go func() {
-		count := 1
-		interval := 10 * time.Millisecond
-		for i := 0; i < count; i++ {
+		interval := 100 * time.Millisecond
+		for i := 0; ; i++ {
 			tweet := entity.Tweet{
 				ID:              1,
 				TwitterID:       time.Now().Unix() + int64(i),
