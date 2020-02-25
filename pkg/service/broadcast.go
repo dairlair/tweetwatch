@@ -1,9 +1,11 @@
 package service
 
 import (
-	"github.com/dairlair/tweetwatch/pkg/api/models"
+	"encoding/json"
+	"fmt"
 	"github.com/dairlair/tweetwatch/pkg/entity"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 const (
@@ -21,21 +23,60 @@ func (service *Service) broadcast(tweetID int64, tweetStreams entity.TweetStream
 		return
 	}
 
-	tweetModel := tweetModelFromEntity(tweetStreams.GetTweet())
-	tweetModel.ID = &tweetID
-	savedTweet := models.SavedTweet{
-		Tweet: tweetModel,
-	}
-	savedTweet.Streams = make([]*models.Stream, 0)
-	for _, stream := range tweetStreams.GetStreams() {
-		streamModel := streamModelFromEntity(stream)
-		savedTweet.Streams = append(savedTweet.Streams, &streamModel)
+	tweet := tweetStreams.GetTweet()
+	bm := BroadcastMessage{
+		OriginTime:     tweet.GetCreatedAt(),
+		OriginID:       "twitter",
+		OriginEntity:   "status",
+		OriginEntityID: fmt.Sprintf("%d", tweet.GetTwitterID()),
+		OriginText:     tweet.GetFullText(),
+		OriginUserId:   fmt.Sprintf("%d", tweet.GetTwitterUserID()),
+		OriginUsername: tweet.GetTwitterUsername(),
+		Streams:        nil,
 	}
 
-	json, err := savedTweet.MarshalJSON()
+	for _, stream := range tweetStreams.GetStreams() {
+		//streamModel := streamModelFromEntity(stream)
+		bm.Streams = append(bm.Streams, BroadcastStream{
+			StreamID: stream.GetID(),
+			TopicID:  stream.GetTopicID(),
+			Track:    stream.GetTrack(),
+		})
+	}
+
+	//tweetModel := tweetModelFromEntity(tweetStreams.GetTweet())
+	//tweetModel.ID = &tweetID
+	//savedTweet := models.SavedTweet{
+	//	Tweet: tweetModel,
+	//}
+	//savedTweet.Streams = make([]*models.Stream, 0)
+	//for _, stream := range tweetStreams.GetStreams() {
+	//	streamModel := streamModelFromEntity(stream)
+	//	savedTweet.Streams = append(savedTweet.Streams, &streamModel)
+	//}
+
+	json, err := json.Marshal(bm)
 	if err != nil {
 		log.Errorf("Saved tweet marshalling failed: %s", err)
+	} else {
+		service.broadcaster.Broadcast(broadcastingEventTweetSaved, json)
 	}
+}
 
-	service.broadcaster.Broadcast(broadcastingEventTweetSaved, json)
+type BroadcastStream struct {
+	StreamID int64  `json:"streamId"`
+	TopicID  int64  `json:"topicId"`
+	Track    string `json:"track"`
+}
+
+// @TODO Move this structure definition into the Swagger Specification
+type BroadcastMessage struct {
+	OriginTime     time.Time         `json:"originTime,string"`
+	OriginID       string            `json:"originId"`
+	OriginEntity   string            `json:"originEntity"`
+	OriginEntityID string            `json:"originEntityId"`
+	OriginText     string            `json:"originText"`
+	OriginUserId   string            `json:"originUserId"`
+	OriginUsername string            `json:"originUsername"`
+	Streams        []BroadcastStream `json:"stream"`
 }
