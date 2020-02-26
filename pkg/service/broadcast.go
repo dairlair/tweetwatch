@@ -36,7 +36,6 @@ func (service *Service) broadcast(tweetID int64, tweetStreams entity.TweetStream
 	}
 
 	for _, stream := range tweetStreams.GetStreams() {
-		//streamModel := streamModelFromEntity(stream)
 		bm.Streams = append(bm.Streams, BroadcastStream{
 			StreamID: stream.GetID(),
 			TopicID:  stream.GetTopicID(),
@@ -44,25 +43,15 @@ func (service *Service) broadcast(tweetID int64, tweetStreams entity.TweetStream
 		})
 	}
 
-	//tweetModel := tweetModelFromEntity(tweetStreams.GetTweet())
-	//tweetModel.ID = &tweetID
-	//savedTweet := models.SavedTweet{
-	//	Tweet: tweetModel,
-	//}
-	//savedTweet.Streams = make([]*models.Stream, 0)
-	//for _, stream := range tweetStreams.GetStreams() {
-	//	streamModel := streamModelFromEntity(stream)
-	//	savedTweet.Streams = append(savedTweet.Streams, &streamModel)
-	//}
-
-	json, err := json.Marshal(bm)
+	js, err := json.Marshal(bm)
 	if err != nil {
 		log.Errorf("Saved tweet marshalling failed: %s", err)
 	} else {
-		service.broadcaster.Broadcast(broadcastingEventTweetSaved, json)
+		service.broadcaster.Broadcast(broadcastingEventTweetSaved, js)
 	}
 }
 
+// @TODO Move this structure definition into the Swagger Specification
 type BroadcastStream struct {
 	StreamID int64  `json:"streamId"`
 	TopicID  int64  `json:"topicId"`
@@ -78,5 +67,5 @@ type BroadcastMessage struct {
 	OriginText     string            `json:"originText"`
 	OriginUserId   string            `json:"originUserId"`
 	OriginUsername string            `json:"originUsername"`
-	Streams        []BroadcastStream `json:"stream"`
+	Streams        []BroadcastStream `json:"streams"`
 }
